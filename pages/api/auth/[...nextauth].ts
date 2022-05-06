@@ -33,6 +33,10 @@ export default NextAuth({
     // Note: This option is ignored if using JSON Web Tokens
     updateAge: 24 * 60 * 60, // 24 hours
   },
+  pages: {
+    // https://next-auth.js.org/configuration/pages
+    signIn: '/auth/signin',
+  },
   // https://next-auth.js.org/configuration/providers/oauth
   providers: [
     EmailProvider({
