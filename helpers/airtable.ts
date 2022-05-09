@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import Airtable, { FieldSet, Record } from 'airtable';
 import { SortParameter } from 'airtable/lib/query_params';
 import 'dotenv/config';
@@ -13,7 +12,7 @@ const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(BASE_ID);
 let allRecords: Record<FieldSet>[] = [];
 let pageNum = 1;
 
-type ScheduleRecordObj = any;
+export type ScheduleRecordObj = any;
 
 function getFirstElement(record: Record<FieldSet>, key: string): string {
   const arr = record.get(key) as ReadonlyArray<string>;
@@ -28,8 +27,10 @@ function getScheduleRecordAsObj(record: Record<FieldSet>): ScheduleRecordObj {
   // obj['start datetime'] = record.get('start datetime');
   // obj.start = record.get('start');
   obj.start = record.get('start datetime');
+  obj.timeSummary = record.get('time summary');
   // obj.startLocalized = new Date(obj.start).toString();
-  obj.program = getFirstElement(record, 'program');
+  obj.programId = getFirstElement(record, 'program');
+  obj.programName = getFirstElement(record, 'program name');
   obj.link = getFirstElement(record, 'link'); // landing page URL, stored in "landing" field of nc-programs table.
   return obj;
 }
