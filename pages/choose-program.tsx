@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useSession, getSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Layout from '../components/layout';
 import { getScheduleRecordsFromAllPages, ScheduleRecordObj } from '../helpers/airtable';
@@ -18,6 +18,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
   const scheduleRecords = await getScheduleRecordsFromAllPages();
+  // TODO: We should also check our database to see which programs the user has already registered for. Each option should be marked if it is already registered.
   const props = { scheduleRecords };
   return { props };
 };
@@ -26,7 +27,7 @@ function ProgramOption({ scheduleRecord }: { scheduleRecord: ScheduleRecordObj }
   const startLocal = new Date(scheduleRecord.start);
   return (
     <div>
-      <label className="border border-primary rounded-3 mb-1 d-flex align-items-center align-content-center" role="button">
+      <label className="border border-secondary rounded-3 mb-1 d-flex align-items-center align-content-center" role="button">
         <input type="radio" name="program" value={scheduleRecord.id} className="ms-2 me-2" data-json={JSON.stringify(scheduleRecord)} />
         <div className="d-inline-block">
           <div className="">{scheduleRecord.programName}</div>
@@ -43,17 +44,9 @@ function ProgramOption({ scheduleRecord }: { scheduleRecord: ScheduleRecordObj }
 }
 
 export default function ChooseProgramPage({ scheduleRecords }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { status } = useSession();
-  const loading = status === 'loading';
-
-  // When rendering client side don't display anything until loading is complete
-  if (typeof window !== 'undefined' && loading) return null;
-
-  // If session exists, display content
   return (
     <Layout>
       <h1>Enroll</h1>
-      <p>{`There are ${scheduleRecords.length} upcoming programs:`}</p>
       <fieldset>
         <legend>Programs</legend>
         {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => (
