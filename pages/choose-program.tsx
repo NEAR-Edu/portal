@@ -22,7 +22,26 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return { props };
 };
 
-// eslint-disable-next-line max-lines-per-function
+function ProgramOption({ scheduleRecord }: { scheduleRecord: ScheduleRecordObj }) {
+  const startLocal = new Date(scheduleRecord.start);
+  return (
+    <div>
+      <label className="border border-primary rounded-3 mb-1 d-flex align-items-center align-content-center" role="button">
+        <input type="radio" name="program" value={scheduleRecord.id} className="ms-2 me-2" data-json={JSON.stringify(scheduleRecord)} />
+        <div className="d-inline-block">
+          <div className="">{scheduleRecord.programName}</div>
+          <div className="text-muted ">
+            <small>{scheduleRecord.timeSummary}</small>
+          </div>
+          <div className="text-muted ">
+            <small>{startLocal.toString()}</small>
+          </div>
+        </div>
+      </label>
+    </div>
+  );
+}
+
 export default function ChooseProgramPage({ scheduleRecords }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { status } = useSession();
   const loading = status === 'loading';
@@ -37,25 +56,9 @@ export default function ChooseProgramPage({ scheduleRecords }: InferGetServerSid
       <p>{`There are ${scheduleRecords.length} upcoming programs:`}</p>
       <fieldset>
         <legend>Programs</legend>
-        {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => {
-          const startLocal = new Date(scheduleRecord.start);
-          return (
-            <div key={scheduleRecord.id}>
-              <label className="border border-primary rounded-3 mb-1 d-flex align-items-center align-content-center" role="button">
-                <input type="radio" name="program" value={scheduleRecord.id} className="ms-2 me-2" data-json={JSON.stringify(scheduleRecord)} />
-                <div className="d-inline-block">
-                  <div className="">{scheduleRecord.programName}</div>
-                  <div className="text-muted ">
-                    <small>{scheduleRecord.timeSummary}</small>
-                  </div>
-                  <div className="text-muted ">
-                    <small>{startLocal.toString()}</small>
-                  </div>
-                </div>
-              </label>
-            </div>
-          );
-        })}
+        {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => (
+          <ProgramOption scheduleRecord={scheduleRecord} key={scheduleRecord.id} />
+        ))}
       </fieldset>
     </Layout>
   );
