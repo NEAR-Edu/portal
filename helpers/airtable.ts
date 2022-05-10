@@ -21,7 +21,7 @@ function getFirstElement(record: Record<FieldSet>, key: string): string {
 
 function getScheduleRecordAsObj(record: Record<FieldSet>): ScheduleRecordObj {
   // See mappings of important fields in schema at https://airtable.com/appncY8IjPHkOVapz/tblFBQY4popYmxfkh/viwgxFeJIGB50pkvj?blocks=bliXY0KOJ1NiLAKFw
-  // console.log({ record });
+  console.log({ record });
   const obj: any = {};
   obj.id = record.getId();
   obj.event = record.get('label');
@@ -29,6 +29,7 @@ function getScheduleRecordAsObj(record: Record<FieldSet>): ScheduleRecordObj {
   // obj.start = record.get('start');
   obj.start = record.get('start datetime');
   obj.duration = record.get('duration');
+  obj.description = getFirstElement(record, 'description (from program)');
   // obj.startLocalized = new Date(obj.start).toString();
   obj.programId = getFirstElement(record, 'program');
   obj.programName = getFirstElement(record, 'program name');

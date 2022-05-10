@@ -49,6 +49,9 @@ function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRe
           <div className="text-muted" data-utc={startLocalDateTime.toUTCString()} data-iso={startLocalDateTime.toISOString()}>
             <small>{startLocal}</small>
           </div>
+          <div className="text-muted">
+            <small>{scheduleRecord.description}</small>
+          </div>
         </div>
       </label>
     </div>
