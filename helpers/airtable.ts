@@ -12,7 +12,16 @@ const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
 let allRecords: Record<FieldSet>[] = [];
 let pageNum = 1;
 
-export type ScheduleRecordObj = any;
+export type ScheduleRecordObj = {
+  id: string;
+  event: string;
+  start: string;
+  duration: string;
+  description: string;
+  programId: string;
+  programName: string;
+  link: string;
+};
 
 function getFirstElement(record: Record<FieldSet>, key: string): string {
   const arr = record.get(key) as ReadonlyArray<string>;
@@ -21,14 +30,14 @@ function getFirstElement(record: Record<FieldSet>, key: string): string {
 
 function getScheduleRecordAsObj(record: Record<FieldSet>): ScheduleRecordObj {
   // See mappings of important fields in schema at https://airtable.com/appncY8IjPHkOVapz/tblFBQY4popYmxfkh/viwgxFeJIGB50pkvj?blocks=bliXY0KOJ1NiLAKFw
-  console.log({ record });
-  const obj: any = {};
+  // console.log({ record });
+  const obj = {} as ScheduleRecordObj;
   obj.id = record.getId();
-  obj.event = record.get('label');
+  obj.event = record.get('label') as string;
   // obj['start datetime'] = record.get('start datetime');
   // obj.start = record.get('start');
-  obj.start = record.get('start datetime');
-  obj.duration = record.get('duration');
+  obj.start = record.get('start datetime') as string;
+  obj.duration = record.get('duration') as string;
   obj.description = getFirstElement(record, 'description (from program)');
   // obj.startLocalized = new Date(obj.start).toString();
   obj.programId = getFirstElement(record, 'program');
@@ -38,7 +47,7 @@ function getScheduleRecordAsObj(record: Record<FieldSet>): ScheduleRecordObj {
 }
 
 export async function getScheduleRecordsFromAllPages(filterByFormula = 'IS_AFTER({start datetime}, TODAY())', sort = defaultSort): Promise<ScheduleRecordObj[]> {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     base('nc-schedule')
       .select({
         // https://airtable.com/appncY8IjPHkOVapz/tblAQvNRZbf8Nz4ot/viw4v5iOEpxNfsEhm?blocks=hide
