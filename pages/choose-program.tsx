@@ -19,18 +19,28 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
   const scheduleRecords = await getScheduleRecordsFromAllPages();
-  // TODO: We should also check our database to see which programs the user has already registered for. Each option should be marked if it is already registered.
-  const props = { scheduleRecords };
+  const enrolledAlready = ['rec4f0FZIG8z4RYXr']; // TODO: We should also check our database to see which programs the user has already registered for. Each option should be marked if it is already registered.
+  const props = { scheduleRecords, enrolledAlready };
   return { props };
 };
 
-function ProgramOption({ scheduleRecord }: { scheduleRecord: ScheduleRecordObj }) {
+function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRecordObj; checked: boolean }) {
   const startLocalDateTime = new Date(scheduleRecord.start);
   const startLocal = getShortLocalizedDate(startLocalDateTime);
   return (
     <div>
       <label className="border border-secondary rounded-3 mb-2 d-flex align-items-center align-content-center" role="button">
-        <input type="radio" name="program" value={scheduleRecord.id} className="ms-2 me-2" data-json={JSON.stringify(scheduleRecord)} />
+        <input
+          type="checkbox"
+          name="program"
+          value={scheduleRecord.id}
+          className="ms-2 me-2"
+          data-json={JSON.stringify(scheduleRecord)}
+          defaultChecked={checked}
+          // onChange={() => {
+          //   return null; // TODO
+          // }}
+        />
         <div className="d-inline-block">
           <div>
             {scheduleRecord.programName}
@@ -45,15 +55,16 @@ function ProgramOption({ scheduleRecord }: { scheduleRecord: ScheduleRecordObj }
   );
 }
 
-export default function ChooseProgramPage({ scheduleRecords }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function ChooseProgramPage({ scheduleRecords, enrolledAlready }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <Layout>
       <h1>Enroll</h1>
       <fieldset>
         <legend>Programs</legend>
-        {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => (
-          <ProgramOption scheduleRecord={scheduleRecord} key={scheduleRecord.id} />
-        ))}
+        {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => {
+          const checked = enrolledAlready.includes(scheduleRecord.id);
+          return <ProgramOption scheduleRecord={scheduleRecord} key={scheduleRecord.id} checked={checked} />;
+        })}
       </fieldset>
     </Layout>
   );
