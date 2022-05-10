@@ -2,12 +2,12 @@ import Airtable, { FieldSet, Record } from 'airtable';
 import { SortParameter } from 'airtable/lib/query_params';
 import 'dotenv/config';
 
-const BASE_ID = process.env.BASE_ID || '';
+const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID || '';
 const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY || '';
 
 const defaultSort: SortParameter<FieldSet>[] = [{ field: 'start datetime', direction: 'asc' }];
 
-const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(BASE_ID);
+const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
 
 let allRecords: Record<FieldSet>[] = [];
 let pageNum = 1;
