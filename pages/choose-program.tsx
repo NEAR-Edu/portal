@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
   const scheduleRecords = await getScheduleRecordsFromAllPages();
-  const enrolledAlready = ['rec4f0FZIG8z4RYXr']; // TODO: We should also check our database to see which programs the user has already registered for. Each option should be marked if it is already registered.
+  const enrolledAlready = ['rec4f0FZIG8z4RYXr']; // TODO: We should also check our database to see which future programs the user has already registered for. Each option should be marked if it is already registered.
   // TODO: Redirect to /profile if the person's DB record does not yet contain all of the required fields of the profile yet.
   const props = { scheduleRecords, enrolledAlready };
   return { props };
