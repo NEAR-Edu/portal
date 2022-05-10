@@ -20,6 +20,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
   const scheduleRecords = await getScheduleRecordsFromAllPages();
   const enrolledAlready = ['rec4f0FZIG8z4RYXr']; // TODO: We should also check our database to see which programs the user has already registered for. Each option should be marked if it is already registered.
+  // TODO: Redirect to /profile if the person's DB record does not yet contain all of the required fields of the profile yet.
   const props = { scheduleRecords, enrolledAlready };
   return { props };
 };
@@ -59,16 +60,24 @@ function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRe
 }
 
 export default function ChooseProgramPage({ scheduleRecords, enrolledAlready }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const enrollBtnLabel = enrolledAlready.length > 0 ? 'Save changes' : 'Enroll';
+  // TODO: Save to 'registrations' table.
   return (
     <Layout>
       <h1>Enroll</h1>
-      <fieldset>
-        <legend>Programs</legend>
-        {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => {
-          const checked = enrolledAlready.includes(scheduleRecord.id);
-          return <ProgramOption scheduleRecord={scheduleRecord} key={scheduleRecord.id} checked={checked} />;
-        })}
-      </fieldset>
+      <form>
+        <fieldset>
+          <legend>Programs</legend>
+          {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => {
+            const checked = enrolledAlready.includes(scheduleRecord.id);
+            return <ProgramOption scheduleRecord={scheduleRecord} key={scheduleRecord.id} checked={checked} />;
+          })}
+        </fieldset>
+        <button type="submit" className="btn btn-primary">
+          {enrollBtnLabel}
+        </button>
+        <div className="hint">You will receive a confirmation email for each new enrollment.</div>
+      </form>
     </Layout>
   );
 }

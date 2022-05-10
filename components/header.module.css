@@ -1,8 +1,9 @@
 /* Set min-height to avoid page reflow while session loading */
 .signedInStatus {
-  display: block;
+  display: flex;
   min-height: 4rem;
   width: 100%;
+  margin-bottom: 1rem;
 }
 
 .loading,
@@ -25,10 +26,6 @@
 
 .signedInText,
 .notSignedInText {
-  position: absolute;
-  padding-top: 0.8rem;
-  left: 1rem;
-  right: 6.5rem;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -39,7 +36,7 @@
 
 .signedInText {
   padding-top: 0rem;
-  left: 4.6rem;
+  float: left;
 }
 
 .avatar {
@@ -55,13 +52,12 @@
 .button,
 .buttonPrimary {
   float: right;
-  margin-right: -0.4rem;
   font-weight: 500;
   border-radius: 0.3rem;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.8rem;
   line-height: 1.4rem;
-  padding: 0.7rem 0.8rem;
+  padding: 0.7rem 0 0.7rem 2rem;
   position: relative;
   z-index: 10;
   background-color: transparent;
@@ -78,15 +74,4 @@
 
 .buttonPrimary:hover {
   box-shadow: inset 0 0 5rem rgba(0, 0, 0, 0.2);
-}
-
-.navItems {
-  margin-bottom: 2rem;
-  padding: 0;
-  list-style: none;
-}
-
-.navItem {
-  display: inline-block;
-  margin-right: 1rem;
 }
