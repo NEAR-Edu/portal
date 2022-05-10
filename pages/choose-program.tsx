@@ -4,6 +4,7 @@ import { getSession } from 'next-auth/react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Layout from '../components/layout';
 import { getScheduleRecordsFromAllPages, ScheduleRecordObj } from '../helpers/airtable';
+import { getShortLocalizedDate } from '../helpers/string';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getSession(ctx);
@@ -24,18 +25,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 function ProgramOption({ scheduleRecord }: { scheduleRecord: ScheduleRecordObj }) {
-  const startLocal = new Date(scheduleRecord.start);
+  const startLocalDateTime = new Date(scheduleRecord.start);
+  const startLocal = getShortLocalizedDate(startLocalDateTime);
   return (
     <div>
-      <label className="border border-secondary rounded-3 mb-1 d-flex align-items-center align-content-center" role="button">
+      <label className="border border-secondary rounded-3 mb-2 d-flex align-items-center align-content-center" role="button">
         <input type="radio" name="program" value={scheduleRecord.id} className="ms-2 me-2" data-json={JSON.stringify(scheduleRecord)} />
         <div className="d-inline-block">
-          <div className="">{scheduleRecord.programName}</div>
-          <div className="text-muted ">
-            <small>{scheduleRecord.timeSummary}</small>
+          <div>
+            {scheduleRecord.programName}
+            <span className="text-muted ms-2">({scheduleRecord.duration})</span>
           </div>
-          <div className="text-muted ">
-            <small>{startLocal.toString()}</small>
+          <div className="text-muted" data-utc={startLocalDateTime.toUTCString()} data-iso={startLocalDateTime.toISOString()}>
+            <small>{startLocal}</small>
           </div>
         </div>
       </label>
