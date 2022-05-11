@@ -9,7 +9,7 @@ import { getShortLocalizedDate } from '../helpers/string';
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getSession(ctx);
   if (!session) {
-    // TODO: Add a toast notification explaining the redirect. Ideally, the desired destination should be remembered and should be redirected to after login.
+    // TODO: Add a toast notification explaining the redirect. Ideally, the desired destination should be remembered and should be redirected to after login. https://stackoverflow.com/questions/72190692/how-can-i-show-a-toast-notification-when-redirecting-due-to-lack-of-session-usin
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749

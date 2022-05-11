@@ -10,7 +10,7 @@ import RadioButtons from '../components/RadioButtons';
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getSession(ctx);
   if (!session) {
-    // TODO: Add a toast notification explaining the redirect. Ideally, the desired destination should be remembered and should be redirected to after login.
+    // TODO: Add a toast notification explaining the redirect. Ideally, the desired destination should be remembered and should be redirected to after login. https://stackoverflow.com/questions/72190692/how-can-i-show-a-toast-notification-when-redirecting-due-to-lack-of-session-usin
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
@@ -26,13 +26,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
 // eslint-disable-next-line max-lines-per-function
 export default function ProfilePage() {
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User>({} as User);
 
   function handleChange(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
     // https://www.pluralsight.com/guides/handling-multiple-inputs-with-single-onchange-handler-react
+    // https://stackoverflow.com/questions/72192566/how-fix-typescript-errors-in-react-function-that-handles-input-changes-of-multip
     console.log({ event });
     const thisField = event.target.name;
-    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    const value = event.target.type === 'checkbox' ? (event as React.ChangeEvent<HTMLInputElement>).target.checked : event.target.value;
     console.log(thisField, value);
     setUser({
       ...user,
@@ -40,6 +41,8 @@ export default function ProfilePage() {
     });
   }
 
+  // TODO: Add the rest of the fields from https://airtable.com/shrr8CbYRDHflkgI9 to this form.
+  // TODO: Add validation, including enforcing required fields.
   return (
     <Layout>
       <form method="POST" action="/api/update-profile">
