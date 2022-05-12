@@ -4,6 +4,8 @@ import { getSession } from 'next-auth/react';
 import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../../helpers/airtable';
 import sendEmailNow from '../../helpers/email';
 import { chooseProgramPath } from '../../helpers/paths';
+import { getFormattedDateTime } from '../../helpers/time';
+import { getLoggedInUser } from '../../helpers/user';
 import { STATUS_CODE_ERROR, STATUS_CODE_SUCCESS, STATUS_CODE_UNAUTH } from './update-profile';
 
 function getScheduleRecord(scheduleId: string, scheduleRecords: ScheduleRecordObj[]): ScheduleRecordObj {
@@ -14,10 +16,11 @@ function getScheduleRecord(scheduleId: string, scheduleRecords: ScheduleRecordOb
   return scheduleRecord;
 }
 
-function getEmailDetails(scheduleRecord: ScheduleRecordObj) {
+function getEmailDetails(scheduleRecord: ScheduleRecordObj, timeZone: string) {
   // TODO: Design nice email subject and HTML body. Accept the user's preferred time zone as a parameter so that the program time can be displayed in their preferred time zone.
   const subject = `Enrollment confirmation for ${scheduleRecord.programName}`;
-  const body = `You have been enrolled in a class that starts ${scheduleRecord.start}.`;
+  const body = `You have been enrolled in a class that starts ${getFormattedDateTime(scheduleRecord.start, timeZone)}.`;
+  console.log({ body });
   return { subject, body };
 }
 
@@ -28,27 +31,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(STATUS_CODE_UNAUTH).json('Please log in first.');
     return;
   }
-  const userEmail = session.user?.email; // Weirdly, next-auth exposes 'email' instead of 'id'.
+
   const enrollment = req.body;
-  console.log({ userEmail, session });
+  console.log({ session });
   const scheduleIds = Array.isArray(enrollment.scheduleId) ? enrollment.scheduleId : [enrollment.scheduleId];
   console.log('Saving enrollment', enrollment, scheduleIds);
   const scheduleRecords = await getScheduleRecordsFromAllPages(filterToFuture, sortAscByDate); // These come from Airtable.
   const prisma = new PrismaClient();
 
   try {
-    if (!userEmail) {
-      throw new Error('The session lacks the email address of the user.'); // This should never happen.
-    }
     // Maybe it would be possible to use just one query instead of two here. Explore: https://www.prisma.io/docs/concepts/components/prisma-client/crud#advanced-query-examples
-    const user = await prisma.user.findUnique({
-      where: {
-        email: userEmail,
-      },
-    });
-    if (!user) {
-      throw new Error('There is no user record for this email address.'); // This should never happen.
-    }
+    const user = await getLoggedInUser(session);
     scheduleIds.forEach(async (scheduleId: string) => {
       const data = {
         scheduleId,
@@ -57,8 +50,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('saving data', data);
       const result = await prisma.registration.create({ data });
       const scheduleRecord = getScheduleRecord(scheduleId, scheduleRecords);
-      const { subject, body } = getEmailDetails(scheduleRecord);
-      sendEmailNow(userEmail, subject, body);
+      const { subject, body } = getEmailDetails(scheduleRecord, user.timeZone as string);
+      sendEmailNow(user.email as string, subject, body);
       console.log('saved', { result });
     });
 

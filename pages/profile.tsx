@@ -1,5 +1,4 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useState } from 'react';
 import { getSession } from 'next-auth/react';
 import { GetServerSideProps } from 'next';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -8,6 +7,7 @@ import Layout from '../components/layout';
 import RadioButtons from '../components/RadioButtons';
 import { isProfileComplete } from '../helpers/profile';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
+import { getLoggedInUser, getSerializableUser } from '../helpers/user';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getSession(ctx);
@@ -21,6 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
+
   if (await isProfileComplete(session)) {
     // (Maybe someday we'll support editing a profile, but not yet.)
     // We might want to add a session flash variable toast message here. https://stackoverflow.com/q/72206121/470749
@@ -32,14 +33,16 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
-
-  const props = {};
+  const user = await getLoggedInUser(session);
+  const serializableUser = getSerializableUser(user);
+  console.log({ serializableUser });
+  const props = { user: serializableUser };
   return { props };
 };
 
 // eslint-disable-next-line max-lines-per-function
-export default function ProfilePage() {
-  const [user, setUser] = useState<User>({} as User);
+export default function ProfilePage({ user }: { user: User }) {
+  // const [user, setUser] = useState<User>({} as User);
 
   function handleChange(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
     // https://www.pluralsight.com/guides/handling-multiple-inputs-with-single-onchange-handler-react
@@ -48,10 +51,10 @@ export default function ProfilePage() {
     const thisField = event.target.name;
     const value = event.target.type === 'checkbox' ? (event as React.ChangeEvent<HTMLInputElement>).target.checked : event.target.value;
     console.log(thisField, value);
-    setUser({
-      ...user,
-      [thisField]: value,
-    });
+    // setUser({
+    //   ...user,
+    //   [thisField]: value,
+    // });
   }
 
   // TODO: Add the rest of the fields from https://airtable.com/shrr8CbYRDHflkgI9 to this form.
@@ -66,6 +69,10 @@ export default function ProfilePage() {
         <div>
           <label>In which country do you live?</label>
           <input type="text" name="country" value={user?.country ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+        </div>
+        <div>
+          <label>What is your time zone?</label>
+          <input type="text" name="timeZone" value={user?.timeZone ?? undefined} className="form-control form-control-lg" onChange={handleChange} defaultValue="America/New_York" />
         </div>
         <div>
           <label>Software Development Experience</label>
