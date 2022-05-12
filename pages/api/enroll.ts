@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
+import sendEmailNow from '../../helpers/email';
 import { chooseProgramPath } from '../../helpers/paths';
 import { STATUS_CODE_ERROR, STATUS_CODE_SUCCESS, STATUS_CODE_UNAUTH } from './update-profile';
 
@@ -38,7 +39,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       };
       console.log('saving data', data);
       const result = await prisma.registration.create({ data });
-      // TODO: Queue a confirmation email for each enrollment.
+      const subject = `Enrollment confirmation for ${scheduleId}`; // TODO: fetch name from Airtable
+      const body = `You have been enrolled in a class.`; // TODO: fetch details from Airtable. Design nice email HTML body.
+      sendEmailNow(userEmail, subject, body); // TODO: Queue so that it's async instead of blocking here via this SendGrid HTTP request.
       console.log('saved', { result });
     });
 
