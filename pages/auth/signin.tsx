@@ -1,9 +1,20 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { GetServerSideProps } from 'next';
-import { getCsrfToken } from 'next-auth/react';
+import { getSession, getCsrfToken } from 'next-auth/react';
 import Layout from '../../components/layout';
+import { profile } from '../../helpers/paths';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+  if (session) {
+    return {
+      redirect: {
+        // https://stackoverflow.com/a/58182678/470749
+        destination: profile,
+        permanent: false,
+      },
+    };
+  }
   const csrfToken = await getCsrfToken(context);
   return { props: { csrfToken } };
 };
