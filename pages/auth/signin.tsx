@@ -2,7 +2,7 @@
 import { GetServerSideProps } from 'next';
 import { getSession, getCsrfToken } from 'next-auth/react';
 import Layout from '../../components/layout';
-import { profile } from '../../helpers/paths';
+import { profilePath } from '../../helpers/paths';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
@@ -10,7 +10,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
-        destination: profile,
+        destination: profilePath,
         permanent: false,
       },
     };

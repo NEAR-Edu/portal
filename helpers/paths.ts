@@ -1,3 +1,3 @@
-export const homePage = '/';
-export const chooseProgram = '/choose-program';
-export const profile = '/profile';
+export const indexPath = '/';
+export const profilePath = '/profile';
+export const chooseProgramPath = '/choose-program';

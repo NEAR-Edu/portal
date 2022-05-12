@@ -1,4 +1,22 @@
+import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
 import Layout from '../components/layout';
+import { profilePath } from '../helpers/paths';
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+  if (session) {
+    return {
+      redirect: {
+        // https://stackoverflow.com/a/58182678/470749
+        destination: profilePath,
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};
 
 export default function IndexPage() {
   return (
