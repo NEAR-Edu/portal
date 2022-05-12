@@ -1,3 +1,7 @@
+# TODO
+
+We need to set up the emailer and a cron job to send reminders about upcoming events (for each registration).
+
 # Setup
 
 ```

@@ -37,10 +37,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       };
       console.log('saving data', data);
       const result = await prisma.registration.create({ data });
+      // TODO: Queue a confirmation email for each enrollment.
       console.log('saved', { result });
     });
 
-    res.status(STATUS_CODE_SUCCESS).redirect(307, '/enrolled'); // TODO: Create a page for this where we show all of a user's future events and also a message about which (if any) were *just* enrolled during this request (maybe via session flash variable).
+    res.status(STATUS_CODE_SUCCESS).redirect(307, '/choose-program'); // TODO: Add a message about which (if any) were *just* enrolled during this request (maybe via session flash variable).
   } catch (error) {
     console.error('Enrollment did not save. Error: ', error);
     res.status(STATUS_CODE_ERROR).json({

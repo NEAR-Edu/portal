@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { getSession } from 'next-auth/react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
@@ -53,9 +52,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRecordObj; checked: boolean }) {
   const startLocalDateTime = new Date(scheduleRecord.start);
   const startLocal = getShortLocalizedDate(startLocalDateTime);
+  const boldBorder = checked ? 'border-2' : '';
   return (
     <div>
-      <label className="border border-secondary rounded-3 mb-2 d-flex align-items-center align-content-center" role="button">
+      <label className={`border border-secondary ${boldBorder} rounded-3 mb-2 d-flex align-items-center align-content-center`} role={checked ? '' : 'button'}>
         <input
           type="checkbox"
           name="scheduleId"
@@ -66,7 +66,7 @@ function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRe
           disabled={checked}
         />
         <div className="d-inline-block">
-          <div>
+          <div className={checked ? 'fw-bold' : ''}>
             {scheduleRecord.programName}
             <span className="text-muted ms-2">({scheduleRecord.duration})</span>
           </div>
@@ -83,13 +83,21 @@ function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRe
 }
 
 export default function ChooseProgramPage({ scheduleRecords, futureScheduleIdsEnrolledAlready }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const enrollBtnLabel = futureScheduleIdsEnrolledAlready.length > 0 ? 'Save changes' : 'Enroll';
+  const hasFutureEnrollments = futureScheduleIdsEnrolledAlready.length > 0;
+
+  const title = hasFutureEnrollments ? 'My Enrollments' : 'Enroll in a Program';
+  const instructions = hasFutureEnrollments
+    ? 'Shown in bold are your current enrollments. You may enroll in additional programs, too.'
+    : 'Choose one or more programs to enroll in.';
+  const enrollBtnLabel = hasFutureEnrollments ? 'Save changes' : 'Enroll';
+
   return (
     <Layout>
-      <h1>Enroll</h1>
+      <h1>{title}</h1>
+      <p>{instructions}</p>
       <form method="POST" action="/api/enroll">
         <fieldset>
-          <legend>Programs</legend>
+          {/* <legend>Programs</legend> */}
           {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => {
             const checked = futureScheduleIdsEnrolledAlready.includes(scheduleRecord.id);
             return <ProgramOption scheduleRecord={scheduleRecord} key={scheduleRecord.id} checked={checked} />;
