@@ -1,9 +1,25 @@
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
+import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../../helpers/airtable';
 import sendEmailNow from '../../helpers/email';
 import { chooseProgramPath } from '../../helpers/paths';
 import { STATUS_CODE_ERROR, STATUS_CODE_SUCCESS, STATUS_CODE_UNAUTH } from './update-profile';
+
+function getScheduleRecord(scheduleId: string, scheduleRecords: ScheduleRecordObj[]): ScheduleRecordObj {
+  const scheduleRecord = scheduleRecords.find((record) => record.id === scheduleId);
+  if (!scheduleRecord) {
+    throw new Error('This scheduleId could not be found in the array of upcoming events.'); // This should never happen.
+  }
+  return scheduleRecord;
+}
+
+function getEmailDetails(scheduleRecord: ScheduleRecordObj) {
+  // TODO: Design nice email subject and HTML body. Accept the user's preferred time zone as a parameter so that the program time can be displayed in their preferred time zone.
+  const subject = `Enrollment confirmation for ${scheduleRecord.programName}`;
+  const body = `You have been enrolled in a class that starts ${scheduleRecord.start}.`;
+  return { subject, body };
+}
 
 // eslint-disable-next-line max-lines-per-function
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -17,6 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   console.log({ userEmail, session });
   const scheduleIds = Array.isArray(enrollment.scheduleId) ? enrollment.scheduleId : [enrollment.scheduleId];
   console.log('Saving enrollment', enrollment, scheduleIds);
+  const scheduleRecords = await getScheduleRecordsFromAllPages(filterToFuture, sortAscByDate); // These come from Airtable.
   const prisma = new PrismaClient();
 
   try {
@@ -39,9 +56,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       };
       console.log('saving data', data);
       const result = await prisma.registration.create({ data });
-      const subject = `Enrollment confirmation for ${scheduleId}`; // TODO: fetch name from Airtable
-      const body = `You have been enrolled in a class.`; // TODO: fetch details from Airtable. Design nice email HTML body.
-      sendEmailNow(userEmail, subject, body); // TODO: Queue so that it's async instead of blocking here via this SendGrid HTTP request.
+      const scheduleRecord = getScheduleRecord(scheduleId, scheduleRecords);
+      const { subject, body } = getEmailDetails(scheduleRecord);
+      sendEmailNow(userEmail, subject, body);
       console.log('saved', { result });
     });
 

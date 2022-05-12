@@ -5,9 +5,10 @@ const defaultSender = process.env.EMAIL_FROM || '';
 
 sendgrid.setApiKey(API_KEY);
 
-async function sendEmailNow(to: string, subject: string, html: string, from = defaultSender) {
+function sendEmailNow(to: string, subject: string, html: string, from = defaultSender) {
+  // TODO: Ensure that this is async (i.e. that this SendGrid HTTP request is not blocking).
   try {
-    await sendgrid.send({
+    sendgrid.send({
       to,
       from,
       subject,
