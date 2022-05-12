@@ -47,6 +47,7 @@ function getScheduleRecordAsObj(record: Record<FieldSet>): ScheduleRecordObj {
 }
 
 export async function getScheduleRecordsFromAllPages(filterByFormula = 'IS_AFTER({start datetime}, TODAY())', sort = defaultSort): Promise<ScheduleRecordObj[]> {
+  // TODO: Figure out why sometimes this is returning duplicate pages.
   return new Promise((resolve, reject) => {
     base('nc-schedule')
       .select({

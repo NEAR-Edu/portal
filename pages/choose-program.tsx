@@ -2,9 +2,23 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { getSession } from 'next-auth/react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { PrismaClient } from '@prisma/client';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { Registration } from '.prisma/client';
 import Layout from '../components/layout';
 import { getScheduleRecordsFromAllPages, ScheduleRecordObj } from '../helpers/airtable';
 import { getShortLocalizedDate } from '../helpers/string';
+
+function getFutureScheduleIdsEnrolledAlready(scheduleRecords: ScheduleRecordObj[], allRegistrationsForThisUser: Registration[]): string[] {
+  const futureScheduleIdsEnrolledAlready: string[] = [];
+  const allRegisteredScheduleIdsForThisUser = allRegistrationsForThisUser.map((registration) => registration.scheduleId);
+  scheduleRecords.forEach((scheduleRecord) => {
+    if (allRegisteredScheduleIdsForThisUser.includes(scheduleRecord.id)) {
+      futureScheduleIdsEnrolledAlready.push(scheduleRecord.id);
+    }
+  });
+  return futureScheduleIdsEnrolledAlready;
+}
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getSession(ctx);
@@ -18,13 +32,24 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
-  const scheduleRecords = await getScheduleRecordsFromAllPages();
-  const enrolledAlready = ['rec4f0FZIG8z4RYXr']; // TODO: We should also check our database to see which future programs the user has already registered for. Each option should be marked if it is already registered.
+  const scheduleRecords = await getScheduleRecordsFromAllPages(); // These come from Airtable.
+  const userEmail = session.user?.email; // Weirdly, next-auth exposes 'email' instead of 'id'.
+  const prisma = new PrismaClient();
+  const allRegistrationsForThisUser = await prisma.registration.findMany({
+    // Ideally we would fetch only registrations for future events. But the dates are stored in Airtable. So we must fetch *all* registrations for this user (no limit) and then check against which events we found from Airtable (which are all in the future).
+    where: {
+      user: {
+        email: userEmail,
+      },
+    },
+  });
+  const futureScheduleIdsEnrolledAlready = getFutureScheduleIdsEnrolledAlready(scheduleRecords, allRegistrationsForThisUser);
   // TODO: Redirect to /profile if the person's DB record does not yet contain all of the required fields of the profile yet.
-  const props = { scheduleRecords, enrolledAlready };
+  const props = { scheduleRecords, futureScheduleIdsEnrolledAlready };
   return { props };
 };
 
+// eslint-disable-next-line max-lines-per-function
 function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRecordObj; checked: boolean }) {
   const startLocalDateTime = new Date(scheduleRecord.start);
   const startLocal = getShortLocalizedDate(startLocalDateTime);
@@ -38,9 +63,7 @@ function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRe
           className="ms-2 me-2"
           data-json={JSON.stringify(scheduleRecord)}
           defaultChecked={checked}
-          // onChange={() => {
-          //   return null; // TODO
-          // }}
+          disabled={checked}
         />
         <div className="d-inline-block">
           <div>
@@ -59,8 +82,8 @@ function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRe
   );
 }
 
-export default function ChooseProgramPage({ scheduleRecords, enrolledAlready }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const enrollBtnLabel = enrolledAlready.length > 0 ? 'Save changes' : 'Enroll';
+export default function ChooseProgramPage({ scheduleRecords, futureScheduleIdsEnrolledAlready }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const enrollBtnLabel = futureScheduleIdsEnrolledAlready.length > 0 ? 'Save changes' : 'Enroll';
   return (
     <Layout>
       <h1>Enroll</h1>
@@ -68,7 +91,7 @@ export default function ChooseProgramPage({ scheduleRecords, enrolledAlready }: 
         <fieldset>
           <legend>Programs</legend>
           {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => {
-            const checked = enrolledAlready.includes(scheduleRecord.id);
+            const checked = futureScheduleIdsEnrolledAlready.includes(scheduleRecord.id);
             return <ProgramOption scheduleRecord={scheduleRecord} key={scheduleRecord.id} checked={checked} />;
           })}
         </fieldset>

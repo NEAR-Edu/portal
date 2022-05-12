@@ -36,11 +36,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         userId: user.id,
       };
       console.log('saving data', data);
-      const result = await prisma.registration.create({ data }); // TODO: Suppress error from uniqueness constraint.
+      const result = await prisma.registration.create({ data });
       console.log('saved', { result });
     });
 
-    res.status(STATUS_CODE_SUCCESS).redirect(307, '/enrolled');
+    res.status(STATUS_CODE_SUCCESS).redirect(307, '/enrolled'); // TODO: Create a page for this where we show all of a user's future events and also a message about which (if any) were *just* enrolled during this request (maybe via session flash variable).
   } catch (error) {
     console.error('Enrollment did not save. Error: ', error);
     res.status(STATUS_CODE_ERROR).json({
