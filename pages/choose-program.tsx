@@ -8,6 +8,7 @@ import Layout from '../components/layout';
 import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../helpers/airtable';
 import { getShortLocalizedDate } from '../helpers/string';
 import { isProfileComplete } from '../helpers/profile';
+import { homePage, profile } from '../helpers/paths';
 
 function getFutureScheduleIdsEnrolledAlready(scheduleRecords: ScheduleRecordObj[], allRegistrationsForThisUser: Registration[]): string[] {
   const futureScheduleIdsEnrolledAlready: string[] = [];
@@ -28,7 +29,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
-        destination: '/',
+        destination: homePage,
         permanent: false,
       },
     };
@@ -39,7 +40,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
-        destination: '/profile',
+        destination: profile,
         permanent: false,
       },
     };

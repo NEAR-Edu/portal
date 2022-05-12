@@ -7,6 +7,7 @@ import { User } from '.prisma/client';
 import Layout from '../components/layout';
 import RadioButtons from '../components/RadioButtons';
 import { isProfileComplete } from '../helpers/profile';
+import { chooseProgram, homePage } from '../helpers/paths';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getSession(ctx);
@@ -15,7 +16,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
-        destination: '/',
+        destination: homePage,
         permanent: false,
       },
     };
@@ -26,7 +27,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
-        destination: '/choose-program',
+        destination: chooseProgram,
         permanent: false,
       },
     };
