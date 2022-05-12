@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('saved', { result });
     });
 
-    res.status(STATUS_CODE_SUCCESS).redirect(307, '/choose-program'); // TODO: Add a message about which (if any) were *just* enrolled during this request (maybe via session flash variable).
+    res.status(STATUS_CODE_SUCCESS).redirect(307, '/choose-program'); // We might want to add a session flash variable toast message here. https://stackoverflow.com/q/72206121/470749 // TODO: Add a message about which (if any) were *just* enrolled during this request.
   } catch (error) {
     console.error('Enrollment did not save. Error: ', error);
     res.status(STATUS_CODE_ERROR).json({

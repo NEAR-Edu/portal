@@ -7,6 +7,7 @@ import { Registration } from '.prisma/client';
 import Layout from '../components/layout';
 import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../helpers/airtable';
 import { getShortLocalizedDate } from '../helpers/string';
+import { isProfileComplete } from '../helpers/profile';
 
 function getFutureScheduleIdsEnrolledAlready(scheduleRecords: ScheduleRecordObj[], allRegistrationsForThisUser: Registration[]): string[] {
   const futureScheduleIdsEnrolledAlready: string[] = [];
@@ -19,10 +20,11 @@ function getFutureScheduleIdsEnrolledAlready(scheduleRecords: ScheduleRecordObj[
   return futureScheduleIdsEnrolledAlready;
 }
 
+// eslint-disable-next-line max-lines-per-function
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getSession(ctx);
   if (!session) {
-    // TODO: Add a toast notification explaining the redirect. Ideally, the desired destination should be remembered and should be redirected to after login. https://stackoverflow.com/questions/72190692/how-can-i-show-a-toast-notification-when-redirecting-due-to-lack-of-session-usin
+    // We might want to add a session flash variable toast message here. https://stackoverflow.com/q/72206121/470749
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
@@ -31,11 +33,23 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
+  const hasCompletedProfile = await isProfileComplete(session);
+  if (!hasCompletedProfile) {
+    // We might want to add a session flash variable toast message here. https://stackoverflow.com/q/72206121/470749
+    return {
+      redirect: {
+        // https://stackoverflow.com/a/58182678/470749
+        destination: '/profile',
+        permanent: false,
+      },
+    };
+  }
   const scheduleRecords = await getScheduleRecordsFromAllPages(filterToFuture, sortAscByDate); // These come from Airtable.
   const userEmail = session.user?.email; // Weirdly, next-auth exposes 'email' instead of 'id'.
   const prisma = new PrismaClient();
   const allRegistrationsForThisUser = await prisma.registration.findMany({
-    // Ideally we would fetch only registrations for future events. But the dates are stored in Airtable. So we must fetch *all* registrations for this user (no limit) and then check against which events we found from Airtable (which are all in the future).
+    /* Ideally we would fetch only registrations for future events. But the dates are stored in Airtable. So we must fetch *all* registrations for this 
+     user(no limit) and then check against which events we found from Airtable(which are all in the future). */
     where: {
       user: {
         email: userEmail,
@@ -43,7 +57,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     },
   });
   const futureScheduleIdsEnrolledAlready = getFutureScheduleIdsEnrolledAlready(scheduleRecords, allRegistrationsForThisUser);
-  // TODO: Redirect to /profile if the person's DB record does not yet contain all of the required fields of the profile yet.
   const props = { scheduleRecords, futureScheduleIdsEnrolledAlready };
   return { props };
 };

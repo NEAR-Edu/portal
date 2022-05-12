@@ -6,11 +6,12 @@ import { GetServerSideProps } from 'next';
 import { User } from '.prisma/client';
 import Layout from '../components/layout';
 import RadioButtons from '../components/RadioButtons';
+import { isProfileComplete } from '../helpers/profile';
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getSession(ctx);
   if (!session) {
-    // TODO: Add a toast notification explaining the redirect. Ideally, the desired destination should be remembered and should be redirected to after login. https://stackoverflow.com/questions/72190692/how-can-i-show-a-toast-notification-when-redirecting-due-to-lack-of-session-usin
+    // We might want to add a session flash variable toast message here. https://stackoverflow.com/q/72206121/470749
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
@@ -19,7 +20,18 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
-  // TODO: If the person's DB record already contains all of the required fields of the profile, redirect to /choose-program. (Maybe someday we'll support editing a profile, but not yet.)
+  if (await isProfileComplete(session)) {
+    // (Maybe someday we'll support editing a profile, but not yet.)
+    // We might want to add a session flash variable toast message here. https://stackoverflow.com/q/72206121/470749
+    return {
+      redirect: {
+        // https://stackoverflow.com/a/58182678/470749
+        destination: '/choose-program',
+        permanent: false,
+      },
+    };
+  }
+
   const props = {};
   return { props };
 };
@@ -62,7 +74,7 @@ export default function ProfilePage() {
               name="softwareDevelopmentExperience"
               options={{ X: 'X', Y: 'Y', Z: 'Z' }}
               currentValue={user?.softwareDevelopmentExperience}
-              onChange={(event: any) => handleChange(event)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
             />
           </fieldset>
         </div>
