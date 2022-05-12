@@ -2,9 +2,9 @@ import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 
-const STATUS_CODE_SUCCESS = 200;
-const STATUS_CODE_ERROR = 400;
-const STATUS_CODE_UNAUTH = 401;
+export const STATUS_CODE_SUCCESS = 200;
+export const STATUS_CODE_ERROR = 400;
+export const STATUS_CODE_UNAUTH = 401;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });
@@ -14,13 +14,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   const userEmail = session.user?.email; // Weirdly, next-auth exposes 'email' instead of 'id'.
   const user = req.body;
-  console.log({ req, userId: userEmail, session });
+  console.log({ req, userEmail, session });
   console.log('Saving user', user);
   const prisma = new PrismaClient();
 
   try {
     if (!userEmail) {
-      throw new Error('Somehow this user has no email address set in the session.');
+      throw new Error('The session lacks the email address of the user.'); // This should never happen.
     }
     const result = await prisma.user.update({
       // https://www.prisma.io/docs/concepts/components/prisma-client/crud#update

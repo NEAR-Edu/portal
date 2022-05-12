@@ -33,7 +33,7 @@ function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRe
       <label className="border border-secondary rounded-3 mb-2 d-flex align-items-center align-content-center" role="button">
         <input
           type="checkbox"
-          name="program"
+          name="scheduleId"
           value={scheduleRecord.id}
           className="ms-2 me-2"
           data-json={JSON.stringify(scheduleRecord)}
@@ -61,11 +61,10 @@ function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRe
 
 export default function ChooseProgramPage({ scheduleRecords, enrolledAlready }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const enrollBtnLabel = enrolledAlready.length > 0 ? 'Save changes' : 'Enroll';
-  // TODO: Save to 'registrations' table.
   return (
     <Layout>
       <h1>Enroll</h1>
-      <form>
+      <form method="POST" action="/api/enroll">
         <fieldset>
           <legend>Programs</legend>
           {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => {

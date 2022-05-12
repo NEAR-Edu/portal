@@ -1,3 +1,5 @@
+// Remember to run these commands after any edits to this file: `npm run prismaDev` and `./node_modules/.bin/prisma generate`
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -43,9 +45,11 @@ model User {
   softwareDevelopmentExperience   String?
   technicalStrengths              String?
   emailVerified                   DateTime?
+  createdAt                       DateTime  @default(now())
   image                           String?
   accounts                        Account[]
   sessions                        Session[]
+  registrations                   Registration[]
 }
 
 model VerificationToken {
@@ -54,4 +58,16 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+
+model Registration {
+  id                              String    @id @default(cuid())
+  userId                          String
+  scheduleId                      String
+
+  user                            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt                       DateTime  @default(now())
+
+  @@unique([userId, scheduleId])
 }
