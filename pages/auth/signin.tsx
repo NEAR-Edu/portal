@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return { props: { csrfToken } };
 };
 
-export default function SignIn({ csrfToken }: any) {
+export default function SignIn({ csrfToken }: { csrfToken: string }) {
   return (
     <Layout>
       <form method="post" action="/api/auth/signin/email">
