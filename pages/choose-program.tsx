@@ -6,7 +6,7 @@ import { PrismaClient } from '@prisma/client';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Registration } from '.prisma/client';
 import Layout from '../components/layout';
-import { getScheduleRecordsFromAllPages, ScheduleRecordObj } from '../helpers/airtable';
+import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../helpers/airtable';
 import { getShortLocalizedDate } from '../helpers/string';
 
 function getFutureScheduleIdsEnrolledAlready(scheduleRecords: ScheduleRecordObj[], allRegistrationsForThisUser: Registration[]): string[] {
@@ -32,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
-  const scheduleRecords = await getScheduleRecordsFromAllPages(); // These come from Airtable.
+  const scheduleRecords = await getScheduleRecordsFromAllPages(filterToFuture, sortAscByDate); // These come from Airtable.
   const userEmail = session.user?.email; // Weirdly, next-auth exposes 'email' instead of 'id'.
   const prisma = new PrismaClient();
   const allRegistrationsForThisUser = await prisma.registration.findMany({

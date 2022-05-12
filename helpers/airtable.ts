@@ -5,12 +5,10 @@ import 'dotenv/config';
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID || '';
 const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY || '';
 
-const defaultSort: SortParameter<FieldSet>[] = [{ field: 'start datetime', direction: 'asc' }];
+export const filterToFuture = 'IS_AFTER({start datetime}, TODAY())';
+export const sortAscByDate: SortParameter<FieldSet>[] = [{ field: 'start datetime', direction: 'asc' }];
 
 const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
-
-let allRecords: Record<FieldSet>[] = [];
-let pageNum = 1;
 
 export type ScheduleRecordObj = {
   id: string;
@@ -46,8 +44,9 @@ function getScheduleRecordAsObj(record: Record<FieldSet>): ScheduleRecordObj {
   return obj;
 }
 
-export async function getScheduleRecordsFromAllPages(filterByFormula = 'IS_AFTER({start datetime}, TODAY())', sort = defaultSort): Promise<ScheduleRecordObj[]> {
-  // TODO: Figure out why sometimes this is returning duplicate pages.
+export async function getScheduleRecordsFromAllPages(filterByFormula = filterToFuture, sort = sortAscByDate): Promise<ScheduleRecordObj[]> {
+  let pageNum = 1;
+  let allRecords: Record<FieldSet>[] = [];
   return new Promise((resolve, reject) => {
     base('nc-schedule')
       .select({
