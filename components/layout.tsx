@@ -1,13 +1,14 @@
+/* eslint-disable react/require-default-props */
 import Head from 'next/head';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import Footer from './footer';
 import Header from './header';
 
-interface Props {
+type Props = {
   children: React.ReactNode;
-  flash: string;
-}
+  flash?: string;
+};
 
 export default function Layout({ children, flash }: Props) {
   if (flash) toast.error(flash, { toastId: 'access-denied' });
