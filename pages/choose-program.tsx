@@ -6,8 +6,9 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getSession } from 'next-auth/react';
 import Layout from '../components/layout';
 import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../helpers/airtable';
-import { getFlashSession } from '../helpers/getFlashSession';
+import { setFlashVariable } from '../helpers/getFlashSession';
 import { indexPath, profilePath } from '../helpers/paths';
+import { pluckFlash } from '../helpers/pluckFlash';
 import { isProfileComplete } from '../helpers/profile';
 import { getShortLocalizedDate } from '../helpers/string';
 
@@ -27,9 +28,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession({ req });
   if (!session) {
     // https://github.com/nextauthjs/next-auth/issues/4552
-    const flashSession = await getFlashSession(req, res);
-    flashSession.flash = 'You must be logged in to access this page.'; // TODO: use setFlashVariable
-    console.log({ flashSession });
+    await setFlashVariable(req, res, 'You must be logged in to access this page.');
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
@@ -40,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   }
   const hasCompletedProfile = await isProfileComplete(session);
   if (!hasCompletedProfile) {
-    // We might want to add a session flash variable toast message here. https://stackoverflow.com/q/72206121/470749
+    await setFlashVariable(req, res, 'Please complete your profile first.');
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
@@ -62,7 +61,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     },
   });
   const futureScheduleIdsEnrolledAlready = getFutureScheduleIdsEnrolledAlready(scheduleRecords, allRegistrationsForThisUser);
-  const props = { scheduleRecords, futureScheduleIdsEnrolledAlready };
+  const flash = await pluckFlash(req, res);
+  const props = { scheduleRecords, futureScheduleIdsEnrolledAlready, flash };
   return { props };
 };
 
@@ -100,7 +100,7 @@ function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRe
   );
 }
 
-export default function ChooseProgramPage({ scheduleRecords, futureScheduleIdsEnrolledAlready }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function ChooseProgramPage({ scheduleRecords, futureScheduleIdsEnrolledAlready, flash }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const hasFutureEnrollments = futureScheduleIdsEnrolledAlready.length > 0;
 
   const title = hasFutureEnrollments ? 'My Enrollments' : 'Enroll in a Program';
@@ -110,7 +110,7 @@ export default function ChooseProgramPage({ scheduleRecords, futureScheduleIdsEn
   const enrollBtnLabel = hasFutureEnrollments ? 'Save changes' : 'Enroll';
 
   return (
-    <Layout>
+    <Layout flash={flash}>
       <h1>{title}</h1>
       <p>{instructions}</p>
       <form method="POST" action="/api/enroll">

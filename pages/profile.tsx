@@ -1,21 +1,19 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { getSession } from 'next-auth/react';
-import { GetServerSideProps } from 'next';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { User } from '.prisma/client';
+import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
 import Layout from '../components/layout';
 import RadioButtons from '../components/RadioButtons';
-import { isProfileComplete } from '../helpers/profile';
+import { setFlashVariable } from '../helpers/getFlashSession';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
+import { isProfileComplete } from '../helpers/profile';
 import { getLoggedInUser, getSerializableUser } from '../helpers/user';
-import { getFlashSession } from '../helpers/getFlashSession';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession({ req });
   if (!session) {
-    // https://github.com/nextauthjs/next-auth/issues/4552
-    const flashSession = await getFlashSession(req, res);
-    flashSession.flash = 'You must be logged in to access this page.'; // TODO: use setFlashVariable
+    await setFlashVariable(req, res, 'You must be logged in to access this page.');
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
@@ -27,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
   if (await isProfileComplete(session)) {
     // (Maybe someday we'll support editing a profile, but not yet.)
-    // We might want to add a session flash variable toast message here. https://stackoverflow.com/q/72206121/470749
+    await setFlashVariable(req, res, 'You were redirected to this page since your profile is already complete.');
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749

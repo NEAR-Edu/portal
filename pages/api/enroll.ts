@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../../helpers/airtable';
 import sendEmailNow from '../../helpers/email';
+import { setFlashVariable } from '../../helpers/getFlashSession';
 import { chooseProgramPath } from '../../helpers/paths';
 import { getFormattedDateTime } from '../../helpers/time';
 import { getLoggedInUser } from '../../helpers/user';
@@ -54,8 +55,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       sendEmailNow(user.email as string, subject, body);
       console.log('saved', { result });
     });
-
-    res.status(STATUS_CODE_SUCCESS).redirect(307, chooseProgramPath); // We might want to add a session flash variable toast message here. https://stackoverflow.com/q/72206121/470749 // Add a message about which (if any) were *just* enrolled during this request.
+    await setFlashVariable(req, res, 'Saved.'); // TODO Add a message about which (if any) were *just* enrolled during this request.
+    res.status(STATUS_CODE_SUCCESS).redirect(307, chooseProgramPath);
   } catch (error) {
     console.error('Enrollment did not save. Error: ', error);
     res.status(STATUS_CODE_ERROR).json({

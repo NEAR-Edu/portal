@@ -1,12 +1,16 @@
 import Head from 'next/head';
-import Header from './header';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
 import Footer from './footer';
+import Header from './header';
 
 interface Props {
   children: React.ReactNode;
+  flash: string;
 }
 
-export default function Layout({ children }: Props) {
+export default function Layout({ children, flash }: Props) {
+  if (flash) toast.error(flash, { toastId: 'access-denied' });
   return (
     <>
       <Head>
@@ -18,6 +22,7 @@ export default function Layout({ children }: Props) {
         />
       </Head>
       <Header />
+      <ToastContainer />
       <main>{children}</main>
       <Footer />
     </>

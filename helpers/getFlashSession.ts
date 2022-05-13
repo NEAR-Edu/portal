@@ -2,6 +2,7 @@
 
 import type { Session } from 'next-session/lib/types';
 import nextSession from 'next-session';
+import { IncomingMessage, ServerResponse } from 'http';
 
 type ReplaceReturnType<T extends (...a: any) => any, TNewReturn> = (...a: Parameters<T>) => TNewReturn;
 
@@ -11,6 +12,13 @@ type GetFlashSession = ReplaceReturnType<ReturnType<typeof nextSession>, Promise
 
 export const getFlashSession: GetFlashSession = nextSession();
 
-// export function setFlashVariable(key: string, value: string): void {
-//   // TODO
-// }
+export async function setFlashVariable(
+  req: IncomingMessage & {
+    session?: Session;
+  },
+  res: ServerResponse,
+  value: string,
+): Promise<void> {
+  const flashSession = await getFlashSession(req, res);
+  flashSession.flash = value;
+}
