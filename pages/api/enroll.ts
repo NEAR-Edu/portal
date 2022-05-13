@@ -5,9 +5,9 @@ import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sort
 import sendEmailNow from '../../helpers/email';
 import { setFlashVariable } from '../../helpers/getFlashSession';
 import { chooseProgramPath } from '../../helpers/paths';
+import { STATUS_CODE_ERROR, STATUS_CODE_TEMP_REDIRECT, STATUS_CODE_UNAUTH } from '../../helpers/statusCodes';
 import { getFormattedDateTime } from '../../helpers/time';
 import { getLoggedInUser } from '../../helpers/user';
-import { STATUS_CODE_ERROR, STATUS_CODE_SUCCESS, STATUS_CODE_UNAUTH } from './update-profile';
 
 function getScheduleRecord(scheduleId: string, scheduleRecords: ScheduleRecordObj[]): ScheduleRecordObj {
   const scheduleRecord = scheduleRecords.find((record) => record.id === scheduleId);
@@ -55,8 +55,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       sendEmailNow(user.email as string, subject, body);
       console.log('saved', { result });
     });
-    await setFlashVariable(req, res, 'Saved.'); // TODO Add a message about which (if any) were *just* enrolled during this request.
-    res.status(STATUS_CODE_SUCCESS).redirect(307, chooseProgramPath);
+    const flashPayload = JSON.stringify({ scheduleIds });
+    await setFlashVariable(req, res, flashPayload); // TODO Add a message about which (if any) were *just* enrolled during this request. Should await all promises to complete and should pass along only the scheduleIds that were confirmed to be saved.
+    res.redirect(STATUS_CODE_TEMP_REDIRECT, chooseProgramPath);
   } catch (error) {
     console.error('Enrollment did not save. Error: ', error);
     res.status(STATUS_CODE_ERROR).json({

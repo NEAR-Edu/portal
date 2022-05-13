@@ -25,6 +25,7 @@ function getFutureScheduleIdsEnrolledAlready(scheduleRecords: ScheduleRecordObj[
 
 // eslint-disable-next-line max-lines-per-function
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const flash = await pluckFlash(req, res);
   const session = await getSession({ req });
   if (!session) {
     // https://github.com/nextauthjs/next-auth/issues/4552
@@ -61,7 +62,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     },
   });
   const futureScheduleIdsEnrolledAlready = getFutureScheduleIdsEnrolledAlready(scheduleRecords, allRegistrationsForThisUser);
-  const flash = await pluckFlash(req, res);
   const props = { scheduleRecords, futureScheduleIdsEnrolledAlready, flash };
   return { props };
 };

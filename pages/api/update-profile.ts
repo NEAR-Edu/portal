@@ -1,10 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
-
-export const STATUS_CODE_SUCCESS = 200;
-export const STATUS_CODE_ERROR = 400;
-export const STATUS_CODE_UNAUTH = 401;
+import { STATUS_CODE_ERROR, STATUS_CODE_SUCCESS, STATUS_CODE_TEMP_REDIRECT, STATUS_CODE_UNAUTH } from '../../helpers/statusCodes';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });
@@ -30,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: user,
     });
     console.log('saved', { result });
-    res.status(STATUS_CODE_SUCCESS).redirect(307, '/choose-program');
+    res.status(STATUS_CODE_SUCCESS).redirect(STATUS_CODE_TEMP_REDIRECT, '/choose-program');
   } catch (error) {
     console.error('Profile did not save. Error: ', error);
     res.status(STATUS_CODE_ERROR).json({

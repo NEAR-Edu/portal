@@ -21,4 +21,5 @@ export async function setFlashVariable(
 ): Promise<void> {
   const flashSession = await getFlashSession(req, res);
   flashSession.flash = value;
+  console.log('setFlashVariable', { flashSession });
 }

@@ -1,0 +1,4 @@
+export const STATUS_CODE_SUCCESS = 200;
+export const STATUS_CODE_ERROR = 400;
+export const STATUS_CODE_UNAUTH = 401;
+export const STATUS_CODE_TEMP_REDIRECT = 307;

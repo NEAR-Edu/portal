@@ -12,6 +12,7 @@ export async function pluckFlash(
   res: ServerResponse,
 ) {
   const flashSession = await getFlashSession(req, res);
+  console.log('pluckFlash', { flashSession });
   // If there's a flash message, transfer it to a context, then clear it.
   const { flash = null } = flashSession;
   console.log({ flash });
