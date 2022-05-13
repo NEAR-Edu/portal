@@ -8,11 +8,14 @@ import RadioButtons from '../components/RadioButtons';
 import { isProfileComplete } from '../helpers/profile';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
 import { getLoggedInUser, getSerializableUser } from '../helpers/user';
+import { getFlashSession } from '../helpers/getFlashSession';
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getSession(ctx);
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await getSession({ req });
   if (!session) {
-    // We might want to add a session flash variable toast message here. https://stackoverflow.com/q/72206121/470749
+    // https://github.com/nextauthjs/next-auth/issues/4552
+    const flashSession = await getFlashSession(req, res);
+    flashSession.flash = 'You must be logged in to access this page.'; // TODO: use setFlashVariable
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749

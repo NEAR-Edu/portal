@@ -1,14 +1,15 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { getSession } from 'next-auth/react';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { PrismaClient } from '@prisma/client';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Registration } from '.prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { getSession } from 'next-auth/react';
 import Layout from '../components/layout';
 import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../helpers/airtable';
-import { getShortLocalizedDate } from '../helpers/string';
-import { isProfileComplete } from '../helpers/profile';
+import { getFlashSession } from '../helpers/getFlashSession';
 import { indexPath, profilePath } from '../helpers/paths';
+import { isProfileComplete } from '../helpers/profile';
+import { getShortLocalizedDate } from '../helpers/string';
 
 function getFutureScheduleIdsEnrolledAlready(scheduleRecords: ScheduleRecordObj[], allRegistrationsForThisUser: Registration[]): string[] {
   const futureScheduleIdsEnrolledAlready: string[] = [];
@@ -22,10 +23,13 @@ function getFutureScheduleIdsEnrolledAlready(scheduleRecords: ScheduleRecordObj[
 }
 
 // eslint-disable-next-line max-lines-per-function
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getSession(ctx);
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await getSession({ req });
   if (!session) {
-    // We might want to add a session flash variable toast message here. https://stackoverflow.com/q/72206121/470749
+    // https://github.com/nextauthjs/next-auth/issues/4552
+    const flashSession = await getFlashSession(req, res);
+    flashSession.flash = 'You must be logged in to access this page.'; // TODO: use setFlashVariable
+    console.log({ flashSession });
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
