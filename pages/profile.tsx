@@ -1,19 +1,18 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { User } from '.prisma/client';
-import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import Layout from '../components/layout';
 import RadioButtons from '../components/RadioButtons';
-import { setFlashVariable } from '../helpers/getFlashSession';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
 import { isProfileComplete } from '../helpers/profile';
+import { setFlashVariable, withSessionSsr } from '../helpers/session';
 import { getLoggedInUser, getSerializableUser } from '../helpers/user';
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps = withSessionSsr(async ({ req }) => {
   const session = await getSession({ req });
   if (!session) {
-    await setFlashVariable(req, res, 'You must be logged in to access this page.');
+    await setFlashVariable(req, 'You must be logged in to access this page.');
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
@@ -25,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
   if (await isProfileComplete(session)) {
     // (Maybe someday we'll support editing a profile, but not yet.)
-    await setFlashVariable(req, res, 'You were redirected to this page since your profile is already complete.');
+    await setFlashVariable(req, 'You were redirected to this page since your profile is already complete.');
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
@@ -39,7 +38,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   console.log({ serializableUser });
   const props = { user: serializableUser };
   return { props };
-};
+});
 
 // eslint-disable-next-line max-lines-per-function
 export default function ProfilePage({ user }: { user: User }) {

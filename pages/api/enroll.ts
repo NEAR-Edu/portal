@@ -3,8 +3,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../../helpers/airtable';
 import sendEmailNow from '../../helpers/email';
-import { setFlashVariable } from '../../helpers/getFlashSession';
 import { chooseProgramPath } from '../../helpers/paths';
+import { setFlashVariable, withSessionRoute } from '../../helpers/session';
 import { STATUS_CODE_ERROR, STATUS_CODE_TEMP_REDIRECT, STATUS_CODE_UNAUTH } from '../../helpers/statusCodes';
 import { getFormattedDateTime } from '../../helpers/time';
 import { getLoggedInUser } from '../../helpers/user';
@@ -26,7 +26,7 @@ function getEmailDetails(scheduleRecord: ScheduleRecordObj, timeZone: string) {
 }
 
 // eslint-disable-next-line max-lines-per-function
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+const handler = withSessionRoute(async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getSession({ req });
   if (!session) {
     res.status(STATUS_CODE_UNAUTH).json('Please log in first.');
@@ -55,8 +55,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       sendEmailNow(user.email as string, subject, body);
       console.log('saved', { result });
     });
-    const flashPayload = JSON.stringify({ scheduleIds });
-    await setFlashVariable(req, res, flashPayload); // TODO Add a message about which (if any) were *just* enrolled during this request. Should await all promises to complete and should pass along only the scheduleIds that were confirmed to be saved.
+    const flashPayload = `You will receive ${scheduleIds.length} confirmation email(s) since you just enrolled in: ${JSON.stringify({ scheduleIds })}.`;
+    await setFlashVariable(req, flashPayload); // TODO Add a message about which (if any) were *just* enrolled during this request. Should await all promises to complete and should pass along only the scheduleIds that were confirmed to be saved.
     res.redirect(STATUS_CODE_TEMP_REDIRECT, chooseProgramPath);
   } catch (error) {
     console.error('Enrollment did not save. Error: ', error);
@@ -64,4 +64,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       message: `Something went wrong.`,
     });
   }
-}
+});
+
+export default handler;

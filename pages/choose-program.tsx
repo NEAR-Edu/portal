@@ -2,14 +2,12 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Registration } from '.prisma/client';
 import { PrismaClient } from '@prisma/client';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getSession } from 'next-auth/react';
 import Layout from '../components/layout';
 import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../helpers/airtable';
-import { setFlashVariable } from '../helpers/getFlashSession';
 import { indexPath, profilePath } from '../helpers/paths';
-import { pluckFlash } from '../helpers/pluckFlash';
 import { isProfileComplete } from '../helpers/profile';
+import { pluckFlash, setFlashVariable, withSessionSsr } from '../helpers/session';
 import { getShortLocalizedDate } from '../helpers/string';
 
 function getFutureScheduleIdsEnrolledAlready(scheduleRecords: ScheduleRecordObj[], allRegistrationsForThisUser: Registration[]): string[] {
@@ -24,12 +22,12 @@ function getFutureScheduleIdsEnrolledAlready(scheduleRecords: ScheduleRecordObj[
 }
 
 // eslint-disable-next-line max-lines-per-function
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const flash = await pluckFlash(req, res);
+export const getServerSideProps = withSessionSsr(async ({ req }) => {
+  const flash = await pluckFlash(req);
   const session = await getSession({ req });
   if (!session) {
     // https://github.com/nextauthjs/next-auth/issues/4552
-    await setFlashVariable(req, res, 'You must be logged in to access this page.');
+    await setFlashVariable(req, 'You must be logged in to access this page.');
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
@@ -40,7 +38,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   }
   const hasCompletedProfile = await isProfileComplete(session);
   if (!hasCompletedProfile) {
-    await setFlashVariable(req, res, 'Please complete your profile first.');
+    await setFlashVariable(req, 'Please complete your profile first.');
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
@@ -64,7 +62,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const futureScheduleIdsEnrolledAlready = getFutureScheduleIdsEnrolledAlready(scheduleRecords, allRegistrationsForThisUser);
   const props = { scheduleRecords, futureScheduleIdsEnrolledAlready, flash };
   return { props };
-};
+});
 
 // eslint-disable-next-line max-lines-per-function
 function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRecordObj; checked: boolean }) {
@@ -100,7 +98,16 @@ function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRe
   );
 }
 
-export default function ChooseProgramPage({ scheduleRecords, futureScheduleIdsEnrolledAlready, flash }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+// eslint-disable-next-line max-lines-per-function
+export default function ChooseProgramPage({
+  scheduleRecords,
+  futureScheduleIdsEnrolledAlready,
+  flash,
+}: {
+  scheduleRecords: ScheduleRecordObj[];
+  futureScheduleIdsEnrolledAlready: string[];
+  flash: string;
+}) {
   const hasFutureEnrollments = futureScheduleIdsEnrolledAlready.length > 0;
 
   const title = hasFutureEnrollments ? 'My Enrollments' : 'Enroll in a Program';

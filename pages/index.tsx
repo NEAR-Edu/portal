@@ -1,10 +1,9 @@
-import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import Layout from '../components/layout';
 import { profilePath } from '../helpers/paths';
-import { pluckFlash } from '../helpers/pluckFlash';
+import { pluckFlash, withSessionSsr } from '../helpers/session';
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps = withSessionSsr(async ({ req }) => {
   const session = await getSession({ req });
   if (session) {
     return {
@@ -16,12 +15,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     };
   }
 
-  const flash = await pluckFlash(req, res);
+  const flash = await pluckFlash(req);
   console.log('index props', { flash });
   return {
     props: { flash }, // will be passed to the page component as props
   };
-};
+});
 
 export default function IndexPage({ flash }: { flash: string }) {
   return (
