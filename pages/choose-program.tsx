@@ -9,6 +9,10 @@ import { indexPath, profilePath } from '../helpers/paths';
 import { isProfileComplete } from '../helpers/profile';
 import { pluckFlash, setFlashVariable, withSessionSsr } from '../helpers/session';
 import { getShortLocalizedDate } from '../helpers/string';
+import { timeFromNowIfSoon } from '../helpers/time';
+
+const cutoffValueForHighlightingRelativeTime = 24;
+const cutoffUnitForHighlightingRelativeTime = 'hour'; // https://day.js.org/docs/en/display/difference
 
 function getFutureScheduleIdsEnrolledAlready(scheduleRecords: ScheduleRecordObj[], allRegistrationsForThisUser: Registration[]): string[] {
   const futureScheduleIdsEnrolledAlready: string[] = [];
@@ -64,6 +68,20 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
   return { props };
 });
 
+function RelativeTime({ startDateTime }: { startDateTime: string }): JSX.Element {
+  const relativeTime = timeFromNowIfSoon(startDateTime, cutoffValueForHighlightingRelativeTime, cutoffUnitForHighlightingRelativeTime);
+  const result = relativeTime ? (
+    <>
+      {' '}
+      <span style={{ background: 'yellow' }}>({relativeTime})</span>
+    </>
+  ) : (
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    <></>
+  );
+  return result;
+}
+
 // eslint-disable-next-line max-lines-per-function
 function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRecordObj; checked: boolean }) {
   const startLocalDateTime = new Date(scheduleRecord.start);
@@ -87,7 +105,10 @@ function ProgramOption({ scheduleRecord, checked }: { scheduleRecord: ScheduleRe
             <span className="text-muted ms-2">({scheduleRecord.duration})</span>
           </div>
           <div className="text-muted" data-utc={startLocalDateTime.toUTCString()} data-iso={startLocalDateTime.toISOString()}>
-            <small>{startLocal}</small>
+            <small>
+              {startLocal}
+              <RelativeTime startDateTime={scheduleRecord.start} />
+            </small>
           </div>
           <div className="text-muted">
             <small>{scheduleRecord.description}</small>
