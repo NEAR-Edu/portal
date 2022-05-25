@@ -68,11 +68,13 @@ export default function ProfilePage({ user }: { user: User }) {
         </div>
         <div>
           <label>In which country do you live?</label>
+          {/* // TODO: Replace this field with an autocomplete country picker. */}
           <input type="text" name="country" value={user?.country ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <div>
           <label>What is your time zone?</label>
-          <input type="text" name="timeZone" value={user?.timeZone ?? undefined} className="form-control form-control-lg" onChange={handleChange} defaultValue="America/New_York" />
+          {/* // TODO autodetect the visitor's time zone. Replace this field with a real time zone picker autocomplete. */}
+          <input type="text" name="timeZone" value={user?.timeZone ?? 'America/New_York'} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <div>
           <label>Software Development Experience</label>
@@ -89,6 +91,7 @@ export default function ProfilePage({ user }: { user: User }) {
         <div>
           <label>Technical Strengths</label>
           <div className="hint">Please share a list of the software languages and frameworks you are most comfortable with.</div>
+          {/* // TODO Replace this field with an autocomplete tag picker (which allows multiple tags) which allows writing in 1+ new custom tags */}
           <textarea name="technicalStrengths" className="form-control form-control-lg" onChange={handleChange} />
         </div>
 
