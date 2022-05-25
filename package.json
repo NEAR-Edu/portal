@@ -7,6 +7,10 @@
     "prismaDev": "dotenv -e .env.local prisma migrate dev"
   },
   "dependencies": {
+    "@mantine/core": "^4.2.6",
+    "@mantine/form": "^4.2.6",
+    "@mantine/hooks": "^4.2.6",
+    "@mantine/next": "^4.2.6",
     "@next-auth/prisma-adapter": "^1.0.3",
     "@prisma/client": "^3.13.0",
     "@sendgrid/mail": "^7.6.2",

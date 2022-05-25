@@ -68,12 +68,12 @@ export default function ProfilePage({ user }: { user: User }) {
         </div>
         <div>
           <label>In which country do you live?</label>
-          {/* // TODO: Replace this field with an autocomplete country picker. */}
+          {/* // TODO: Replace this field with an autocomplete country picker. https://mantine.dev/core/multi-select/#searchable */}
           <input type="text" name="country" value={user?.country ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <div>
           <label>What is your time zone?</label>
-          {/* // TODO autodetect the visitor's time zone. Replace this field with a real time zone picker autocomplete. */}
+          {/* // TODO autodetect the visitor's time zone. Replace this field with a real time zone picker autocomplete. https://mantine.dev/core/multi-select/#searchable */}
           <input type="text" name="timeZone" value={user?.timeZone ?? 'America/New_York'} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <div>
@@ -91,7 +91,7 @@ export default function ProfilePage({ user }: { user: User }) {
         <div>
           <label>Technical Strengths</label>
           <div className="hint">Please share a list of the software languages and frameworks you are most comfortable with.</div>
-          {/* // TODO Replace this field with an autocomplete tag picker (which allows multiple tags) which allows writing in 1+ new custom tags */}
+          {/* // TODO Replace this field with an autocomplete tag picker (which allows multiple tags) which allows writing in 1+ new custom tags https://mantine.dev/core/multi-select/#creatable */}
           <textarea name="technicalStrengths" className="form-control form-control-lg" onChange={handleChange} />
         </div>
 
