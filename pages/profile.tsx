@@ -2,6 +2,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { User } from '.prisma/client';
 import { getSession } from 'next-auth/react';
+import Countries from '../components/Countries';
 import Layout from '../components/layout';
 import RadioButtons from '../components/RadioButtons';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
@@ -68,8 +69,7 @@ export default function ProfilePage({ user }: { user: User }) {
         </div>
         <div>
           <label>In which country do you live?</label>
-          {/* // TODO: Replace this field with an autocomplete country picker. https://mantine.dev/core/multi-select/#searchable */}
-          <input type="text" name="country" value={user?.country ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+          <Countries defaultValue={user?.country ?? ''} />
         </div>
         <div>
           <label>What is your time zone?</label>
