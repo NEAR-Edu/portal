@@ -63,7 +63,7 @@ export default function ProfilePage({ user }: { user: User }) {
   // TODO: Add validation, including enforcing required fields.
   return (
     <Layout>
-      <form method="POST" action="/api/update-profile">
+      <form method="POST" action="/api/update-profile" id="update-profile-form">
         <div>
           <label>First and Last Name</label>
           <input type="text" name="name" value={user?.name ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
