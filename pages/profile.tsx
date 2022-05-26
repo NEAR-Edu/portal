@@ -4,6 +4,7 @@ import { User } from '.prisma/client';
 import { getSession } from 'next-auth/react';
 import Countries from '../components/Countries';
 import Layout from '../components/layout';
+import LeadSource from '../components/LeadSource';
 import RadioButtons from '../components/RadioButtons';
 import TechnicalStrengths from '../components/TechnicalStrengths';
 import TimeZones, { defaultTimeZone } from '../components/TimeZones';
@@ -69,20 +70,20 @@ export default function ProfilePage({ user }: { user: User }) {
     <Layout>
       <form method="POST" action="/api/update-profile" id="update-profile-form">
         <div>
-          <label className="mt-4">First and Last Name</label>
+          <label className="mt-5">First and Last Name</label>
           <input type="text" name="name" value={user?.name ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <div>
-          <label className="mt-4">In which country do you live?</label>
+          <label className="mt-5">In which country do you live?</label>
           <Countries defaultValue={user?.country ?? ''} />
         </div>
         <div>
-          <label className="mt-4">What is your time zone?</label>
+          <label className="mt-5">What is your time zone?</label>
           {/* // TODO autodetect the visitor's time zone. */}
           <TimeZones defaultValue={user?.timeZone ?? defaultTimeZone} />
         </div>
         <div>
-          <label className="mt-4">Software Development Experience</label>
+          <label className="mt-5">Software Development Experience</label>
           <div className="hint">Please share your experience writing software even if you are still a student.</div>
           <fieldset>
             <RadioButtons
@@ -94,18 +95,21 @@ export default function ProfilePage({ user }: { user: User }) {
           </fieldset>
         </div>
         <div>
-          <label className="mt-4">Technical Strengths</label>
+          <label className="mt-5">Technical Strengths</label>
           <div className="hint">Please share a list of the software languages and frameworks you are most comfortable with.</div>
           <TechnicalStrengths defaultValue={user?.technicalStrengths ?? ''} />
         </div>
         <div>
-          <label className="mt-4">Why are you joining us for this course?</label>
+          <label className="mt-5">Why are you joining us for this course?</label>
           <div className="hint">Please choose as many of the following options as you like.</div>
           <WhyJoin defaultValue={user?.whyJoin ?? ''} />
         </div>
-
         <div>
-          <label className="mt-4">NEAR TestNet Account</label>
+          <label className="mt-5">How did you hear about this course?</label>
+          <LeadSource defaultValue={user?.leadSource ?? ''} />
+        </div>
+        <div>
+          <label className="mt-5">NEAR TestNet Account</label>
           <div className="hint">
             Please provide your NEAR TestNet account to help us understand your experience with NEAR. (REQUIRED) Don&rsquo;t have one? Create at{' '}
             <a href="https://wallet.testnet.near.org" target="_blank" rel="noreferrer">
@@ -115,7 +119,7 @@ export default function ProfilePage({ user }: { user: User }) {
           <input type="text" name="testnetAccount" value={user?.testnetAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <div>
-          <label className="mt-4">NEAR MainNet Account</label>
+          <label className="mt-5">NEAR MainNet Account</label>
           <div className="hint">
             Please provide your NEAR MainNet account to allow us to distribute rewards for your participation and performance as well as proof of certification. (Optional)
             Don&rsquo;t have one? Create at{' '}
@@ -126,7 +130,7 @@ export default function ProfilePage({ user }: { user: User }) {
           <input type="text" name="mainnetAccount" value={user?.mainnetAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <div>
-          <label className="mt-4">Discord Account</label>
+          <label className="mt-5">Discord Account</label>
           <div className="hint">
             Please include you full username (e.g. ben#4452) (Optional) Don&rsquo;t have one? create at{' '}
             <a href="https://discord.gg/k4pxafjMWA" target="_blank" rel="noreferrer">

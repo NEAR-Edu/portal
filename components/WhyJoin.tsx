@@ -10,7 +10,11 @@ export default function WhyJoin({ defaultValue }: { defaultValue: string }) {
   return (
     <Chips value={value} onChange={setValue} multiple name="whyJoin">
       {options.map((option) => {
-        return <Chip value={option}>{option}</Chip>;
+        return (
+          <Chip value={option} key={option}>
+            {option}
+          </Chip>
+        );
       })}
     </Chips>
   );
