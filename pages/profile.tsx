@@ -5,6 +5,7 @@ import { getSession } from 'next-auth/react';
 import Countries from '../components/Countries';
 import Layout from '../components/layout';
 import RadioButtons from '../components/RadioButtons';
+import TechnicalStrengths from '../components/TechnicalStrengths';
 import TimeZones, { defaultTimeZone } from '../components/TimeZones';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
 import { isProfileComplete } from '../helpers/profile';
@@ -92,14 +93,13 @@ export default function ProfilePage({ user }: { user: User }) {
         <div>
           <label>Technical Strengths</label>
           <div className="hint">Please share a list of the software languages and frameworks you are most comfortable with.</div>
-          {/* // TODO Replace this field with an autocomplete tag picker (which allows multiple tags) which allows writing in 1+ new custom tags https://mantine.dev/core/multi-select/#creatable */}
-          <textarea name="technicalStrengths" className="form-control form-control-lg" onChange={handleChange} />
+          <TechnicalStrengths defaultValue={user?.technicalStrengths ?? ''} />
         </div>
 
         <button type="submit" className="btn btn-primary">
           Continue ➔
         </button>
-        <div className="hint">The next page is where you&rsquo;ll choose the program(s) to enroll in.</div>
+        <div className="hint">(On the next page, you&rsquo;ll choose the program(s) to enroll in.)</div>
       </form>
     </Layout>
   );
