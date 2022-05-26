@@ -2,6 +2,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { User } from '.prisma/client';
 import { getSession } from 'next-auth/react';
+import { useState } from 'react';
 import Countries from '../components/Countries';
 import Layout from '../components/layout';
 import LeadSource from '../components/LeadSource';
@@ -49,7 +50,7 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
 
 // eslint-disable-next-line max-lines-per-function
 export default function ProfilePage({ user }: { user: User }) {
-  // const [user, setUser] = useState<User>({} as User);
+  const [userState, setUserState] = useState<User>(user);
 
   function handleChange(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
     // https://www.pluralsight.com/guides/handling-multiple-inputs-with-single-onchange-handler-react
@@ -58,10 +59,10 @@ export default function ProfilePage({ user }: { user: User }) {
     const thisField = event.target.name;
     const value = event.target.type === 'checkbox' ? (event as React.ChangeEvent<HTMLInputElement>).target.checked : event.target.value;
     console.log(thisField, value);
-    // setUser({
-    //   ...user,
-    //   [thisField]: value,
-    // });
+    setUserState({
+      ...user,
+      [thisField]: value,
+    });
   }
 
   // TODO: Add the rest of the fields from https://airtable.com/shrr8CbYRDHflkgI9 to this form. (see https://airtable.com/appncY8IjPHkOVapz/tblFBQY4popYmxfkh/viwqjBfqTd3W3nBXg?blocks=hide)
@@ -71,16 +72,16 @@ export default function ProfilePage({ user }: { user: User }) {
       <form method="POST" action="/api/update-profile" id="update-profile-form">
         <div>
           <label className="mt-5">First and Last Name</label>
-          <input type="text" name="name" value={user?.name ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+          <input type="text" name="name" defaultValue={userState?.name ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <div>
           <label className="mt-5">In which country do you live?</label>
-          <Countries defaultValue={user?.country ?? ''} />
+          <Countries defaultValue={userState?.country ?? ''} />
         </div>
         <div>
           <label className="mt-5">What is your time zone?</label>
           {/* // TODO autodetect the visitor's time zone. */}
-          <TimeZones defaultValue={user?.timeZone ?? defaultTimeZone} />
+          <TimeZones defaultValue={userState?.timeZone ?? defaultTimeZone} />
         </div>
         <div>
           <label className="mt-5">Software Development Experience</label>
@@ -89,7 +90,7 @@ export default function ProfilePage({ user }: { user: User }) {
             <RadioButtons
               name="softwareDevelopmentExperience"
               options={softwareDevelopmentExperienceOptions}
-              currentValue={user?.softwareDevelopmentExperience}
+              currentValue={userState?.softwareDevelopmentExperience}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
             />
           </fieldset>
@@ -97,47 +98,50 @@ export default function ProfilePage({ user }: { user: User }) {
         <div>
           <label className="mt-5">Technical Strengths</label>
           <div className="hint">Please share a list of the software languages and frameworks you are most comfortable with.</div>
-          <TechnicalStrengths defaultValue={user?.technicalStrengths ?? ''} />
+          <TechnicalStrengths defaultValue={userState?.technicalStrengths ?? ''} />
         </div>
         <div>
           <label className="mt-5">Why are you joining us for this course?</label>
           <div className="hint">Please choose as many of the following options as you like.</div>
-          <WhyJoin defaultValue={user?.whyJoin ?? ''} />
+          <WhyJoin defaultValue={userState?.whyJoin ?? ''} />
         </div>
         <div>
           <label className="mt-5">How did you hear about this course?</label>
-          <LeadSource defaultValue={user?.leadSource ?? ''} />
+          <LeadSource defaultValue={userState?.leadSource ?? ''} />
         </div>
         <div>
           <label className="mt-5">NEAR TestNet Account</label>
           <div className="hint">
-            Please provide your NEAR TestNet account to help us understand your experience with NEAR. (REQUIRED) Don&rsquo;t have one? Create at{' '}
+            Please provide your NEAR TestNet account to help us understand your experience with NEAR. (REQUIRED) (Don&rsquo;t have one? Create at{' '}
             <a href="https://wallet.testnet.near.org" target="_blank" rel="noreferrer">
               wallet.testnet.near.org
             </a>
+            )
           </div>
-          <input type="text" name="testnetAccount" value={user?.testnetAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+          <input type="text" name="testnetAccount" defaultValue={userState?.testnetAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <div>
           <label className="mt-5">NEAR MainNet Account</label>
           <div className="hint">
             Please provide your NEAR MainNet account to allow us to distribute rewards for your participation and performance as well as proof of certification. (Optional)
-            Don&rsquo;t have one? Create at{' '}
+            (Don&rsquo;t have one? Create at{' '}
             <a href="https://wallet.near.org" target="_blank" rel="noreferrer">
               wallet.near.org
             </a>
+            )
           </div>
-          <input type="text" name="mainnetAccount" value={user?.mainnetAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+          <input type="text" name="mainnetAccount" defaultValue={userState?.mainnetAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <div>
           <label className="mt-5">Discord Account</label>
           <div className="hint">
-            Please include you full username (e.g. ben#4452) (Optional) Don&rsquo;t have one? create at{' '}
+            Please include you full username (e.g. ben#4452) (Optional) (Don&rsquo;t have one? create at{' '}
             <a href="https://discord.gg/k4pxafjMWA" target="_blank" rel="noreferrer">
               discord.gg/k4pxafjMWA
             </a>
+            )
           </div>
-          <input type="text" name="discordAccount" value={user?.discordAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+          <input type="text" name="discordAccount" defaultValue={userState?.discordAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <button type="submit" className="btn btn-primary mt-5">
           Continue ➔

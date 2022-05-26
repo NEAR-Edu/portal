@@ -3,6 +3,7 @@
 
 export default function RadioButtons({ name, options, currentValue, onChange }: any): JSX.Element {
   const optionsObj = Array.isArray(options) ? Object.assign({}, ...options.map((val: string) => ({ [val]: val }))) : options;
+  console.log({ currentValue });
   return (
     <>
       {Object.keys(optionsObj).map((key) => {
