@@ -48,6 +48,7 @@ model User {
   whyJoin                         String?
   leadSource                      String?
   referrer                        String?
+  referrerMainnetAccount          String?
   testnetAccount                  String?
   mainnetAccount                  String?
   discordAccount                  String?

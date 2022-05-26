@@ -5,7 +5,7 @@ import { getSession } from 'next-auth/react';
 import { useCallback, useState } from 'react';
 import Countries from '../components/Countries';
 import Layout from '../components/layout';
-import LeadSource, { referralOptions } from '../components/LeadSource';
+import LeadSource, { referralOptions, referralProgram } from '../components/LeadSource';
 import RadioButtons from '../components/RadioButtons';
 import TechnicalStrengths from '../components/TechnicalStrengths';
 import TimeZones, { defaultTimeZone } from '../components/TimeZones';
@@ -124,7 +124,21 @@ export default function ProfilePage({ user }: { user: User }) {
             <input type="text" name="referrer" defaultValue={userState.referrer ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
           </div>
         )}
-
+        {userState.leadSource === referralProgram && (
+          <div>
+            <label className="mt-5">Referral Account</label>
+            <div className="hint">
+              Please provide the NEAR MainNet account of the person or organization who referred you (and the account name must end in &ldquo;.near&rdquo;).
+            </div>
+            <input
+              type="text"
+              name="referrerMainnetAccount"
+              defaultValue={userState.referrerMainnetAccount ?? undefined}
+              className="form-control form-control-lg"
+              onChange={handleChange}
+            />
+          </div>
+        )}
         <div>
           <label className="mt-5">NEAR TestNet Account</label>
           <div className="hint">

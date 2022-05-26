@@ -25,6 +25,7 @@ const options = [
   'YouTube',
 ];
 
+export const referralProgram = 'Referral Program'; // This must exist within `options` defined above. It triggers the referralMainnetAccount question to be displayed.
 export const referralOptions = ['Friend / colleague', 'Guilds or OWS', 'Someone working in NEAR']; // This array must be a subset of `options` defined above. It triggers the "Who referred you?" question.
 
 export default function LeadSource({ defaultValue, onChange }: { defaultValue: string; onChange: any }) {
