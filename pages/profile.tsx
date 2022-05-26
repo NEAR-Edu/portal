@@ -5,6 +5,7 @@ import { getSession } from 'next-auth/react';
 import Countries from '../components/Countries';
 import Layout from '../components/layout';
 import RadioButtons from '../components/RadioButtons';
+import TimeZones, { defaultTimeZone } from '../components/TimeZones';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
 import { isProfileComplete } from '../helpers/profile';
 import { setFlashVariable, withSessionSsr } from '../helpers/session';
@@ -73,8 +74,8 @@ export default function ProfilePage({ user }: { user: User }) {
         </div>
         <div>
           <label>What is your time zone?</label>
-          {/* // TODO autodetect the visitor's time zone. Replace this field with a real time zone picker autocomplete. https://mantine.dev/core/multi-select/#searchable */}
-          <input type="text" name="timeZone" value={user?.timeZone ?? 'America/New_York'} className="form-control form-control-lg" onChange={handleChange} />
+          {/* // TODO autodetect the visitor's time zone. */}
+          <TimeZones defaultValue={user?.timeZone ?? defaultTimeZone} />
         </div>
         <div>
           <label>Software Development Experience</label>
