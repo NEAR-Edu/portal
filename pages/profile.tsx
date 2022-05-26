@@ -2,10 +2,10 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { User } from '.prisma/client';
 import { getSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import Countries from '../components/Countries';
 import Layout from '../components/layout';
-import LeadSource from '../components/LeadSource';
+import LeadSource, { referralOptions } from '../components/LeadSource';
 import RadioButtons from '../components/RadioButtons';
 import TechnicalStrengths from '../components/TechnicalStrengths';
 import TimeZones, { defaultTimeZone } from '../components/TimeZones';
@@ -52,18 +52,27 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
 export default function ProfilePage({ user }: { user: User }) {
   const [userState, setUserState] = useState<User>(user);
 
+  const updateValue = useCallback(
+    (key, value) => {
+      console.log(key, value);
+      setUserState({
+        ...user,
+        [key]: value,
+      });
+    },
+    [user],
+  );
+
   function handleChange(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
     // https://www.pluralsight.com/guides/handling-multiple-inputs-with-single-onchange-handler-react
     // https://stackoverflow.com/questions/72192566/how-fix-typescript-errors-in-react-function-that-handles-input-changes-of-multip
     console.log({ event });
     const thisField = event.target.name;
     const value = event.target.type === 'checkbox' ? (event as React.ChangeEvent<HTMLInputElement>).target.checked : event.target.value;
-    console.log(thisField, value);
-    setUserState({
-      ...user,
-      [thisField]: value,
-    });
+    updateValue(thisField, value);
   }
+
+  console.log({ userState });
 
   // TODO: Add the rest of the fields from https://airtable.com/shrr8CbYRDHflkgI9 to this form. (see https://airtable.com/appncY8IjPHkOVapz/tblFBQY4popYmxfkh/viwqjBfqTd3W3nBXg?blocks=hide)
   // TODO: Add validation, including enforcing required fields.
@@ -72,16 +81,16 @@ export default function ProfilePage({ user }: { user: User }) {
       <form method="POST" action="/api/update-profile" id="update-profile-form">
         <div>
           <label className="mt-5">First and Last Name</label>
-          <input type="text" name="name" defaultValue={userState?.name ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+          <input type="text" name="name" defaultValue={userState.name ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <div>
           <label className="mt-5">In which country do you live?</label>
-          <Countries defaultValue={userState?.country ?? ''} />
+          <Countries defaultValue={userState.country ?? ''} />
         </div>
         <div>
           <label className="mt-5">What is your time zone?</label>
           {/* // TODO autodetect the visitor's time zone. */}
-          <TimeZones defaultValue={userState?.timeZone ?? defaultTimeZone} />
+          <TimeZones defaultValue={userState.timeZone ?? defaultTimeZone} />
         </div>
         <div>
           <label className="mt-5">Software Development Experience</label>
@@ -90,7 +99,7 @@ export default function ProfilePage({ user }: { user: User }) {
             <RadioButtons
               name="softwareDevelopmentExperience"
               options={softwareDevelopmentExperienceOptions}
-              currentValue={userState?.softwareDevelopmentExperience}
+              currentValue={userState.softwareDevelopmentExperience}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
             />
           </fieldset>
@@ -98,17 +107,24 @@ export default function ProfilePage({ user }: { user: User }) {
         <div>
           <label className="mt-5">Technical Strengths</label>
           <div className="hint">Please share a list of the software languages and frameworks you are most comfortable with.</div>
-          <TechnicalStrengths defaultValue={userState?.technicalStrengths ?? ''} />
+          <TechnicalStrengths defaultValue={userState.technicalStrengths ?? ''} />
         </div>
         <div>
           <label className="mt-5">Why are you joining us for this course?</label>
           <div className="hint">Please choose as many of the following options as you like.</div>
-          <WhyJoin defaultValue={userState?.whyJoin ?? ''} />
+          <WhyJoin defaultValue={userState.whyJoin ?? ''} />
         </div>
         <div>
           <label className="mt-5">How did you hear about this course?</label>
-          <LeadSource defaultValue={userState?.leadSource ?? ''} />
+          <LeadSource defaultValue={userState.leadSource ?? ''} onChange={updateValue} />
         </div>
+        {referralOptions.includes(userState.leadSource || '') && (
+          <div>
+            <label className="mt-5">Who referred you?</label>
+            <input type="text" name="referrer" defaultValue={userState.referrer ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+          </div>
+        )}
+
         <div>
           <label className="mt-5">NEAR TestNet Account</label>
           <div className="hint">
@@ -118,7 +134,7 @@ export default function ProfilePage({ user }: { user: User }) {
             </a>
             )
           </div>
-          <input type="text" name="testnetAccount" defaultValue={userState?.testnetAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+          <input type="text" name="testnetAccount" defaultValue={userState.testnetAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <div>
           <label className="mt-5">NEAR MainNet Account</label>
@@ -130,7 +146,7 @@ export default function ProfilePage({ user }: { user: User }) {
             </a>
             )
           </div>
-          <input type="text" name="mainnetAccount" defaultValue={userState?.mainnetAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+          <input type="text" name="mainnetAccount" defaultValue={userState.mainnetAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <div>
           <label className="mt-5">Discord Account</label>
@@ -141,7 +157,7 @@ export default function ProfilePage({ user }: { user: User }) {
             </a>
             )
           </div>
-          <input type="text" name="discordAccount" defaultValue={userState?.discordAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+          <input type="text" name="discordAccount" defaultValue={userState.discordAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <button type="submit" className="btn btn-primary mt-5">
           Continue ➔

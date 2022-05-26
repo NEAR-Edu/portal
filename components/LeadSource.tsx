@@ -25,9 +25,18 @@ const options = [
   'YouTube',
 ];
 
-export default function LeadSource({ defaultValue }: { defaultValue: string }) {
+export const referralOptions = ['Friend / colleague', 'Guilds or OWS', 'Someone working in NEAR']; // This array must be a subset of `options` defined above. It triggers the "Who referred you?" question.
+
+export default function LeadSource({ defaultValue, onChange }: { defaultValue: string; onChange: any }) {
+  const field = 'leadSource';
   return (
-    <Chips defaultValue={defaultValue} name="leadSource">
+    <Chips
+      defaultValue={defaultValue}
+      name={field}
+      onChange={(val) => {
+        onChange(field, val);
+      }}
+    >
       {options.map((option) => {
         return (
           <Chip value={option} key={option}>

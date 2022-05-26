@@ -47,6 +47,7 @@ model User {
   technicalStrengths              String?
   whyJoin                         String?
   leadSource                      String?
+  referrer                        String?
   testnetAccount                  String?
   mainnetAccount                  String?
   discordAccount                  String?
