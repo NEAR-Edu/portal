@@ -33,7 +33,3 @@ iframe {
   border-radius: 0.5rem;
   filter: invert(1);
 }
-
-#update-profile-form label {
-  margin-top: 2rem;
-}

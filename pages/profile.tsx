@@ -7,6 +7,7 @@ import Layout from '../components/layout';
 import RadioButtons from '../components/RadioButtons';
 import TechnicalStrengths from '../components/TechnicalStrengths';
 import TimeZones, { defaultTimeZone } from '../components/TimeZones';
+import WhyJoin from '../components/WhyJoin';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
 import { isProfileComplete } from '../helpers/profile';
 import { setFlashVariable, withSessionSsr } from '../helpers/session';
@@ -68,20 +69,20 @@ export default function ProfilePage({ user }: { user: User }) {
     <Layout>
       <form method="POST" action="/api/update-profile" id="update-profile-form">
         <div>
-          <label>First and Last Name</label>
+          <label className="mt-4">First and Last Name</label>
           <input type="text" name="name" value={user?.name ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
         </div>
         <div>
-          <label>In which country do you live?</label>
+          <label className="mt-4">In which country do you live?</label>
           <Countries defaultValue={user?.country ?? ''} />
         </div>
         <div>
-          <label>What is your time zone?</label>
+          <label className="mt-4">What is your time zone?</label>
           {/* // TODO autodetect the visitor's time zone. */}
           <TimeZones defaultValue={user?.timeZone ?? defaultTimeZone} />
         </div>
         <div>
-          <label>Software Development Experience</label>
+          <label className="mt-4">Software Development Experience</label>
           <div className="hint">Please share your experience writing software even if you are still a student.</div>
           <fieldset>
             <RadioButtons
@@ -93,12 +94,17 @@ export default function ProfilePage({ user }: { user: User }) {
           </fieldset>
         </div>
         <div>
-          <label>Technical Strengths</label>
+          <label className="mt-4">Technical Strengths</label>
           <div className="hint">Please share a list of the software languages and frameworks you are most comfortable with.</div>
           <TechnicalStrengths defaultValue={user?.technicalStrengths ?? ''} />
         </div>
+        <div>
+          <label className="mt-4">Why are you joining us for this course?</label>
+          <div className="hint">Please choose as many of the following options as you like.</div>
+          <WhyJoin defaultValue={user?.whyJoin ?? ''} />
+        </div>
 
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary mt-5">
           Continue ➔
         </button>
         <div className="hint">(On the next page, you&rsquo;ll choose the program(s) to enroll in.)</div>

@@ -45,6 +45,7 @@ model User {
   timeZone                        String?
   softwareDevelopmentExperience   String?
   technicalStrengths              String?
+  whyJoin                         String?
   emailVerified                   DateTime?
   createdAt                       DateTime  @default(now())
   image                           String?
