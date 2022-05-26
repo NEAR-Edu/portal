@@ -46,6 +46,9 @@ model User {
   softwareDevelopmentExperience   String?
   technicalStrengths              String?
   whyJoin                         String?
+  testnetAccount                  String?
+  mainnetAccount                  String?
+  discordAccount                  String?
   emailVerified                   DateTime?
   createdAt                       DateTime  @default(now())
   image                           String?

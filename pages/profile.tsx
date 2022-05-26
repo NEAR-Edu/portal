@@ -104,6 +104,37 @@ export default function ProfilePage({ user }: { user: User }) {
           <WhyJoin defaultValue={user?.whyJoin ?? ''} />
         </div>
 
+        <div>
+          <label className="mt-4">NEAR TestNet Account</label>
+          <div className="hint">
+            Please provide your NEAR TestNet account to help us understand your experience with NEAR. (REQUIRED) Don&rsquo;t have one? Create at{' '}
+            <a href="https://wallet.testnet.near.org" target="_blank" rel="noreferrer">
+              wallet.testnet.near.org
+            </a>
+          </div>
+          <input type="text" name="testnetAccount" value={user?.testnetAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+        </div>
+        <div>
+          <label className="mt-4">NEAR MainNet Account</label>
+          <div className="hint">
+            Please provide your NEAR MainNet account to allow us to distribute rewards for your participation and performance as well as proof of certification. (Optional)
+            Don&rsquo;t have one? Create at{' '}
+            <a href="https://wallet.near.org" target="_blank" rel="noreferrer">
+              wallet.near.org
+            </a>
+          </div>
+          <input type="text" name="mainnetAccount" value={user?.mainnetAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+        </div>
+        <div>
+          <label className="mt-4">Discord Account</label>
+          <div className="hint">
+            Please include you full username (e.g. ben#4452) (Optional) Don&rsquo;t have one? create at{' '}
+            <a href="https://discord.gg/k4pxafjMWA" target="_blank" rel="noreferrer">
+              discord.gg/k4pxafjMWA
+            </a>
+          </div>
+          <input type="text" name="discordAccount" value={user?.discordAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+        </div>
         <button type="submit" className="btn btn-primary mt-5">
           Continue ➔
         </button>
