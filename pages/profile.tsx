@@ -12,6 +12,8 @@ import { isProfileComplete } from '../helpers/profile';
 import { setFlashVariable, withSessionSsr } from '../helpers/session';
 import { getLoggedInUser, getSerializableUser } from '../helpers/user';
 
+const softwareDevelopmentExperienceOptions = ['I am not a software developer', 'less than 1 year', '1 - 2 years', '2 - 5 years', '5 - 10 years', 'more than 10 years'];
+
 export const getServerSideProps = withSessionSsr(async ({ req }) => {
   const session = await getSession({ req });
   if (!session) {
@@ -60,7 +62,7 @@ export default function ProfilePage({ user }: { user: User }) {
     // });
   }
 
-  // TODO: Add the rest of the fields from https://airtable.com/shrr8CbYRDHflkgI9 to this form.
+  // TODO: Add the rest of the fields from https://airtable.com/shrr8CbYRDHflkgI9 to this form. (see https://airtable.com/appncY8IjPHkOVapz/tblFBQY4popYmxfkh/viwqjBfqTd3W3nBXg?blocks=hide)
   // TODO: Add validation, including enforcing required fields.
   return (
     <Layout>
@@ -84,7 +86,7 @@ export default function ProfilePage({ user }: { user: User }) {
           <fieldset>
             <RadioButtons
               name="softwareDevelopmentExperience"
-              options={{ X: 'X', Y: 'Y', Z: 'Z' }}
+              options={softwareDevelopmentExperienceOptions}
               currentValue={user?.softwareDevelopmentExperience}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
             />
