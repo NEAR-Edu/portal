@@ -4,10 +4,11 @@ import { User } from '.prisma/client';
 import { getSession } from 'next-auth/react';
 import { useCallback, useState } from 'react';
 import Countries from '../components/Countries';
+import FrameworksAndPlatforms from '../components/FrameworksAndPlatforms';
 import Layout from '../components/layout';
 import LeadSource, { referralOptions, referralProgram } from '../components/LeadSource';
+import ProgrammingLanguages from '../components/ProgrammingLanguages';
 import RadioButtons from '../components/RadioButtons';
-import TechnicalStrengths from '../components/TechnicalStrengths';
 import TimeZones, { defaultTimeZone } from '../components/TimeZones';
 import WhyJoin from '../components/WhyJoin';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
@@ -105,9 +106,14 @@ export default function ProfilePage({ user }: { user: User }) {
           </fieldset>
         </div>
         <div>
-          <label className="mt-5">Technical Strengths</label>
-          <div className="hint">Please share a list of the software languages and frameworks you are most comfortable with.</div>
-          <TechnicalStrengths defaultValue={userState.technicalStrengths ?? ''} />
+          <label className="mt-5">Favorite Programming Languages</label>
+          <div className="hint">Please share a list of the programming languages you are most comfortable with.</div>
+          <ProgrammingLanguages defaultValue={userState.programmingLanguages ?? ''} />
+        </div>
+        <div>
+          <label className="mt-5">Favorite Frameworks and Platforms</label>
+          <div className="hint">Please share a list of the frameworks and platforms you are most comfortable with.</div>
+          <FrameworksAndPlatforms defaultValue={userState.frameworksAndPlatforms ?? ''} />
         </div>
         <div>
           <label className="mt-5">Why are you joining us for this course?</label>
