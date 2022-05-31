@@ -13,7 +13,7 @@ import TimeZones, { defaultTimeZone } from '../components/TimeZones';
 import WhyJoin from '../components/WhyJoin';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
 import { isProfileComplete } from '../helpers/profile';
-import { setFlashVariable, withSessionSsr } from '../helpers/session';
+import { pluckFlash, setFlashVariable, withSessionSsr } from '../helpers/session';
 import { getLoggedInUser, getSerializableUser } from '../helpers/user';
 
 const softwareDevelopmentExperienceOptions = ['I am not a software developer', 'less than 1 year', '1 - 2 years', '2 - 5 years', '5 - 10 years', 'more than 10 years'];
@@ -43,14 +43,15 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
     };
   }
   const user = await getLoggedInUser(session);
+  const flash = await pluckFlash(req);
   const serializableUser = getSerializableUser(user);
   console.log({ serializableUser });
-  const props = { user: serializableUser };
+  const props = { user: serializableUser, flash };
   return { props };
 });
 
 // eslint-disable-next-line max-lines-per-function
-export default function ProfilePage({ user }: { user: User }) {
+export default function ProfilePage({ user, flash }: { user: User; flash: string }) {
   const [userState, setUserState] = useState<User>(user);
 
   const updateValue = useCallback(
@@ -78,7 +79,7 @@ export default function ProfilePage({ user }: { user: User }) {
   // TODO: Add the rest of the fields from https://airtable.com/shrr8CbYRDHflkgI9 to this form. (see https://airtable.com/appncY8IjPHkOVapz/tblFBQY4popYmxfkh/viwqjBfqTd3W3nBXg?blocks=hide)
   // TODO: Add validation, including enforcing required fields.
   return (
-    <Layout>
+    <Layout flash={flash}>
       <form method="POST" action="/api/update-profile" id="update-profile-form">
         <div>
           <label className="mt-5">First and Last Name</label>
