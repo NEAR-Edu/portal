@@ -82,7 +82,7 @@ export default function ProfilePage({ user }: { user: User }) {
       <form method="POST" action="/api/update-profile" id="update-profile-form">
         <div>
           <label className="mt-5">First and Last Name</label>
-          <input type="text" name="name" defaultValue={userState.name ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+          <input type="text" name="name" defaultValue={userState.name ?? undefined} className="form-control form-control-lg" onChange={handleChange} required />
         </div>
         <div>
           <label className="mt-5">In which country do you live?</label>

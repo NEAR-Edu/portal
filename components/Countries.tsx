@@ -260,6 +260,7 @@ export default function Countries({ defaultValue }: { defaultValue: string }) {
       searchable
       name="country"
       defaultValue={defaultValue}
+      required
       nothingFound="No match found"
     />
   );

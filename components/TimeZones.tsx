@@ -603,5 +603,5 @@ Zulu`;
 const timeZones = timeZonesList.split('\n').map((timeZone) => timeZone.trim());
 
 export default function TimeZones({ defaultValue }: { defaultValue: string }) {
-  return <Select data={timeZones} placeholder="Please choose your time zone" searchable name="timeZone" defaultValue={defaultValue} nothingFound="No match found" />;
+  return <Select data={timeZones} placeholder="Please choose your time zone" searchable name="timeZone" defaultValue={defaultValue} nothingFound="No match found" required />;
 }
