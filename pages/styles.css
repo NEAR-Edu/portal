@@ -33,3 +33,16 @@ iframe {
   border-radius: 0.5rem;
   filter: invert(1);
 }
+
+label.question {
+  font-weight: bold;
+}
+
+.form-control[placeholder] {
+  color: hsl(210deg 11% 71%);
+  font-size: 14px;
+}
+
+input[type='radio' i] {
+  margin-right: 0.3rem;
+}

@@ -82,20 +82,20 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
     <Layout flash={flash}>
       <form method="POST" action="/api/update-profile" id="update-profile-form">
         <div>
-          <label className="mt-5">First and Last Name</label>
+          <label className="question mt-5">First and Last Name</label>
           <input type="text" name="name" defaultValue={userState.name ?? undefined} className="form-control form-control-lg" onChange={handleChange} required />
         </div>
         <div>
-          <label className="mt-5">In which country do you live?</label>
+          <label className="question mt-5">In which country do you live?</label>
           <Countries defaultValue={userState.country ?? ''} />
         </div>
         <div>
-          <label className="mt-5">What is your time zone?</label>
+          <label className="question mt-5">What is your time zone?</label>
           {/* // TODO autodetect the visitor's time zone. */}
           <TimeZones defaultValue={userState.timeZone ?? defaultTimeZone} />
         </div>
         <div>
-          <label className="mt-5">Software Development Experience</label>
+          <label className="question mt-5">Software Development Experience</label>
           <div className="hint">Please share your experience writing software even if you are still a student.</div>
           <fieldset>
             <RadioButtons
@@ -107,33 +107,33 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
           </fieldset>
         </div>
         <div>
-          <label className="mt-5">Favorite Programming Languages</label>
+          <label className="question mt-5">Favorite Programming Languages</label>
           <div className="hint">Please share a list of the programming languages you are most comfortable with.</div>
           <ProgrammingLanguages defaultValue={userState.programmingLanguages ?? ''} />
         </div>
         <div>
-          <label className="mt-5">Favorite Frameworks and Platforms</label>
+          <label className="question mt-5">Favorite Frameworks and Platforms</label>
           <div className="hint">Please share a list of the frameworks and platforms you are most comfortable with.</div>
           <FrameworksAndPlatforms defaultValue={userState.frameworksAndPlatforms ?? ''} />
         </div>
         <div>
-          <label className="mt-5">Why are you joining us for this course?</label>
+          <label className="question mt-5">Why are you joining us for this course?</label>
           <div className="hint">Please choose as many of the following options as you like.</div>
           <WhyJoin defaultValue={userState.whyJoin ?? ''} />
         </div>
         <div>
-          <label className="mt-5">How did you hear about this course?</label>
+          <label className="question mt-5">How did you hear about this course?</label>
           <LeadSource defaultValue={userState.leadSource ?? ''} />
         </div>
         {referralOptions.includes(userState.leadSource || '') && (
           <div>
-            <label className="mt-5">Who referred you?</label>
+            <label className="question mt-5">Who referred you?</label>
             <input type="text" name="referrer" defaultValue={userState.referrer ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
           </div>
         )}
         {userState.leadSource === referralProgram && (
           <div>
-            <label className="mt-5">Referral Account</label>
+            <label className="question mt-5">Referral Account</label>
             <div className="hint">
               Please provide the NEAR MainNet account of the person or organization who referred you (and the account name must end in &ldquo;.near&rdquo;).
             </div>
@@ -147,7 +147,7 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
           </div>
         )}
         <div>
-          <label className="mt-5">NEAR TestNet Account</label>
+          <label className="question mt-5">NEAR TestNet Account</label>
           <div className="hint">
             Please provide your NEAR TestNet account to help us understand your experience with NEAR. (REQUIRED) (Don&rsquo;t have one? Create at{' '}
             <a href="https://wallet.testnet.near.org" target="_blank" rel="noreferrer">
@@ -155,10 +155,17 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
             </a>
             )
           </div>
-          <input type="text" name="testnetAccount" defaultValue={userState.testnetAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+          <input
+            type="text"
+            name="testnetAccount"
+            placeholder="example.testnet"
+            defaultValue={userState.testnetAccount ?? undefined}
+            className="form-control form-control-lg"
+            onChange={handleChange}
+          />
         </div>
         <div>
-          <label className="mt-5">NEAR MainNet Account</label>
+          <label className="question mt-5">NEAR MainNet Account</label>
           <div className="hint">
             Please provide your NEAR MainNet account to allow us to distribute rewards for your participation and performance as well as proof of certification. (Optional)
             (Don&rsquo;t have one? Create at{' '}
@@ -167,18 +174,32 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
             </a>
             )
           </div>
-          <input type="text" name="mainnetAccount" defaultValue={userState.mainnetAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+          <input
+            type="text"
+            name="mainnetAccount"
+            placeholder="example.near"
+            defaultValue={userState.mainnetAccount ?? undefined}
+            className="form-control form-control-lg"
+            onChange={handleChange}
+          />
         </div>
         <div>
-          <label className="mt-5">Discord Account</label>
+          <label className="question mt-5">Discord Account</label>
           <div className="hint">
-            Please include you full username (e.g. ben#4452) (Optional) (Don&rsquo;t have one? create at{' '}
+            Please include you full username (e.g. ben#4452) (Optional) (Don&rsquo;t have one? Register at{' '}
             <a href="https://discord.gg/k4pxafjMWA" target="_blank" rel="noreferrer">
               discord.gg/k4pxafjMWA
             </a>
             )
           </div>
-          <input type="text" name="discordAccount" defaultValue={userState.discordAccount ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+          <input
+            type="text"
+            name="discordAccount"
+            placeholder="ben#4452"
+            defaultValue={userState.discordAccount ?? undefined}
+            className="form-control form-control-lg"
+            onChange={handleChange}
+          />
         </div>
         <button type="submit" className="btn btn-primary mt-5">
           Continue ➔

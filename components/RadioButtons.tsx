@@ -1,6 +1,8 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 
+const borderColor = 'hsl(210deg 14% 83%)'; // Must match border-color of Tailwind `label` elements.
+
 export default function RadioButtons({ name, options, currentValue, onChange }: any): JSX.Element {
   const optionsObj = Array.isArray(options) ? Object.assign({}, ...options.map((val: string) => ({ [val]: val }))) : options;
   console.log({ currentValue });
@@ -9,7 +11,7 @@ export default function RadioButtons({ name, options, currentValue, onChange }: 
       {Object.keys(optionsObj).map((key) => {
         const checked = key === currentValue;
         return (
-          <label key={key} role="button" className="border border-secondary p-1 m-1 rounded d-block">
+          <label key={key} role="button" className="border p-1 m-1 rounded d-block" style={{ borderColor }}>
             <input type="radio" name={name} value={key} checked={checked} onChange={onChange} /> {optionsObj[key]}
           </label>
         );
