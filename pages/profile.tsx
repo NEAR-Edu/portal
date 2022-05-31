@@ -122,7 +122,7 @@ export default function ProfilePage({ user }: { user: User }) {
         </div>
         <div>
           <label className="mt-5">How did you hear about this course?</label>
-          <LeadSource defaultValue={userState.leadSource ?? ''} onChange={updateValue} />
+          <LeadSource defaultValue={userState.leadSource ?? ''} />
         </div>
         {referralOptions.includes(userState.leadSource || '') && (
           <div>
