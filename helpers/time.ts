@@ -26,3 +26,9 @@ export function timeFromNowIfSoon(moment: string, cutoffValue: number, cutoffUni
   const diff = dayjs(moment).diff(dayjs(), cutoffUnit);
   return diff <= cutoffValue ? timeFromNow(moment, fromNow) : '';
 }
+
+export function browserTimeZoneGuess(): string {
+  const guess = dayjs.tz.guess(); // https://day.js.org/docs/en/timezone/guessing-user-timezone
+  console.log({ guess });
+  return guess;
+}

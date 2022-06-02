@@ -1,8 +1,6 @@
 /* eslint-disable max-lines */
 import { Select } from '@mantine/core'; // https://mantine.dev/core/select/#searchable
 
-export const defaultTimeZone = 'America/New_York';
-
 // from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones on 2022-05-26
 const timeZonesList = `Africa/Abidjan
 Africa/Accra

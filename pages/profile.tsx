@@ -9,11 +9,12 @@ import Layout from '../components/layout';
 import LeadSource, { referralOptions, referralProgram } from '../components/LeadSource';
 import ProgrammingLanguages from '../components/ProgrammingLanguages';
 import RadioButtons from '../components/RadioButtons';
-import TimeZones, { defaultTimeZone } from '../components/TimeZones';
+import TimeZones from '../components/TimeZones';
 import WhyJoin from '../components/WhyJoin';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
 import { isProfileComplete } from '../helpers/profile';
 import { pluckFlash, setFlashVariable, withSessionSsr } from '../helpers/session';
+import { browserTimeZoneGuess } from '../helpers/time';
 import { getLoggedInUser, getSerializableUser } from '../helpers/user';
 
 const softwareDevelopmentExperienceOptions = ['I am not a software developer', 'less than 1 year', '1 - 2 years', '2 - 5 years', '5 - 10 years', 'more than 10 years'];
@@ -76,8 +77,8 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
 
   console.log({ userState });
 
-  // TODO: Add the rest of the fields from https://airtable.com/shrr8CbYRDHflkgI9 to this form. (see https://airtable.com/appncY8IjPHkOVapz/tblFBQY4popYmxfkh/viwqjBfqTd3W3nBXg?blocks=hide)
-  // TODO: Add validation, including enforcing required fields.
+  // Replaces https://airtable.com/shrr8CbYRDHflkgI9 (see https://airtable.com/appncY8IjPHkOVapz/tblFBQY4popYmxfkh/viwqjBfqTd3W3nBXg?blocks=hide)
+  // TODO: Add validation, including enforcing required fields. https://jasonwatmore.com/post/2021/09/03/next-js-form-validation-example-with-react-hook-form
   return (
     <Layout flash={flash}>
       <form method="POST" action="/api/update-profile" id="update-profile-form">
@@ -91,8 +92,7 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
         </div>
         <div>
           <label className="question mt-5">What is your time zone?</label>
-          {/* // TODO autodetect the visitor's time zone. */}
-          <TimeZones defaultValue={userState.timeZone ?? defaultTimeZone} />
+          <TimeZones defaultValue={userState.timeZone ?? browserTimeZoneGuess()} />
         </div>
         <div>
           <label className="question mt-5">Software Development Experience</label>
