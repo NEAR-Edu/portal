@@ -30,7 +30,7 @@ export function getSerializableUser(user: User): SerializableUser {
   const { createdAt, emailVerified, ...rest } = user; // https://stackoverflow.com/q/61786892/470749
 
   return {
-    // TODO Double-check how time zone works for these fields (and then document here):
+    // ONEDAY Double-check how time zone works for these fields (and then document here):
     createdAt: createdAt.toUTCString(), // https://stackoverflow.com/a/71697699/470749
     emailVerified: emailVerified ? emailVerified.toUTCString() : '',
     ...rest,

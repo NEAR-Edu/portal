@@ -10,7 +10,7 @@ dayjs.extend(timezone);
 dayjs.extend(advancedFormat);
 dayjs.extend(relativeTime);
 
-export const defaultFormat = 'YYYY-MM-DD h:mm a zzz'; // https://day.js.org/docs/en/display/format // TODO: Support locale. https://day.js.org/docs/en/plugin/localized-format
+export const defaultFormat = 'YYYY-MM-DD h:mm a zzz'; // https://day.js.org/docs/en/display/format // ONEDAY: Support locale. https://day.js.org/docs/en/plugin/localized-format
 
 export function getFormattedDateTime(dateTime: Date | string, timeZone: string, format: string = defaultFormat) {
   const result = dayjs(dateTime).tz(timeZone).format(format); // https://day.js.org/docs/en/timezone/converting-to-zone

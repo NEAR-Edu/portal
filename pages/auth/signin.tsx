@@ -4,7 +4,7 @@ import { getSession, getCsrfToken } from 'next-auth/react';
 import Layout from '../../components/layout';
 import { profilePath } from '../../helpers/paths';
 
-// TODO: Improve the design of the destination of the signin page and the body of the email.
+// ONEDAY: Improve the design of the destination of the signin page and the body of the email.
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);

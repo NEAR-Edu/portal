@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default function Layout({ children, flash }: Props) {
-  if (flash) toast.error(flash, { toastId: 'access-denied' }); // TODO: Allow other styles of toast.
+  if (flash) toast.error(flash, { toastId: 'access-denied' }); // ONEDAY: Allow other styles of toast.
   return (
     <>
       <Head>

@@ -18,7 +18,7 @@ function getScheduleRecord(scheduleId: string, scheduleRecords: ScheduleRecordOb
 }
 
 function getEmailDetails(scheduleRecord: ScheduleRecordObj, timeZone: string) {
-  // TODO: Design nice email subject and HTML body. Accept the user's preferred time zone as a parameter so that the program time can be displayed in their preferred time zone.
+  // ONEDAY: Design nice email subject and HTML body. Accept the user's preferred time zone as a parameter so that the program time can be displayed in their preferred time zone.
   const subject = `Enrollment confirmation for ${scheduleRecord.programName}`;
   const body = `You have been enrolled in a class that starts ${getFormattedDateTime(scheduleRecord.start, timeZone)}.`;
   console.log({ body });
@@ -56,7 +56,7 @@ const handler = withSessionRoute(async (req: NextApiRequest, res: NextApiRespons
       console.log('saved', { result });
     });
     const flashPayload = `You will receive ${scheduleIds.length} confirmation email(s) since you just enrolled in: ${JSON.stringify({ scheduleIds })}.`;
-    await setFlashVariable(req, flashPayload); // TODO Add a message about which (if any) were *just* enrolled during this request. Should await all promises to complete and should pass along only the scheduleIds that were confirmed to be saved.
+    await setFlashVariable(req, flashPayload); // ONEDAY Add a message about which (if any) were *just* enrolled during this request. Should await all promises to complete and should pass along only the scheduleIds that were confirmed to be saved.
     res.redirect(STATUS_CODE_TEMP_REDIRECT, chooseProgramPath);
   } catch (error) {
     console.error('Enrollment did not save. Error: ', error);
