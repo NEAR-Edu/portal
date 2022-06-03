@@ -128,7 +128,7 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
         {referralOptions.includes(userState.leadSource || '') && (
           <div>
             <label className="question mt-5">Who referred you?</label>
-            <input type="text" name="referrer" defaultValue={userState.referrer ?? undefined} className="form-control form-control-lg" onChange={handleChange} />
+            <input type="text" name="referrer" defaultValue={userState.referrer ?? undefined} className="form-control" onChange={handleChange} />
           </div>
         )}
         {userState.leadSource === referralProgram && (
@@ -137,13 +137,7 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
             <div className="hint">
               Please provide the NEAR MainNet account of the person or organization who referred you (and the account name must end in &ldquo;.near&rdquo;).
             </div>
-            <input
-              type="text"
-              name="referrerMainnetAccount"
-              defaultValue={userState.referrerMainnetAccount ?? undefined}
-              className="form-control form-control-lg"
-              onChange={handleChange}
-            />
+            <input type="text" name="referrerMainnetAccount" defaultValue={userState.referrerMainnetAccount ?? undefined} className="form-control" onChange={handleChange} />
           </div>
         )}
         <div>
@@ -160,7 +154,7 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
             name="testnetAccount"
             placeholder="example.testnet"
             defaultValue={userState.testnetAccount ?? undefined}
-            className="form-control form-control-lg"
+            className="form-control"
             onChange={handleChange}
           />
         </div>
@@ -179,7 +173,7 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
             name="mainnetAccount"
             placeholder="example.near"
             defaultValue={userState.mainnetAccount ?? undefined}
-            className="form-control form-control-lg"
+            className="form-control"
             onChange={handleChange}
           />
         </div>
@@ -192,14 +186,7 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
             </a>
             )
           </div>
-          <input
-            type="text"
-            name="discordAccount"
-            placeholder="ben#4452"
-            defaultValue={userState.discordAccount ?? undefined}
-            className="form-control form-control-lg"
-            onChange={handleChange}
-          />
+          <input type="text" name="discordAccount" placeholder="ben#4452" defaultValue={userState.discordAccount ?? undefined} className="form-control" onChange={handleChange} />
         </div>
         <button type="submit" className="btn btn-primary mt-5">
           Continue ➔

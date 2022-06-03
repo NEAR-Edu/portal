@@ -38,9 +38,8 @@ label.question {
   font-weight: bold;
 }
 
-.form-control[placeholder] {
+.form-control::placeholder {
   color: hsl(210deg 11% 71%);
-  font-size: 14px;
 }
 
 input[type='radio' i] {
