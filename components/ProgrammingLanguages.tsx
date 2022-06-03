@@ -36,6 +36,7 @@ export default function ProgrammingLanguages({ defaultValue }: { defaultValue: s
       placeholder="Select your favorites"
       searchable
       creatable
+      required
       getCreateLabel={(query) => `+ Create new tag: ${query}`}
       onCreate={(query) => setData((current) => [...current, query])}
     />

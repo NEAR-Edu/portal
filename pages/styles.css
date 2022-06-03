@@ -42,6 +42,11 @@ label.question {
   color: hsl(210deg 11% 71%);
 }
 
+.hint {
+  color: hsl(0deg 0% 50%);
+  font-size: 0.9rem;
+}
+
 input[type='radio' i] {
   margin-right: 0.3rem;
 }

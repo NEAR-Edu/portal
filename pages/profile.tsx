@@ -102,6 +102,7 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
               name="softwareDevelopmentExperience"
               options={softwareDevelopmentExperienceOptions}
               currentValue={userState.softwareDevelopmentExperience}
+              required
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
             />
           </fieldset>
@@ -123,6 +124,7 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
         </div>
         <div>
           <label className="question mt-5">How did you hear about this course?</label>
+          <div className="hint">(Choose an answer or write your own.)</div>
           <LeadSource defaultValue={userState.leadSource ?? ''} />
         </div>
         {referralOptions.includes(userState.leadSource || '') && (
