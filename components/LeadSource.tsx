@@ -35,9 +35,11 @@ export default function LeadSource({ defaultValue }: { defaultValue: string }) {
   return (
     <Select
       data={data}
+      label="How did you hear about this course?"
       placeholder="How did you hear about this course?"
       searchable
       creatable
+      required
       name={field}
       defaultValue={defaultValue}
       getCreateLabel={(query) => `"${query}"`}

@@ -28,6 +28,7 @@ const schema = z.object({
   mainnetAccount: z.string().regex(/.near$/, { message: 'Your mainnet account must end with `.near`.' }),
 });
 
+const asteriskColor = 'hsl(0deg 86% 59%)'; // shade of red that Mantine / Zod uses.
 const softwareDevelopmentExperienceOptions = ['I am not a software developer', 'less than 1 year', '1 - 2 years', '2 - 5 years', '5 - 10 years', 'more than 10 years'];
 
 export const getServerSideProps = withSessionSsr(async ({ req }) => {
@@ -109,13 +110,20 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
         <TimeZones defaultValue={userState.timeZone ?? browserTimeZoneGuess()} />
 
         <div>
-          <label className="question mt-5">Software Development Experience</label>
+          <label className="question mt-5">
+            Software Development Experience{' '}
+            <span className="mantine-Select-required" aria-hidden="true" style={{ color: asteriskColor }}>
+              {' '}
+              *
+            </span>
+          </label>
           <div className="hint">Please share your experience writing software even if you are still a student.</div>
           <fieldset>
             <RadioButtons
               name="softwareDevelopmentExperience"
               options={softwareDevelopmentExperienceOptions}
               currentValue={userState.softwareDevelopmentExperience}
+              required
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
             />
           </fieldset>
@@ -135,11 +143,10 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
           <div className="hint">Please choose as many of the following options as you like.</div>
           <WhyJoin defaultValue={userState.whyJoin ?? ''} />
         </div>
-        <div>
-          <label className="question mt-5">How did you hear about this course?</label>
-          <div className="hint">(Choose an answer or write your own.)</div>
-          <LeadSource defaultValue={userState.leadSource ?? ''} />
-        </div>
+
+        <LeadSource defaultValue={userState.leadSource ?? ''} />
+        <div className="hint">(Choose an answer or write your own.)</div>
+
         {referralOptions.includes(userState.leadSource || '') && (
           <div>
             <label className="question mt-5">Who referred you?</label>
