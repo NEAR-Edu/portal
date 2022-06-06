@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { User } from '.prisma/client';
@@ -23,6 +24,8 @@ import { getLoggedInUser, getSerializableUser } from '../helpers/user';
 const schema = z.object({
   // https://mantine.dev/form/schema/
   name: z.string().min(2, { message: 'Your name must have at least 2 letters.' }),
+  testnetAccount: z.string().regex(/.testnet$/, { message: 'Your testnet account must end with `.testnet`.' }),
+  mainnetAccount: z.string().regex(/.near$/, { message: 'Your mainnet account must end with `.near`.' }),
 });
 
 const softwareDevelopmentExperienceOptions = ['I am not a software developer', 'less than 1 year', '1 - 2 years', '2 - 5 years', '5 - 10 years', 'more than 10 years'];
@@ -90,23 +93,16 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
   const form = useForm({
     schema: zodResolver(schema),
     initialValues: {
-      name: '',
+      name: userState.name ?? '',
+      testnetAccount: userState.testnetAccount ?? '',
+      mainnetAccount: userState.mainnetAccount ?? '',
     },
   });
 
   return (
     <Layout flash={flash}>
       <form method="POST" action="/api/update-profile" id="update-profile-form" onSubmit={form.onSubmit((values) => console.log({ values }))}>
-        <TextInput
-          type="text"
-          required
-          label="First and Last Name"
-          defaultValue={userState.name ?? undefined}
-          className="form-control form-control-lg"
-          // onChange={handleChange}
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...form.getInputProps('name')}
-        />
+        <TextInput type="text" required label="First and Last Name" {...form.getInputProps('name')} />
 
         <Countries defaultValue={userState.country ?? ''} />
 
@@ -147,7 +143,7 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
         {referralOptions.includes(userState.leadSource || '') && (
           <div>
             <label className="question mt-5">Who referred you?</label>
-            <input type="text" name="referrer" defaultValue={userState.referrer ?? undefined} className="form-control" onChange={handleChange} />
+            <input type="text" name="referrer" defaultValue={userState.referrer ?? ''} className="form-control" onChange={handleChange} />
           </div>
         )}
         {userState.leadSource === referralProgram && (
@@ -156,45 +152,27 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
             <div className="hint">
               Please provide the NEAR MainNet account of the person or organization who referred you (and the account name must end in &ldquo;.near&rdquo;).
             </div>
-            <input type="text" name="referrerMainnetAccount" defaultValue={userState.referrerMainnetAccount ?? undefined} className="form-control" onChange={handleChange} />
+            <input type="text" name="referrerMainnetAccount" defaultValue={userState.referrerMainnetAccount ?? ''} className="form-control" onChange={handleChange} />
           </div>
         )}
-        <div>
-          <label className="question mt-5">NEAR TestNet Account</label>
-          <div className="hint">
-            Please provide your NEAR TestNet account to help us understand your experience with NEAR. (REQUIRED) (Don&rsquo;t have one? Create at{' '}
-            <a href="https://wallet.testnet.near.org" target="_blank" rel="noreferrer">
-              wallet.testnet.near.org
-            </a>
-            )
-          </div>
-          <input
-            type="text"
-            name="testnetAccount"
-            placeholder="example.testnet"
-            defaultValue={userState.testnetAccount ?? undefined}
-            className="form-control"
-            onChange={handleChange}
-          />
+
+        <TextInput label="NEAR TestNet Account" placeholder="example.testnet" required {...form.getInputProps('testnetAccount')} />
+        <div className="hint">
+          Please provide your NEAR TestNet account to help us understand your experience with NEAR. (Don&rsquo;t have one? Create at{' '}
+          <a href="https://wallet.testnet.near.org" target="_blank" rel="noreferrer">
+            wallet.testnet.near.org
+          </a>
+          .)
         </div>
-        <div>
-          <label className="question mt-5">NEAR MainNet Account</label>
-          <div className="hint">
-            Please provide your NEAR MainNet account to allow us to distribute rewards for your participation and performance as well as proof of certification. (Optional)
-            (Don&rsquo;t have one? Create at{' '}
-            <a href="https://wallet.near.org" target="_blank" rel="noreferrer">
-              wallet.near.org
-            </a>
-            )
-          </div>
-          <input
-            type="text"
-            name="mainnetAccount"
-            placeholder="example.near"
-            defaultValue={userState.mainnetAccount ?? undefined}
-            className="form-control"
-            onChange={handleChange}
-          />
+
+        <TextInput label="NEAR MainNet Account" placeholder="example.near" {...form.getInputProps('mainnetAccount')} />
+        <div className="hint">
+          Please provide your NEAR MainNet account to allow us to distribute rewards for your participation and performance as well as proof of certification. (Optional)
+          (Don&rsquo;t have one? Create at{' '}
+          <a href="https://wallet.near.org" target="_blank" rel="noreferrer">
+            wallet.near.org
+          </a>
+          .)
         </div>
         <div>
           <label className="question mt-5">Discord Account</label>
@@ -205,7 +183,7 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
             </a>
             )
           </div>
-          <input type="text" name="discordAccount" placeholder="ben#4452" defaultValue={userState.discordAccount ?? undefined} className="form-control" onChange={handleChange} />
+          <input type="text" name="discordAccount" placeholder="ben#4452" defaultValue={userState.discordAccount ?? ''} className="form-control" onChange={handleChange} />
         </div>
         <button type="submit" className="btn btn-primary mt-5">
           Continue ➔
