@@ -251,17 +251,22 @@ const countries = countriesList.split('\n').map((row) => {
   return `${pieces[1]} (${pieces[0]})`;
 });
 
-export default function Countries({ defaultValue }: { defaultValue: string }) {
+export default function Countries({ defaultValue, extraClass }: { defaultValue: string; extraClass?: string }) {
   return (
     <Select
       data={countries}
-      //   label="Please choose your country"
+      label="In which country do you live?"
       placeholder="Please choose your country"
-      searchable
-      name="country"
-      defaultValue={defaultValue}
       required
+      searchable
+      defaultValue={defaultValue}
       nothingFound="No match found"
+      className={`form-control ${extraClass}`}
+      // style={{ border: 'none' }}
     />
   );
 }
+
+Countries.defaultProps = {
+  extraClass: '',
+};

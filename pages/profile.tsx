@@ -1,8 +1,11 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { User } from '.prisma/client';
+import { TextInput } from '@mantine/core';
+import { useForm, zodResolver } from '@mantine/form';
 import { getSession } from 'next-auth/react';
 import { useCallback, useState } from 'react';
+import { z } from 'zod';
 import Countries from '../components/Countries';
 import FrameworksAndPlatforms from '../components/FrameworksAndPlatforms';
 import Layout from '../components/layout';
@@ -16,6 +19,11 @@ import { isProfileComplete } from '../helpers/profile';
 import { pluckFlash, setFlashVariable, withSessionSsr } from '../helpers/session';
 import { browserTimeZoneGuess } from '../helpers/time';
 import { getLoggedInUser, getSerializableUser } from '../helpers/user';
+
+const schema = z.object({
+  // https://mantine.dev/form/schema/
+  name: z.string().min(2, { message: 'Your name must have at least 2 letters.' }),
+});
 
 const softwareDevelopmentExperienceOptions = ['I am not a software developer', 'less than 1 year', '1 - 2 years', '2 - 5 years', '5 - 10 years', 'more than 10 years'];
 
@@ -78,22 +86,32 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
   console.log({ userState });
 
   // Replaces https://airtable.com/shrr8CbYRDHflkgI9 (see https://airtable.com/appncY8IjPHkOVapz/tblFBQY4popYmxfkh/viwqjBfqTd3W3nBXg?blocks=hide)
-  // TODO: Add validation, including enforcing required fields. https://jasonwatmore.com/post/2021/09/03/next-js-form-validation-example-with-react-hook-form
+  // TODO: Add validation, including enforcing required fields. https://mantine.dev/form/use-form/#validation https://jasonwatmore.com/post/2021/09/03/next-js-form-validation-example-with-react-hook-form
+  const form = useForm({
+    schema: zodResolver(schema),
+    initialValues: {
+      name: '',
+    },
+  });
+
   return (
     <Layout flash={flash}>
-      <form method="POST" action="/api/update-profile" id="update-profile-form">
-        <div>
-          <label className="question mt-5">First and Last Name</label>
-          <input type="text" name="name" defaultValue={userState.name ?? undefined} className="form-control form-control-lg" onChange={handleChange} required />
-        </div>
-        <div>
-          <label className="question mt-5">In which country do you live?</label>
-          <Countries defaultValue={userState.country ?? ''} />
-        </div>
-        <div>
-          <label className="question mt-5">What is your time zone?</label>
-          <TimeZones defaultValue={userState.timeZone ?? browserTimeZoneGuess()} />
-        </div>
+      <form method="POST" action="/api/update-profile" id="update-profile-form" onSubmit={form.onSubmit((values) => console.log({ values }))}>
+        <TextInput
+          type="text"
+          required
+          label="First and Last Name"
+          defaultValue={userState.name ?? undefined}
+          className="form-control form-control-lg"
+          // onChange={handleChange}
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...form.getInputProps('name')}
+        />
+
+        <Countries defaultValue={userState.country ?? ''} />
+
+        <TimeZones defaultValue={userState.timeZone ?? browserTimeZoneGuess()} />
+
         <div>
           <label className="question mt-5">Software Development Experience</label>
           <div className="hint">Please share your experience writing software even if you are still a student.</div>
@@ -102,18 +120,17 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
               name="softwareDevelopmentExperience"
               options={softwareDevelopmentExperienceOptions}
               currentValue={userState.softwareDevelopmentExperience}
-              required
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
             />
           </fieldset>
         </div>
         <div>
-          <label className="question mt-5">Favorite Programming Languages</label>
+          <label className="question mt-5">Programming Languages</label>
           <div className="hint">Please share a list of the programming languages you are most comfortable with.</div>
           <ProgrammingLanguages defaultValue={userState.programmingLanguages ?? ''} />
         </div>
         <div>
-          <label className="question mt-5">Favorite Frameworks and Platforms</label>
+          <label className="question mt-5">Frameworks and Platforms</label>
           <div className="hint">Please share a list of the frameworks and platforms you are most comfortable with.</div>
           <FrameworksAndPlatforms defaultValue={userState.frameworksAndPlatforms ?? ''} />
         </div>
