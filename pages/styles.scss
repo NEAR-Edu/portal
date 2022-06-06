@@ -34,13 +34,12 @@ iframe {
   filter: invert(1);
 }
 
-label {
-  &.question,
-  &.mantine-TextInput-label,
-  &.mantine-Select-label {
-    font-size: 1rem;
-    font-weight: bold;
-  }
+label.question,
+.mantine-TextInput-label,
+div.mantine-RadioGroup-label,
+.mantine-Select-label {
+  font-size: 1rem;
+  font-weight: bold;
 }
 
 .form-control::placeholder {
@@ -48,7 +47,8 @@ label {
 }
 
 .hint {
-  color: hsl(0deg 0% 50%);
+  // color: hsl(0deg 0% 50%);
+  color: hsl(210deg 7% 56%); // Gray. Matches Mantine `description` element.
   font-size: 0.9rem;
 }
 
@@ -57,8 +57,13 @@ input[type='radio' i] {
 }
 
 .mantine-TextInput-root,
+.mantine-RadioGroup-root,
 .mantine-Select-root {
   border: 0;
   padding: 0;
   margin-top: 2rem;
+}
+
+.mantine-RadioGroup-description {
+  font-size: 0.9rem;
 }

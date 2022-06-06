@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { User } from '.prisma/client';
-import { TextInput } from '@mantine/core';
+import { Radio, RadioGroup, TextInput } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { getSession } from 'next-auth/react';
 import { useCallback, useState } from 'react';
@@ -12,7 +12,6 @@ import FrameworksAndPlatforms from '../components/FrameworksAndPlatforms';
 import Layout from '../components/layout';
 import LeadSource, { referralOptions, referralProgram } from '../components/LeadSource';
 import ProgrammingLanguages from '../components/ProgrammingLanguages';
-import RadioButtons from '../components/RadioButtons';
 import TimeZones from '../components/TimeZones';
 import WhyJoin from '../components/WhyJoin';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
@@ -28,7 +27,6 @@ const schema = z.object({
   mainnetAccount: z.string().regex(/.near$/, { message: 'Your mainnet account must end with `.near`.' }),
 });
 
-const asteriskColor = 'hsl(0deg 86% 59%)'; // shade of red that Mantine / Zod uses.
 const softwareDevelopmentExperienceOptions = ['I am not a software developer', 'less than 1 year', '1 - 2 years', '2 - 5 years', '5 - 10 years', 'more than 10 years'];
 
 export const getServerSideProps = withSessionSsr(async ({ req }) => {
@@ -97,6 +95,7 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
       name: userState.name ?? '',
       testnetAccount: userState.testnetAccount ?? '',
       mainnetAccount: userState.mainnetAccount ?? '',
+      softwareDevelopmentExperience: userState.softwareDevelopmentExperience ?? '',
     },
   });
 
@@ -109,25 +108,18 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
 
         <TimeZones defaultValue={userState.timeZone ?? browserTimeZoneGuess()} />
 
-        <div>
-          <label className="question mt-5">
-            Software Development Experience{' '}
-            <span className="mantine-Select-required" aria-hidden="true" style={{ color: asteriskColor }}>
-              {' '}
-              *
-            </span>
-          </label>
-          <div className="hint">Please share your experience writing software even if you are still a student.</div>
-          <fieldset>
-            <RadioButtons
-              name="softwareDevelopmentExperience"
-              options={softwareDevelopmentExperienceOptions}
-              currentValue={userState.softwareDevelopmentExperience}
-              required
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
-            />
-          </fieldset>
-        </div>
+        <RadioGroup
+          label="Software Development Experience"
+          description="Please share your experience writing software even if you are still a student."
+          required
+          {...form.getInputProps('softwareDevelopmentExperience')}
+          orientation="vertical"
+        >
+          {softwareDevelopmentExperienceOptions.map((label: string) => {
+            return <Radio value={label} label={label} key={label} />;
+          })}
+        </RadioGroup>
+
         <div>
           <label className="question mt-5">Programming Languages</label>
           <div className="hint">Please share a list of the programming languages you are most comfortable with.</div>
