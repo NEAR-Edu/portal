@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { User } from '.prisma/client';
-import { Select, TextInput } from '@mantine/core';
+import { Radio, RadioGroup, Select, TextInput } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { getSession } from 'next-auth/react';
 import { useCallback, useState } from 'react';
@@ -11,7 +11,6 @@ import FrameworksAndPlatforms from '../components/FrameworksAndPlatforms';
 import Layout from '../components/layout';
 import LeadSource, { referralOptions, referralProgram } from '../components/LeadSource';
 import ProgrammingLanguages from '../components/ProgrammingLanguages';
-import RadioButtons from '../components/RadioButtons';
 import WhyJoin from '../components/WhyJoin';
 import countries from '../helpers/countries';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
@@ -29,7 +28,6 @@ const schema = z.object({
 });
 
 const softwareDevelopmentExperienceOptions = ['I am not a software developer', 'less than 1 year', '1 - 2 years', '2 - 5 years', '5 - 10 years', 'more than 10 years'];
-const asteriskColor = 'hsl(0deg 86% 59%)'; // Red that matches Mantine asterisk.
 
 export const getServerSideProps = withSessionSsr(async ({ req }) => {
   const session = await getSession({ req });
@@ -134,25 +132,17 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
           required
           {...getProps('timeZone')}
         />
-        <div>
-          <label className="question mt-5">
-            Software Development Experience{' '}
-            <span className="mantine-Select-required" aria-hidden="true" style={{ color: asteriskColor }}>
-              {' '}
-              *
-            </span>
-          </label>
-          <div className="hint mt-2">Please share your experience writing software even if you are still a student.</div>
-          <fieldset>
-            <RadioButtons
-              name="softwareDevelopmentExperience"
-              options={softwareDevelopmentExperienceOptions}
-              currentValue={userState.softwareDevelopmentExperience}
-              required
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
-            />
-          </fieldset>
-        </div>
+        <RadioGroup
+          label="Software Development Experience"
+          description="Please share your experience writing software even if you are still a student."
+          required
+          {...getProps('softwareDevelopmentExperience')}
+          orientation="vertical"
+        >
+          {softwareDevelopmentExperienceOptions.map((label: string) => {
+            return <Radio value={label} label={label} key={label} />;
+          })}
+        </RadioGroup>
         <ProgrammingLanguages defaultValue={userState.programmingLanguages ?? ''} />
         <FrameworksAndPlatforms defaultValue={userState.frameworksAndPlatforms ?? ''} />
         <div>
