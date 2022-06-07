@@ -37,6 +37,7 @@ export default function LeadSource({ defaultValue }: { defaultValue: string }) {
       data={data}
       label="How did you hear about this course?"
       placeholder="How did you hear about this course?"
+      description="(Choose an answer or write your own.)"
       searchable
       creatable
       required

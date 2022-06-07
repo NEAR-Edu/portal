@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { Select } from '@mantine/core'; // https://mantine.dev/core/select/#searchable
 
 // from https://en.wikipedia.org/wiki/List_of_tz_database_time_zones on 2022-05-26
 const timeZonesList = `Africa/Abidjan
@@ -598,19 +597,4 @@ W-SU
 WET
 Zulu`;
 
-const timeZones = timeZonesList.split('\n').map((timeZone) => timeZone.trim());
-
-export default function TimeZones({ defaultValue }: { defaultValue: string }) {
-  return (
-    <Select
-      data={timeZones}
-      label="What is your time zone?"
-      placeholder="Please choose your time zone"
-      searchable
-      name="timeZone"
-      defaultValue={defaultValue}
-      nothingFound="No match found"
-      required
-    />
-  );
-}
+export default timeZonesList.split('\n').map((timeZone) => timeZone.trim());

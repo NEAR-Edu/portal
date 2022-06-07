@@ -36,6 +36,7 @@ iframe {
 
 label.question,
 .mantine-TextInput-label,
+label.mantine-MultiSelect-label,
 div.mantine-RadioGroup-label,
 .mantine-Select-label {
   font-size: 1rem;
@@ -57,6 +58,7 @@ input[type='radio' i] {
 }
 
 .mantine-TextInput-root,
+.mantine-MultiSelect-root,
 .mantine-RadioGroup-root,
 .mantine-Select-root {
   border: 0;
@@ -64,6 +66,9 @@ input[type='radio' i] {
   margin-top: 2rem;
 }
 
-.mantine-RadioGroup-description {
+.mantine-RadioGroup-description,
+.mantine-MultiSelect-description,
+.mantine-Select-description {
   font-size: 0.9rem;
+  margin-top: 0.5rem;
 }

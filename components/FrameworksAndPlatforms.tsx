@@ -29,7 +29,9 @@ export default function FrameworksAndPlatforms({ defaultValue }: { defaultValue:
       data={data}
       defaultValue={defaultValue ? defaultValue.split(',') : undefined}
       name="frameworksAndPlatforms"
+      label="Frameworks and Platforms"
       placeholder="Select your favorites"
+      description="Please share a list of the frameworks and platforms you are most comfortable with. You may select multiple and/or add new ones."
       searchable
       creatable
       required

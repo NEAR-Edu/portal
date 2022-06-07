@@ -2,17 +2,17 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { User } from '.prisma/client';
-import { Radio, RadioGroup, TextInput } from '@mantine/core';
+import { Radio, RadioGroup, Select, TextInput } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { getSession } from 'next-auth/react';
 import { useCallback, useState } from 'react';
 import { z } from 'zod';
-import Countries from '../components/Countries';
+import countries from '../helpers/countries';
 import FrameworksAndPlatforms from '../components/FrameworksAndPlatforms';
 import Layout from '../components/layout';
 import LeadSource, { referralOptions, referralProgram } from '../components/LeadSource';
 import ProgrammingLanguages from '../components/ProgrammingLanguages';
-import TimeZones from '../components/TimeZones';
+import timeZones from '../helpers/timeZones';
 import WhyJoin from '../components/WhyJoin';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
 import { isProfileComplete } from '../helpers/profile';
@@ -23,8 +23,8 @@ import { getLoggedInUser, getSerializableUser } from '../helpers/user';
 const schema = z.object({
   // https://mantine.dev/form/schema/
   name: z.string().min(2, { message: 'Your name must have at least 2 letters.' }),
-  testnetAccount: z.string().regex(/.testnet$/, { message: 'Your testnet account must end with `.testnet`.' }),
-  mainnetAccount: z.string().regex(/.near$/, { message: 'Your mainnet account must end with `.near`.' }),
+  testnetAccount: z.string().regex(/\.testnet$/, { message: 'Your testnet account must end with `.testnet`.' }),
+  mainnetAccount: z.string().regex(/^$|\.near$/, { message: 'Your mainnet account must end with `.near`.' }), // Is empty or ends with .near. https://stackoverflow.com/a/3333525/470749
 });
 
 const softwareDevelopmentExperienceOptions = ['I am not a software developer', 'less than 1 year', '1 - 2 years', '2 - 5 years', '5 - 10 years', 'more than 10 years'];
@@ -64,6 +64,7 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
 // eslint-disable-next-line max-lines-per-function
 export default function ProfilePage({ user, flash }: { user: User; flash: string }) {
   const [userState, setUserState] = useState<User>(user);
+  // const formRef = createRef<HTMLFormElement>();
 
   const updateValue = useCallback(
     (key, value) => {
@@ -93,21 +94,49 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
     schema: zodResolver(schema),
     initialValues: {
       name: userState.name ?? '',
+      timeZone: userState.timeZone ?? browserTimeZoneGuess(),
       testnetAccount: userState.testnetAccount ?? '',
       mainnetAccount: userState.mainnetAccount ?? '',
       softwareDevelopmentExperience: userState.softwareDevelopmentExperience ?? '',
+      country: userState.country ?? '',
     },
   });
 
+  // function postForm(values: any) {
+  //   console.log('postForm', { values });
+  //   // formRef.current && formRef.current.submit(); // https://stackoverflow.com/a/63016062/470749
+  //   if (formRef.current) {
+  //     // formRef.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: false }));
+  //     formRef.current.submit(); // https://stackoverflow.com/a/63016062/470749
+  //   }
+  // }
+
   return (
     <Layout flash={flash}>
-      <form method="POST" action="/api/update-profile" id="update-profile-form" onSubmit={form.onSubmit((values) => console.log({ values }))}>
+      {/* <form method="POST" action="/api/update-profile" id="update-profile-form" onSubmit={form.onSubmit((values) => postForm(values))} ref={formRef}> */}
+      <form method="POST" action="/api/update-profile" id="update-profile-form">
         <TextInput type="text" required label="First and Last Name" {...form.getInputProps('name')} />
+        {/* https://mantine.dev/core/select/#searchable */}
+        <Select
+          data={countries}
+          name="country"
+          label="In which country do you live?"
+          placeholder="Please choose your country"
+          {...form.getInputProps('country')}
+          required
+          searchable
+          nothingFound="No match found"
+        />
 
-        <Countries defaultValue={userState.country ?? ''} />
-
-        <TimeZones defaultValue={userState.timeZone ?? browserTimeZoneGuess()} />
-
+        <Select
+          data={timeZones}
+          label="What is your time zone?"
+          placeholder="Please choose your time zone"
+          searchable
+          nothingFound="No match found"
+          required
+          {...form.getInputProps('timeZone')}
+        />
         <RadioGroup
           label="Software Development Experience"
           description="Please share your experience writing software even if you are still a student."
@@ -119,26 +148,14 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
             return <Radio value={label} label={label} key={label} />;
           })}
         </RadioGroup>
-
-        <div>
-          <label className="question mt-5">Programming Languages</label>
-          <div className="hint">Please share a list of the programming languages you are most comfortable with.</div>
-          <ProgrammingLanguages defaultValue={userState.programmingLanguages ?? ''} />
-        </div>
-        <div>
-          <label className="question mt-5">Frameworks and Platforms</label>
-          <div className="hint">Please share a list of the frameworks and platforms you are most comfortable with.</div>
-          <FrameworksAndPlatforms defaultValue={userState.frameworksAndPlatforms ?? ''} />
-        </div>
+        <ProgrammingLanguages defaultValue={userState.programmingLanguages ?? ''} />
+        <FrameworksAndPlatforms defaultValue={userState.frameworksAndPlatforms ?? ''} />
         <div>
           <label className="question mt-5">Why are you joining us for this course?</label>
           <div className="hint">Please choose as many of the following options as you like.</div>
           <WhyJoin defaultValue={userState.whyJoin ?? ''} />
         </div>
-
         <LeadSource defaultValue={userState.leadSource ?? ''} />
-        <div className="hint">(Choose an answer or write your own.)</div>
-
         {referralOptions.includes(userState.leadSource || '') && (
           <div>
             <label className="question mt-5">Who referred you?</label>
@@ -154,7 +171,6 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
             <input type="text" name="referrerMainnetAccount" defaultValue={userState.referrerMainnetAccount ?? ''} className="form-control" onChange={handleChange} />
           </div>
         )}
-
         <TextInput label="NEAR TestNet Account" placeholder="example.testnet" required {...form.getInputProps('testnetAccount')} />
         <div className="hint">
           Please provide your NEAR TestNet account to help us understand your experience with NEAR. (Don&rsquo;t have one? Create at{' '}
@@ -163,7 +179,6 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
           </a>
           .)
         </div>
-
         <TextInput label="NEAR MainNet Account" placeholder="example.near" {...form.getInputProps('mainnetAccount')} />
         <div className="hint">
           Please provide your NEAR MainNet account to allow us to distribute rewards for your participation and performance as well as proof of certification. (Optional)

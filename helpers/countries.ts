@@ -1,5 +1,3 @@
-import { Select } from '@mantine/core'; // https://mantine.dev/core/select/#searchable
-
 // https://www.textfixer.com/tutorials/dropdowns/country-list-iso-codes.txt downloaded 2022-05-26 and not yet cross-checked against https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes#Current_ISO_3166_country_codes
 const countriesList = `AF:Afghanistan
 AX:Åland Islands
@@ -246,27 +244,7 @@ YE:Yemen
 ZM:Zambia
 ZW:Zimbabwe`;
 
-const countries = countriesList.split('\n').map((row) => {
+export default countriesList.split('\n').map((row) => {
   const pieces = row.split(':');
   return `${pieces[1]} (${pieces[0]})`;
 });
-
-export default function Countries({ defaultValue, extraClass }: { defaultValue: string; extraClass?: string }) {
-  return (
-    <Select
-      data={countries}
-      label="In which country do you live?"
-      placeholder="Please choose your country"
-      required
-      searchable
-      defaultValue={defaultValue}
-      nothingFound="No match found"
-      className={`form-control ${extraClass}`}
-      // style={{ border: 'none' }}
-    />
-  );
-}
-
-Countries.defaultProps = {
-  extraClass: '',
-};

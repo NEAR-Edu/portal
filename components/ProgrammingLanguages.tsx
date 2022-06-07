@@ -33,7 +33,9 @@ export default function ProgrammingLanguages({ defaultValue }: { defaultValue: s
       data={data}
       defaultValue={defaultValue ? defaultValue.split(',') : undefined}
       name="programmingLanguages"
+      label="Programming Languages"
       placeholder="Select your favorites"
+      description="Please share a list of the programming languages you are most comfortable with. You may select multiple and/or add new ones."
       searchable
       creatable
       required
