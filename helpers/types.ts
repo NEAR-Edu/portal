@@ -20,6 +20,7 @@ export type ServerSidePropsRequest = IncomingMessage & {
 export type PropsWithOptionalName = {
   // This is a modified version of GetInputPropsPayload from node_modules/@mantine/form/lib/types.d.ts
   value: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChange(event: any): void; // Why did Mantine not use React.ChangeEvent<HTMLInputElement>?
   error?: React.ReactNode;
   name?: string;
