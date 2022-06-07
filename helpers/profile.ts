@@ -5,5 +5,5 @@ import { getLoggedInUser } from './user';
 
 export async function isProfileComplete(session: DefaultSession): Promise<boolean> {
   const user = await getLoggedInUser(session);
-  return Boolean(user.country) && Boolean(user.name) && Boolean(user.timeZone); // ONEDAY: Check all of the required fields.
+  return Boolean(user.country) && Boolean(user.name) && Boolean(user.timeZone) && Boolean(user.softwareDevelopmentExperience); // ONEDAY: Check all of the required fields.
 }
