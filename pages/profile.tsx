@@ -102,6 +102,12 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
     },
   });
 
+  function getProps(fieldName: any) {
+    const props: any = form.getInputProps(fieldName);
+    props.name = fieldName;
+    return props;
+  }
+
   // function postForm(values: any) {
   //   console.log('postForm', { values });
   //   // formRef.current && formRef.current.submit(); // https://stackoverflow.com/a/63016062/470749
@@ -115,14 +121,13 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
     <Layout flash={flash}>
       {/* <form method="POST" action="/api/update-profile" id="update-profile-form" onSubmit={form.onSubmit((values) => postForm(values))} ref={formRef}> */}
       <form method="POST" action="/api/update-profile" id="update-profile-form">
-        <TextInput type="text" required label="First and Last Name" {...form.getInputProps('name')} />
+        <TextInput type="text" required label="First and Last Name" {...getProps('name')} />
         {/* https://mantine.dev/core/select/#searchable */}
         <Select
           data={countries}
-          name="country"
           label="In which country do you live?"
           placeholder="Please choose your country"
-          {...form.getInputProps('country')}
+          {...getProps('country')}
           required
           searchable
           nothingFound="No match found"
@@ -135,19 +140,19 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
           searchable
           nothingFound="No match found"
           required
-          {...form.getInputProps('timeZone')}
+          {...getProps('timeZone')}
         />
-        <RadioGroup
+        {/* <RadioGroup
           label="Software Development Experience"
           description="Please share your experience writing software even if you are still a student."
           required
-          {...form.getInputProps('softwareDevelopmentExperience')}
+          {...getProps('softwareDevelopmentExperience')}
           orientation="vertical"
         >
           {softwareDevelopmentExperienceOptions.map((label: string) => {
             return <Radio value={label} label={label} key={label} />;
           })}
-        </RadioGroup>
+        </RadioGroup> */}
         <ProgrammingLanguages defaultValue={userState.programmingLanguages ?? ''} />
         <FrameworksAndPlatforms defaultValue={userState.frameworksAndPlatforms ?? ''} />
         <div>
@@ -171,7 +176,7 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
             <input type="text" name="referrerMainnetAccount" defaultValue={userState.referrerMainnetAccount ?? ''} className="form-control" onChange={handleChange} />
           </div>
         )}
-        <TextInput label="NEAR TestNet Account" placeholder="example.testnet" required {...form.getInputProps('testnetAccount')} />
+        <TextInput label="NEAR TestNet Account" placeholder="example.testnet" required {...getProps('testnetAccount')} />
         <div className="hint">
           Please provide your NEAR TestNet account to help us understand your experience with NEAR. (Don&rsquo;t have one? Create at{' '}
           <a href="https://wallet.testnet.near.org" target="_blank" rel="noreferrer">
@@ -179,7 +184,7 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
           </a>
           .)
         </div>
-        <TextInput label="NEAR MainNet Account" placeholder="example.near" {...form.getInputProps('mainnetAccount')} />
+        <TextInput label="NEAR MainNet Account" placeholder="example.near" {...getProps('mainnetAccount')} />
         <div className="hint">
           Please provide your NEAR MainNet account to allow us to distribute rewards for your participation and performance as well as proof of certification. (Optional)
           (Don&rsquo;t have one? Create at{' '}
