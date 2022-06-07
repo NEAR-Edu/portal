@@ -66,7 +66,6 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
 // eslint-disable-next-line max-lines-per-function
 export default function ProfilePage({ user, flash }: { user: User; flash: string }) {
   const [userState, setUserState] = useState<User>(user);
-  // const formRef = createRef<HTMLFormElement>();
 
   const updateValue = useCallback(
     (key, value) => {
@@ -105,23 +104,14 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
   });
 
   function getProps(fieldName: any) {
+    // ONEDAY: https://mantine.dev/form/use-form/#get-form-values-type
     const props: any = form.getInputProps(fieldName);
     props.name = fieldName;
     return props;
   }
 
-  // function postForm(values: any) {
-  //   console.log('postForm', { values });
-  //   // formRef.current && formRef.current.submit(); // https://stackoverflow.com/a/63016062/470749
-  //   if (formRef.current) {
-  //     // formRef.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: false }));
-  //     formRef.current.submit(); // https://stackoverflow.com/a/63016062/470749
-  //   }
-  // }
-
   return (
     <Layout flash={flash}>
-      {/* <form method="POST" action="/api/update-profile" id="update-profile-form" onSubmit={form.onSubmit((values) => postForm(values))} ref={formRef}> */}
       <form method="POST" action="/api/update-profile" id="update-profile-form">
         <TextInput type="text" required label="First and Last Name" {...getProps('name')} />
         {/* https://mantine.dev/core/select/#searchable */}
