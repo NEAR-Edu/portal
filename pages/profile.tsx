@@ -18,6 +18,7 @@ import { isProfileComplete } from '../helpers/profile';
 import { pluckFlash, setFlashVariable, withSessionSsr } from '../helpers/session';
 import { browserTimeZoneGuess } from '../helpers/time';
 import timeZones from '../helpers/timeZones';
+import { PropsWithOptionalName } from '../helpers/types';
 import { getLoggedInUser, getSerializableUser } from '../helpers/user';
 
 const schema = z.object({
@@ -101,9 +102,12 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
     },
   });
 
-  function getProps(fieldName: any) {
-    // ONEDAY: https://mantine.dev/form/use-form/#get-form-values-type
-    const props: any = form.getInputProps(fieldName);
+  type FormValues = typeof form.values; // https://mantine.dev/form/use-form/#get-form-values-type
+
+  type FieldName = keyof FormValues;
+
+  function getProps(fieldName: FieldName) {
+    const props: PropsWithOptionalName = form.getInputProps(fieldName);
     props.name = fieldName;
     return props;
   }
