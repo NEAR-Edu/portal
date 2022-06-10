@@ -5,7 +5,7 @@ import { User } from '.prisma/client';
 import { Radio, RadioGroup, Select, TextInput } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { getSession } from 'next-auth/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { z } from 'zod';
 import FrameworksAndPlatforms from '../components/FrameworksAndPlatforms';
 import Layout from '../components/layout';
@@ -13,6 +13,7 @@ import LeadSource, { referralOptions, referralProgram } from '../components/Lead
 import ProgrammingLanguages from '../components/ProgrammingLanguages';
 import WhyJoin from '../components/WhyJoin';
 import countries from '../helpers/countries';
+import { mainnetRegex, testnetRegex } from '../helpers/near';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
 import { isProfileComplete } from '../helpers/profile';
 import { pluckFlash, setFlashVariable, withSessionSsr } from '../helpers/session';
@@ -21,11 +22,25 @@ import timeZones from '../helpers/timeZones';
 import { PropsWithOptionalName } from '../helpers/types';
 import { getLoggedInUser, getSerializableUser } from '../helpers/user';
 
+/* ONEDAY: Figure out how to enable "eager validation" upon any form submission that has invalid entries.
+ In other words, after first form submission failure, perhaps every field should revalidate on every keyUp event. */
 const schema = z.object({
   // https://mantine.dev/form/schema/
   name: z.string().min(2, { message: 'Your name must have at least 2 letters.' }),
-  testnetAccount: z.string().regex(/\.testnet$/, { message: 'Your testnet account must end with `.testnet`.' }),
-  mainnetAccount: z.string().regex(/^$|\.near$/, { message: 'Your mainnet account must end with `.near`.' }), // Is empty or ends with .near. https://stackoverflow.com/a/3333525/470749
+  testnetAccount: z
+    .string()
+    .min(2, { message: 'Minimum 2 characters' })
+    .max(64, { message: 'Maxium 64 characters' })
+    // TODO: Figure out the official validation rules. See https://stackoverflow.com/q/72537015/470749
+    .regex(testnetRegex, { message: 'Please provide a valid NEAR testnet account address. Usually testnet accounts end with `.testnet`. See _____ for details.' }),
+  mainnetAccount: z
+    .string()
+    .min(2, { message: 'Minimum 2 characters' })
+    .max(64, { message: 'Maxium 64 characters' })
+    // TODO: Figure out the official validation rules. See https://stackoverflow.com/q/72537015/470749
+    .regex(mainnetRegex, {
+      message: 'Please provide a valid NEAR mainnet account address. Usually mainnet accounts end with `.near`. See _____ for details.',
+    }),
 });
 
 const softwareDevelopmentExperienceOptions = ['I am not a software developer', 'less than 1 year', '1 - 2 years', '2 - 5 years', '5 - 10 years', 'more than 10 years'];
@@ -65,6 +80,7 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
 // eslint-disable-next-line max-lines-per-function
 export default function ProfilePage({ user, flash }: { user: User; flash: string }) {
   const [userState, setUserState] = useState<User>(user);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const updateValue = useCallback(
     (key, value) => {
@@ -112,9 +128,14 @@ export default function ProfilePage({ user, flash }: { user: User; flash: string
     return props;
   }
 
+  function postForm(values: FormValues) {
+    console.log('postForm', { values });
+    formRef.current?.submit();
+  }
+
   return (
     <Layout flash={flash}>
-      <form method="POST" action="/api/update-profile" id="update-profile-form">
+      <form method="POST" action="/api/update-profile" id="update-profile-form" onSubmit={form.onSubmit(postForm)} ref={formRef}>
         <TextInput type="text" required label="First and Last Name" {...getProps('name')} />
         {/* https://mantine.dev/core/select/#searchable */}
         <Select
