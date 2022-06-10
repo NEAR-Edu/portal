@@ -9,6 +9,8 @@ cp .env.local.example .env.local
 npm install
 ```
 
+Run these commands now and after any edits to `prisma/schema.prisma`: `npm run prismaDev` and `./node_modules/.bin/prisma generate`.
+
 # Start the application
 
 To run your site locally, use:
