@@ -38,7 +38,7 @@ const schema = z.object({
     .max(64, { message: 'Maximum 64 characters' })
     .refine(acc =>
       acc === '' || mainnetRegex.test(acc), {
-      message: 'Please provide a valid NEAR mainnet account address. Usually testnet accounts end with `.near`. See _____ for details.',
+      message: 'Please provide a valid NEAR mainnet account address. Usually mainnet accounts end with `.near`. See _____ for details.',
     })
     .optional(),
 });
