@@ -21,7 +21,6 @@ import { browserTimeZoneGuess } from '../helpers/time';
 import timeZones from '../helpers/timeZones';
 import { PropsWithOptionalName } from '../helpers/types';
 import { getLoggedInUser, getSerializableUser } from '../helpers/user';
-import { InferGetServerSidePropsType } from "next";
 
 /* ONEDAY: Figure out how to enable "eager validation" upon any form submission that has invalid entries.
  In other words, after first form submission failure, perhaps every field should revalidate on every keyUp event. */
@@ -31,14 +30,16 @@ const schema = z.object({
   testnetAccount: z
     .string()
     .max(64, { message: 'Maximum 64 characters' })
-    // TODO: Figure out the official validation rules. See https://stackoverflow.com/q/72537015/470749
-    .regex(testnetRegex, { message: 'Please provide a valid NEAR testnet account address. Usually testnet accounts end with `.testnet`. See _____ for details.' }),
+    // See https://stackoverflow.com/q/72537015/470749
+    .regex(testnetRegex, {
+      message: 'Please provide a valid named NEAR testnet account address ending with `.testnet`. See https://docs.near.org/docs/concepts/account#account-id-rules for details.',
+    }),
   mainnetAccount: z
     .string()
     .max(64, { message: 'Maximum 64 characters' })
-    .refine(acc =>
-      acc === '' || mainnetRegex.test(acc), {
-      message: 'Please provide a valid NEAR mainnet account address. Usually mainnet accounts end with `.near`. See _____ for details.',
+    .refine((acc) => acc === '' || mainnetRegex.test(acc), {
+      message:
+        'If you are providing a named NEAR mainnet account address (which is optional), it must be valid and end with `.near`. See https://docs.near.org/docs/concepts/account#account-id-rules for details.',
     })
     .optional(),
 });
@@ -78,9 +79,11 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
 });
 
 // eslint-disable-next-line max-lines-per-function
-export default function ProfilePage({ user, flash }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function ProfilePage({ user, flash }: { user: User; flash: string }) {
   const [userState, setUserState] = useState<User>(user);
   const formRef = useRef<HTMLFormElement>(null);
+  const testnetFieldRef = useRef<HTMLInputElement>(null);
+  const mainnetFieldRef = useRef<HTMLInputElement>(null);
 
   const updateValue = useCallback(
     (key, value) => {
@@ -130,6 +133,15 @@ export default function ProfilePage({ user, flash }: InferGetServerSidePropsType
 
   function postForm(values: FormValues) {
     console.log('postForm', { values });
+    // Currently the validation rules allow uppercase characters, which are technically not allowed, so we need to convert to lowercase during form submission after validation.
+    const testnetField = testnetFieldRef.current;
+    if (testnetField) {
+      testnetField.value = testnetField.value.toLowerCase();
+    }
+    const mainnetField = mainnetFieldRef.current;
+    if (mainnetField) {
+      mainnetField.value = mainnetField.value.toLowerCase();
+    }
     formRef.current?.submit();
   }
 
@@ -191,7 +203,7 @@ export default function ProfilePage({ user, flash }: InferGetServerSidePropsType
             <input type="text" name="referrerMainnetAccount" defaultValue={userState.referrerMainnetAccount ?? ''} className="form-control" onChange={handleChange} />
           </div>
         )}
-        <TextInput label="NEAR TestNet Account" placeholder="example.testnet" required {...getProps('testnetAccount')} />
+        <TextInput label="NEAR TestNet Account" placeholder="example.testnet" required {...getProps('testnetAccount')} ref={testnetFieldRef} />
         <div className="hint">
           Please provide your NEAR TestNet account to help us understand your experience with NEAR. (Don&rsquo;t have one? Create at{' '}
           <a href="https://wallet.testnet.near.org" target="_blank" rel="noreferrer">
@@ -199,7 +211,7 @@ export default function ProfilePage({ user, flash }: InferGetServerSidePropsType
           </a>
           .)
         </div>
-        <TextInput label="NEAR MainNet Account" placeholder="example.near" {...getProps('mainnetAccount')} />
+        <TextInput label="NEAR MainNet Account" placeholder="example.near" {...getProps('mainnetAccount')} ref={mainnetFieldRef} />
         <div className="hint">
           Please provide your NEAR MainNet account to allow us to distribute rewards for your participation and performance as well as proof of certification. (Optional)
           (Don&rsquo;t have one? Create at{' '}
