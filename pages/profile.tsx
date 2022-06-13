@@ -13,7 +13,7 @@ import LeadSource, { referralOptions, referralProgram } from '../components/Lead
 import ProgrammingLanguages from '../components/ProgrammingLanguages';
 import WhyJoin from '../components/WhyJoin';
 import countries from '../helpers/countries';
-import { mainnetRegex, testnetRegex } from '../helpers/near';
+import { testnetRegex, mainnetRegex } from '../helpers/near';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
 import { isProfileComplete } from '../helpers/profile';
 import { pluckFlash, setFlashVariable, withSessionSsr } from '../helpers/session';
@@ -21,6 +21,7 @@ import { browserTimeZoneGuess } from '../helpers/time';
 import timeZones from '../helpers/timeZones';
 import { PropsWithOptionalName } from '../helpers/types';
 import { getLoggedInUser, getSerializableUser } from '../helpers/user';
+import { InferGetServerSidePropsType } from "next";
 
 /* ONEDAY: Figure out how to enable "eager validation" upon any form submission that has invalid entries.
  In other words, after first form submission failure, perhaps every field should revalidate on every keyUp event. */
@@ -29,18 +30,17 @@ const schema = z.object({
   name: z.string().min(2, { message: 'Your name must have at least 2 letters.' }),
   testnetAccount: z
     .string()
-    .min(2, { message: 'Minimum 2 characters' })
-    .max(64, { message: 'Maxium 64 characters' })
+    .max(64, { message: 'Maximum 64 characters' })
     // TODO: Figure out the official validation rules. See https://stackoverflow.com/q/72537015/470749
     .regex(testnetRegex, { message: 'Please provide a valid NEAR testnet account address. Usually testnet accounts end with `.testnet`. See _____ for details.' }),
   mainnetAccount: z
     .string()
-    .min(2, { message: 'Minimum 2 characters' })
-    .max(64, { message: 'Maxium 64 characters' })
-    // TODO: Figure out the official validation rules. See https://stackoverflow.com/q/72537015/470749
-    .regex(mainnetRegex, {
+    .max(64, { message: 'Maximum 64 characters' })
+    .refine(acc =>
+      acc === '' || mainnetRegex.test(acc), {
       message: 'Please provide a valid NEAR mainnet account address. Usually mainnet accounts end with `.near`. See _____ for details.',
-    }),
+    })
+    .optional(),
 });
 
 const softwareDevelopmentExperienceOptions = ['I am not a software developer', 'less than 1 year', '1 - 2 years', '2 - 5 years', '5 - 10 years', 'more than 10 years'];
@@ -78,7 +78,7 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
 });
 
 // eslint-disable-next-line max-lines-per-function
-export default function ProfilePage({ user, flash }: { user: User; flash: string }) {
+export default function ProfilePage({ user, flash }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [userState, setUserState] = useState<User>(user);
   const formRef = useRef<HTMLFormElement>(null);
 
