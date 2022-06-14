@@ -3,7 +3,8 @@
 import type { IronSessionOptions } from 'iron-session';
 import { withIronSessionApiRoute, withIronSessionSsr } from 'iron-session/next';
 import type { GetServerSidePropsContext, GetServerSidePropsResult, NextApiHandler } from 'next';
-import { ServerSidePropsRequest } from './types';
+import { TypeOptions } from 'react-toastify';
+import { Flash, ServerSidePropsRequest } from './types';
 
 const secretCookiePassword = process.env.SECRET_COOKIE_PASSWORD as string;
 const secure = process.env.NODE_ENV === 'production';
@@ -26,14 +27,19 @@ export const withSessionSsr = <P extends Record<string, unknown> = Record<string
   handler: (context: GetServerSidePropsContext) => GetServerSidePropsResult<P> | Promise<GetServerSidePropsResult<P>>,
 ) => withIronSessionSsr(handler, sessionOptions);
 
-export async function setFlashVariable(req: ServerSidePropsRequest, value: string): Promise<void> {
+async function setFlashJson(req: ServerSidePropsRequest, flash: Flash): Promise<void> {
   const flashSession = req.session;
-  flashSession.flash = value;
+  flashSession.flash = JSON.stringify(flash);
   await flashSession.save();
   console.log('setFlashVariable', { flashSession });
 }
 
-export async function pluckFlash(req: ServerSidePropsRequest) {
+export async function setFlashVariable(req: ServerSidePropsRequest, message: string, type: TypeOptions): Promise<void> {
+  const flash: Flash = { message, toastifyOptions: { type } };
+  return setFlashJson(req, flash);
+}
+
+export async function pluckFlash(req: ServerSidePropsRequest): Promise<Flash | null> {
   const flashSession = req.session;
   console.log('pluckFlash', { flashSession });
   // If there's a flash message, transfer it to a context, then clear it.
@@ -41,5 +47,5 @@ export async function pluckFlash(req: ServerSidePropsRequest) {
   console.log({ flash });
   delete flashSession.flash;
   await flashSession.save();
-  return flash;
+  return flash ? (JSON.parse(flash) as Flash) : null;
 }

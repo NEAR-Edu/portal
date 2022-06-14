@@ -2,6 +2,7 @@ import { getSession } from 'next-auth/react';
 import Layout from '../components/layout';
 import { profilePath } from '../helpers/paths';
 import { pluckFlash, withSessionSsr } from '../helpers/session';
+import { Flash } from '../helpers/types';
 
 export const getServerSideProps = withSessionSsr(async ({ req }) => {
   const session = await getSession({ req });
@@ -22,7 +23,7 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
   };
 });
 
-export default function IndexPage({ flash }: { flash: string }) {
+export default function IndexPage({ flash }: { flash: Flash }) {
   return (
     <Layout flash={flash}>
       <h1>NEAR University Certified Programs</h1>

@@ -10,6 +10,7 @@ import { isProfileComplete } from '../helpers/profile';
 import { pluckFlash, setFlashVariable, withSessionSsr } from '../helpers/session';
 import { getShortLocalizedDate } from '../helpers/string';
 import { timeFromNowIfSoon } from '../helpers/time';
+import { Flash } from '../helpers/types';
 
 const cutoffValueForHighlightingRelativeTime = 24;
 const cutoffUnitForHighlightingRelativeTime = 'hour'; // https://day.js.org/docs/en/display/difference
@@ -31,7 +32,7 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
   const session = await getSession({ req });
   if (!session) {
     // https://github.com/nextauthjs/next-auth/issues/4552
-    await setFlashVariable(req, 'You must be logged in to access this page.');
+    await setFlashVariable(req, 'You must be logged in to access this page.', 'warning');
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
@@ -42,7 +43,7 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
   }
   const hasCompletedProfile = await isProfileComplete(session);
   if (!hasCompletedProfile) {
-    await setFlashVariable(req, 'Please complete your profile first.');
+    await setFlashVariable(req, 'Please complete your profile first.', 'warning');
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
@@ -127,7 +128,7 @@ export default function ChooseProgramPage({
 }: {
   scheduleRecords: ScheduleRecordObj[];
   futureScheduleIdsEnrolledAlready: string[];
-  flash: string;
+  flash: Flash;
 }) {
   const hasFutureEnrollments = futureScheduleIdsEnrolledAlready.length > 0;
 

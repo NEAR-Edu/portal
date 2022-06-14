@@ -1,17 +1,18 @@
 /* eslint-disable react/require-default-props */
 import Head from 'next/head';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify'; // https://fkhadra.github.io/react-toastify/
 import 'react-toastify/dist/ReactToastify.min.css';
+import { Flash } from '../helpers/types';
 import Footer from './footer';
 import Header from './header';
 
 type Props = {
   children: React.ReactNode;
-  flash?: string;
+  flash?: Flash;
 };
 
 export default function Layout({ children, flash }: Props) {
-  if (flash) toast.error(flash, { toastId: 'access-denied' }); // ONEDAY: Allow other styles of toast.
+  if (flash) toast(flash.message, flash.toastifyOptions); // https://fkhadra.github.io/react-toastify/icons/#built-in-icons
   return (
     <>
       <Head>

@@ -65,8 +65,8 @@ const handler = withSessionRoute(async (req: NextApiRequest, res: NextApiRespons
       scheduleReminderEmail(scheduleRecord, user);
       console.log('saved', { result });
     });
-    const flashPayload = `You will receive ${scheduleIds.length} confirmation email(s) since you just enrolled in: ${JSON.stringify({ scheduleIds })}.`;
-    await setFlashVariable(req, flashPayload); // ONEDAY Add a message about which (if any) were *just* enrolled during this request. Should await all promises to complete and should pass along only the scheduleIds that were confirmed to be saved.
+    const flashMessage = `You will receive ${scheduleIds.length} confirmation email(s) since you just enrolled in: ${JSON.stringify({ scheduleIds })}.`;
+    await setFlashVariable(req, flashMessage, 'success'); // ONEDAY Add a message about which (if any) were *just* enrolled during this request. Should await all promises to complete and should pass along only the scheduleIds that were confirmed to be saved.
     res.redirect(STATUS_CODE_TEMP_REDIRECT, chooseProgramPath);
   } catch (error) {
     console.error('Enrollment did not save. Error: ', error);

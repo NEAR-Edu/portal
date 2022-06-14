@@ -13,13 +13,13 @@ import LeadSource, { referralOptions, referralProgram } from '../components/Lead
 import ProgrammingLanguages from '../components/ProgrammingLanguages';
 import WhyJoin from '../components/WhyJoin';
 import countries from '../helpers/countries';
-import { testnetRegex, mainnetRegex } from '../helpers/near';
+import { mainnetRegex, testnetRegex } from '../helpers/near';
 import { chooseProgramPath, indexPath } from '../helpers/paths';
 import { isProfileComplete } from '../helpers/profile';
 import { pluckFlash, setFlashVariable, withSessionSsr } from '../helpers/session';
 import { browserTimeZoneGuess } from '../helpers/time';
 import timeZones from '../helpers/timeZones';
-import { PropsWithOptionalName } from '../helpers/types';
+import { Flash, PropsWithOptionalName } from '../helpers/types';
 import { getLoggedInUser, getSerializableUser } from '../helpers/user';
 
 /* ONEDAY: Figure out how to enable "eager validation" upon any form submission that has invalid entries.
@@ -49,7 +49,7 @@ const softwareDevelopmentExperienceOptions = ['I am not a software developer', '
 export const getServerSideProps = withSessionSsr(async ({ req }) => {
   const session = await getSession({ req });
   if (!session) {
-    await setFlashVariable(req, 'You must be logged in to access this page.');
+    await setFlashVariable(req, 'You must be logged in to access this page.', 'warning');
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
@@ -61,7 +61,7 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
 
   if (await isProfileComplete(session)) {
     // (Maybe someday we'll support editing a profile, but not yet.)
-    await setFlashVariable(req, 'You were redirected to this page since your profile is already complete.');
+    await setFlashVariable(req, 'You were redirected to this page since your profile is already complete.', 'info');
     return {
       redirect: {
         // https://stackoverflow.com/a/58182678/470749
@@ -79,7 +79,7 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
 });
 
 // eslint-disable-next-line max-lines-per-function
-export default function ProfilePage({ user, flash }: { user: User; flash: string }) {
+export default function ProfilePage({ user, flash }: { user: User; flash: Flash }) {
   const [userState, setUserState] = useState<User>(user);
   const formRef = useRef<HTMLFormElement>(null);
   const testnetFieldRef = useRef<HTMLInputElement>(null);

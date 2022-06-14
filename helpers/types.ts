@@ -2,6 +2,7 @@
 import { ScheduledEmail, User } from '.prisma/client';
 import { IncomingMessage } from 'http';
 import { NextApiRequestCookies } from 'next/dist/server/api-utils';
+import { ToastOptions } from 'react-toastify';
 
 export type Merge<M, N> = Omit<M, Extract<keyof M, keyof N>> & N; // https://stackoverflow.com/a/53936938/470749
 
@@ -33,3 +34,8 @@ export type ScheduledPopulatedEmail = ScheduledEmail & {
 };
 
 export type KeyValueStringPairs = { [key: string]: string };
+
+export type Flash = {
+  message: string;
+  toastifyOptions?: ToastOptions; // https://fkhadra.github.io/react-toastify/
+};

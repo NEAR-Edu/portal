@@ -57,6 +57,7 @@ function populateSubjectAndBody(subject: string, html: string, scheduledPopulate
   const filledSubject = fillPlaceholders(subject, subjectPlaceholders);
   const bodyPlaceholders: KeyValueStringPairs = {};
   if (scheduledPopulatedEmail.sessionUrl) {
+    // ONEDAY: If sessionUrl is not set, is there a Zoom API endpoint available for generating one? Then we would want to save it to the Airtable record too. https://marketplace.zoom.us/docs/api-reference/zoom-api/methods#operation/meetingCreate
     bodyPlaceholders[SESSION_URL_PLACEHOLDER] = scheduledPopulatedEmail.sessionUrl;
   }
   let filledHtml = fillPlaceholders(html, bodyPlaceholders);

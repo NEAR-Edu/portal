@@ -33,6 +33,7 @@ async function getScheduledEmails(dateTimeUtc: string): Promise<ScheduledPopulat
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // TODO: Set up a cron job (maybe EasyCron) to periodically touch this endpoint. https://bbelda.me/post/cron-next
   // ONEDAY Add security
   const now = getNowUtc();
   const scheduledEmails = await getScheduledEmails(now);
