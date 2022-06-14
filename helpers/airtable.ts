@@ -90,9 +90,16 @@ export async function getScheduleRecordsFromAllPages(filterByFormula = filterToF
   });
 }
 
+export async function getFutureScheduleRecords(): Promise<ScheduleRecordObj[]> {
+  const scheduleRecords = await getScheduleRecordsFromAllPages(filterToFuture, sortAscByDate);
+  // `filterToFuture` filters to the beginning of "today", so some of these results might be in the past (earlier today), so we need to filter futher here.
+  const now = new Date().toISOString();
+  return scheduleRecords.filter((record) => record.start > now);
+}
+
 export async function getFutureScheduleRecordsMappedById(): Promise<{ [id: string]: ScheduleRecordObj }> {
   const result: { [id: string]: ScheduleRecordObj } = {};
-  const scheduleRecords = await getScheduleRecordsFromAllPages(filterToFuture, sortAscByDate);
+  const scheduleRecords = await getFutureScheduleRecords();
   scheduleRecords.forEach((record) => {
     result[record.id] = record;
   });

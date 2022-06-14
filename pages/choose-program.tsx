@@ -4,7 +4,7 @@ import { Registration } from '.prisma/client';
 import { PrismaClient } from '@prisma/client';
 import { getSession } from 'next-auth/react';
 import Layout from '../components/layout';
-import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../helpers/airtable';
+import { getFutureScheduleRecords, ScheduleRecordObj } from '../helpers/airtable';
 import { indexPath, profilePath } from '../helpers/paths';
 import { isProfileComplete } from '../helpers/profile';
 import { pluckFlash, setFlashVariable, withSessionSsr } from '../helpers/session';
@@ -52,7 +52,7 @@ export const getServerSideProps = withSessionSsr(async ({ req }) => {
       },
     };
   }
-  const scheduleRecords = await getScheduleRecordsFromAllPages(filterToFuture, sortAscByDate); // These come from Airtable.
+  const scheduleRecords = await getFutureScheduleRecords(); // These come from Airtable.
   const userEmail = session.user?.email; // Weirdly, next-auth exposes 'email' instead of 'id'.
   const prisma = new PrismaClient();
   const allRegistrationsForThisUser = await prisma.registration.findMany({
