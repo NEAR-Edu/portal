@@ -59,6 +59,7 @@ model User {
   accounts                        Account[]
   sessions                        Session[]
   registrations                   Registration[]
+  scheduledEmails                 ScheduledEmail[]
 }
 
 model VerificationToken {
@@ -79,4 +80,16 @@ model Registration {
   createdAt                       DateTime  @default(now())
 
   @@unique([userId, scheduleId])
+}
+
+model ScheduledEmail {
+  id                              String    @id @default(cuid())
+  userId                          String
+  subject                         String
+  html                            String
+  from                            String
+  scheduledSendTimeUtc            DateTime
+  actualSendTimeUtc               DateTime?
+  user                            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt                       DateTime  @default(now())  
 }

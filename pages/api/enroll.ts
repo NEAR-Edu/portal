@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../../helpers/airtable';
-import sendEmailNow from '../../helpers/email';
+import { defaultSender, scheduleEmail, sendEmailNow } from '../../helpers/email';
 import { chooseProgramPath } from '../../helpers/paths';
 import { setFlashVariable, withSessionRoute } from '../../helpers/session';
 import { STATUS_CODE_ERROR, STATUS_CODE_TEMP_REDIRECT, STATUS_CODE_UNAUTH } from '../../helpers/statusCodes';
@@ -18,11 +18,16 @@ function getScheduleRecord(scheduleId: string, scheduleRecords: ScheduleRecordOb
 }
 
 function getEmailDetails(scheduleRecord: ScheduleRecordObj, timeZone: string) {
-  // ONEDAY: Design nice email subject and HTML body. Accept the user's preferred time zone as a parameter so that the program time can be displayed in their preferred time zone.
+  // TODO: Design nice email subject and HTML body. Accept the user's preferred time zone as a parameter so that the program time can be displayed in their preferred time zone.
   const subject = `Enrollment confirmation for ${scheduleRecord.programName}`;
   const body = `You have been enrolled in a class that starts ${getFormattedDateTime(scheduleRecord.start, timeZone)}.`;
   console.log({ body });
   return { subject, body };
+}
+
+async function scheduleReminderEmail(scheduleRecord: ScheduleRecordObj, userId: string) {
+  const scheduledSendTimeUtc = scheduleRecord.start;
+  scheduleEmail(scheduledSendTimeUtc, userId, 'Starting now', 'some body', defaultSender); // TODO: Fix these params. The message should probably be similar to getEmailDetails.
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -53,6 +58,7 @@ const handler = withSessionRoute(async (req: NextApiRequest, res: NextApiRespons
       const scheduleRecord = getScheduleRecord(scheduleId, scheduleRecords);
       const { subject, body } = getEmailDetails(scheduleRecord, user.timeZone as string);
       sendEmailNow(user.email as string, subject, body);
+      scheduleReminderEmail(scheduleRecord, user.id);
       console.log('saved', { result });
     });
     const flashPayload = `You will receive ${scheduleIds.length} confirmation email(s) since you just enrolled in: ${JSON.stringify({ scheduleIds })}.`;

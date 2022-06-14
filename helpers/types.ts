@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { User } from '.prisma/client';
+import { ScheduledEmail, User } from '.prisma/client';
 import { IncomingMessage } from 'http';
 import { NextApiRequestCookies } from 'next/dist/server/api-utils';
 
@@ -25,3 +25,5 @@ export type PropsWithOptionalName = {
   error?: React.ReactNode;
   name?: string;
 };
+
+export type ScheduledEmailWithRecipient = ScheduledEmail & { user: User };

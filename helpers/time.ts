@@ -1,6 +1,6 @@
 import dayjs, { OpUnitType, QUnitType } from 'dayjs';
 
-import utc from 'dayjs/plugin/utc';
+import utc from 'dayjs/plugin/utc'; // https://day.js.org/docs/en/plugin/utc
 import timezone from 'dayjs/plugin/timezone'; // https://day.js.org/docs/en/timezone/converting-to-zone
 import advancedFormat from 'dayjs/plugin/advancedFormat'; // https://day.js.org/docs/en/plugin/advanced-format
 import relativeTime from 'dayjs/plugin/relativeTime'; // https://day.js.org/docs/en/plugin/relative-time
@@ -31,4 +31,8 @@ export function browserTimeZoneGuess(): string {
   const guess = dayjs.tz.guess(); // https://day.js.org/docs/en/timezone/guessing-user-timezone
   console.log({ guess });
   return guess;
+}
+
+export function getNowUtc(): string {
+  return dayjs.utc().format();
 }
