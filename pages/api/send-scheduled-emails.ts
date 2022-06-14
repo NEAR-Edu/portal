@@ -1,11 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getFutureScheduleRecordsMappedById } from '../../helpers/airtable';
 import { sendEmailsNow } from '../../helpers/email';
 import { STATUS_CODE_ERROR, STATUS_CODE_SUCCESS } from '../../helpers/statusCodes';
 import { getNowUtc } from '../../helpers/time';
-import { ScheduledEmailWithRecipient } from '../../helpers/types';
+import { ScheduledPopulatedEmail } from '../../helpers/types';
 
-async function getScheduledEmails(dateTimeUtc: string): Promise<ScheduledEmailWithRecipient[]> {
+async function getScheduledEmails(dateTimeUtc: string): Promise<ScheduledPopulatedEmail[]> {
   const prisma = new PrismaClient();
   const scheduledEmails = await prisma.scheduledEmail.findMany({
     where: {
@@ -18,7 +19,17 @@ async function getScheduledEmails(dateTimeUtc: string): Promise<ScheduledEmailWi
     },
   });
 
-  return scheduledEmails;
+  const scheduleRecords = await getFutureScheduleRecordsMappedById(); // These come from Airtable.
+
+  return scheduledEmails.map((scheduledEmail: ScheduledPopulatedEmail) => {
+    const scheduleRecord = scheduleRecords[scheduledEmail.scheduleId];
+    const scheduledPopulatedEmail = scheduledEmail;
+    if (scheduleRecord) {
+      scheduledPopulatedEmail.sessionUrl = scheduleRecord.sessionUrl;
+      scheduledPopulatedEmail.slidoId = scheduleRecord.slidoId;
+    }
+    return scheduledPopulatedEmail;
+  });
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

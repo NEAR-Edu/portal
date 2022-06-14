@@ -1,13 +1,15 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../../helpers/airtable';
-import { defaultSender, scheduleEmail, sendEmailNow } from '../../helpers/email';
+import { defaultSender, scheduleEmail, sendEmailNow, SESSION_URL_PLACEHOLDER } from '../../helpers/email';
 import { chooseProgramPath } from '../../helpers/paths';
 import { setFlashVariable, withSessionRoute } from '../../helpers/session';
 import { STATUS_CODE_ERROR, STATUS_CODE_TEMP_REDIRECT, STATUS_CODE_UNAUTH } from '../../helpers/statusCodes';
-import { getFormattedDateTime } from '../../helpers/time';
+import { getFormattedDateTime, getMomentBefore } from '../../helpers/time';
 import { getLoggedInUser } from '../../helpers/user';
+
+const REMINDER_EMAIL_MINS = 10;
 
 function getScheduleRecord(scheduleId: string, scheduleRecords: ScheduleRecordObj[]): ScheduleRecordObj {
   const scheduleRecord = scheduleRecords.find((record) => record.id === scheduleId);
@@ -25,9 +27,11 @@ function getEmailDetails(scheduleRecord: ScheduleRecordObj, timeZone: string) {
   return { subject, body };
 }
 
-async function scheduleReminderEmail(scheduleRecord: ScheduleRecordObj, userId: string) {
-  const scheduledSendTimeUtc = scheduleRecord.start;
-  scheduleEmail(scheduledSendTimeUtc, userId, 'Starting now', 'some body', defaultSender); // TODO: Fix these params. The message should probably be similar to getEmailDetails.
+async function scheduleReminderEmail(scheduleRecord: ScheduleRecordObj, user: User) {
+  const scheduledSendTimeUtc = getMomentBefore(scheduleRecord.start, REMINDER_EMAIL_MINS, 'minutes');
+  // TODO: Fix these params. The message should probably be similar to getEmailDetails.
+  const html = `Click here to enter the session at ${scheduleRecord.start} UTC: ${SESSION_URL_PLACEHOLDER}`;
+  scheduleEmail(scheduledSendTimeUtc, user.id, `Starting in ${REMINDER_EMAIL_MINS} minutes: ${scheduleRecord.programName}`, html, defaultSender, scheduleRecord.id);
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -58,7 +62,7 @@ const handler = withSessionRoute(async (req: NextApiRequest, res: NextApiRespons
       const scheduleRecord = getScheduleRecord(scheduleId, scheduleRecords);
       const { subject, body } = getEmailDetails(scheduleRecord, user.timeZone as string);
       sendEmailNow(user.email as string, subject, body);
-      scheduleReminderEmail(scheduleRecord, user.id);
+      scheduleReminderEmail(scheduleRecord, user);
       console.log('saved', { result });
     });
     const flashPayload = `You will receive ${scheduleIds.length} confirmation email(s) since you just enrolled in: ${JSON.stringify({ scheduleIds })}.`;

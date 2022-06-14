@@ -26,4 +26,10 @@ export type PropsWithOptionalName = {
   name?: string;
 };
 
-export type ScheduledEmailWithRecipient = ScheduledEmail & { user: User };
+export type ScheduledPopulatedEmail = ScheduledEmail & {
+  user: User;
+  sessionUrl?: string;
+  slidoId?: string;
+};
+
+export type KeyValueStringPairs = { [key: string]: string };

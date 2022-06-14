@@ -1,8 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import sendgrid from '@sendgrid/mail'; // https://docs.sendgrid.com/for-developers/sending-email/quickstart-nodejs
 import { getNowUtc } from './time';
-import { ScheduledEmailWithRecipient } from './types';
+import { KeyValueStringPairs, ScheduledPopulatedEmail } from './types';
 
+export const SESSION_URL_PLACEHOLDER = 'SESSION_URL_PLACEHOLDER';
 const API_KEY = process.env.SENDGRID_API_KEY || '';
 export const defaultSender = process.env.EMAIL_FROM || '';
 const techTeamEmailAddress = process.env.TECH_TEAM_EMAIL_ADDRESS || '';
@@ -31,8 +32,12 @@ function sendErrorReport(subject: string, html: string) {
   });
 }
 
-function fillPlaceholders(originalValue: string, placeholders: { [key: string]: string }): string {
-  return originalValue; // ONEDAY
+function fillPlaceholders(originalValue: string, placeholders: KeyValueStringPairs): string {
+  let cleaned = originalValue;
+  Object.keys(placeholders).forEach((key) => {
+    cleaned = cleaned.replaceAll(key, placeholders[key]);
+  });
+  return cleaned;
 }
 
 async function markEmailsAsSent(scheduledEmailIds: string[], actualSendTimeUtc: string) {
@@ -47,16 +52,26 @@ async function markEmailsAsSent(scheduledEmailIds: string[], actualSendTimeUtc: 
   console.log('markEmailsAsSent saved', { result });
 }
 
-// eslint-disable-next-line max-lines-per-function
-export function sendEmailsNow(scheduledEmailsWithRecipient: ScheduledEmailWithRecipient[]): string | null {
+function populateSubjectAndBody(subject: string, html: string, scheduledPopulatedEmail: ScheduledPopulatedEmail) {
+  const subjectPlaceholders: KeyValueStringPairs = {}; // ONEDAY
+  const filledSubject = fillPlaceholders(subject, subjectPlaceholders);
+  const bodyPlaceholders: KeyValueStringPairs = {};
+  if (scheduledPopulatedEmail.sessionUrl) {
+    bodyPlaceholders[SESSION_URL_PLACEHOLDER] = scheduledPopulatedEmail.sessionUrl;
+  }
+  let filledHtml = fillPlaceholders(html, bodyPlaceholders);
+  if (scheduledPopulatedEmail.slidoId) {
+    filledHtml += `<p>Important: answer our survey here during the session: https://app.sli.do/event/${scheduledPopulatedEmail.slidoId}/live/questions?user_email=${scheduledPopulatedEmail.user.email}</p>`;
+  }
+  return { filledSubject, filledHtml };
+}
+
+export function sendEmailsNow(scheduledPopulatedEmails: ScheduledPopulatedEmail[]): string | null {
   const successes: string[] = [];
-  const errors = {} as { [key: string]: string };
-  scheduledEmailsWithRecipient.forEach(async (scheduledEmailWithRecipient: ScheduledEmailWithRecipient) => {
-    const { id, user, subject, html, scheduledSendTimeUtc } = scheduledEmailWithRecipient;
-    const subjectPlaceholders = {}; // ONEDAY
-    const filledSubject = fillPlaceholders(subject, subjectPlaceholders);
-    const bodyPlaceholders = {}; // ONEDAY
-    const filledHtml = fillPlaceholders(html, bodyPlaceholders);
+  const errors: KeyValueStringPairs = {};
+  scheduledPopulatedEmails.forEach(async (scheduledPopulatedEmail: ScheduledPopulatedEmail) => {
+    const { id, user, subject, html, scheduledSendTimeUtc } = scheduledPopulatedEmail;
+    const { filledSubject, filledHtml } = populateSubjectAndBody(subject, html, scheduledPopulatedEmail);
     const to = user.email as string;
     try {
       sendgrid.send({
@@ -67,7 +82,7 @@ export function sendEmailsNow(scheduledEmailsWithRecipient: ScheduledEmailWithRe
       });
       successes.push(id);
     } catch (error) {
-      const errorMsg = `Error when trying to send email with subject "${subject}" to ${to} at ${scheduledSendTimeUtc}: ${error}`;
+      const errorMsg = `Error when trying to send email with subject "${filledSubject}" to ${to} at ${scheduledSendTimeUtc}: ${error}`;
       console.error(errorMsg);
       errors[id] = errorMsg;
     }
@@ -78,12 +93,11 @@ export function sendEmailsNow(scheduledEmailsWithRecipient: ScheduledEmailWithRe
     const subject = 'Errors during sendEmailsNow';
     sendErrorReport(subject, JSON.stringify(errors));
     return `${numErrors} errors occurred while sending emails. ${techTeamEmailAddress} received an email with details.`;
-  } else {
-    return null;
   }
+  return null;
 }
 
-export async function scheduleEmail(scheduledSendTimeUtc: string, userId: string, subject: string, html: string, from: string) {
+export async function scheduleEmail(scheduledSendTimeUtc: string, userId: string, subject: string, html: string, from: string, scheduleId: string) {
   const prisma = new PrismaClient();
   const data = {
     scheduledSendTimeUtc,
@@ -91,6 +105,7 @@ export async function scheduleEmail(scheduledSendTimeUtc: string, userId: string
     subject,
     html,
     from,
+    scheduleId,
   };
   const result = await prisma.scheduledEmail.create({ data });
   return result;

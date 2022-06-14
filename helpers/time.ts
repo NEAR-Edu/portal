@@ -1,4 +1,4 @@
-import dayjs, { OpUnitType, QUnitType } from 'dayjs';
+import dayjs, { ManipulateType, OpUnitType, QUnitType } from 'dayjs';
 
 import utc from 'dayjs/plugin/utc'; // https://day.js.org/docs/en/plugin/utc
 import timezone from 'dayjs/plugin/timezone'; // https://day.js.org/docs/en/timezone/converting-to-zone
@@ -35,4 +35,8 @@ export function browserTimeZoneGuess(): string {
 
 export function getNowUtc(): string {
   return dayjs.utc().format();
+}
+
+export function getMomentBefore(moment: string, value: number, unit: ManipulateType): string {
+  return dayjs(moment).subtract(value, unit).format();
 }

@@ -88,6 +88,7 @@ model ScheduledEmail {
   subject                         String
   html                            String
   from                            String
+  scheduleId                      String
   scheduledSendTimeUtc            DateTime
   actualSendTimeUtc               DateTime?
   user                            User      @relation(fields: [userId], references: [id], onDelete: Cascade)

@@ -19,6 +19,8 @@ export type ScheduleRecordObj = {
   programId: string;
   programName: string;
   link: string;
+  sessionUrl: string;
+  slidoId: string;
 };
 
 function getFirstElement(record: Record<FieldSet>, key: string): string {
@@ -41,6 +43,8 @@ function getScheduleRecordAsObj(record: Record<FieldSet>): ScheduleRecordObj {
   obj.programId = getFirstElement(record, 'program');
   obj.programName = getFirstElement(record, 'program name');
   obj.link = getFirstElement(record, 'link'); // landing page URL, stored in "landing" field of nc-programs table.
+  obj.sessionUrl = (record.get('sessionUrl') as string) ?? null; // e.g. for Zoom
+  obj.slidoId = (record.get('slidoId') as string) ?? null;
   return obj;
 }
 
@@ -84,4 +88,13 @@ export async function getScheduleRecordsFromAllPages(filterByFormula = filterToF
         },
       );
   });
+}
+
+export async function getFutureScheduleRecordsMappedById(): Promise<{ [id: string]: ScheduleRecordObj }> {
+  const result: { [id: string]: ScheduleRecordObj } = {};
+  const scheduleRecords = await getScheduleRecordsFromAllPages(filterToFuture, sortAscByDate);
+  scheduleRecords.forEach((record) => {
+    result[record.id] = record;
+  });
+  return result;
 }
