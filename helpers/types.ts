@@ -29,7 +29,7 @@ export type PropsWithOptionalName = {
 export type ScheduledPopulatedEmail = ScheduledEmail & {
   user: User;
   sessionUrl?: string;
-  slidoId?: string;
+  surveyUrl?: string;
 };
 
 export type KeyValueStringPairs = { [key: string]: string };

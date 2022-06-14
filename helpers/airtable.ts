@@ -20,7 +20,7 @@ export type ScheduleRecordObj = {
   programName: string;
   link: string;
   sessionUrl: string;
-  slidoId: string;
+  surveyUrl: string;
 };
 
 function getFirstElement(record: Record<FieldSet>, key: string): string {
@@ -44,7 +44,7 @@ function getScheduleRecordAsObj(record: Record<FieldSet>): ScheduleRecordObj {
   obj.programName = getFirstElement(record, 'program name');
   obj.link = getFirstElement(record, 'link'); // landing page URL, stored in "landing" field of nc-programs table.
   obj.sessionUrl = (record.get('sessionUrl') as string) ?? null; // e.g. for Zoom
-  obj.slidoId = (record.get('slidoId') as string) ?? null;
+  obj.surveyUrl = (record.get('surveyUrl') as string) ?? null;
   return obj;
 }
 

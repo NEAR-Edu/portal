@@ -60,8 +60,9 @@ function populateSubjectAndBody(subject: string, html: string, scheduledPopulate
     bodyPlaceholders[SESSION_URL_PLACEHOLDER] = scheduledPopulatedEmail.sessionUrl;
   }
   let filledHtml = fillPlaceholders(html, bodyPlaceholders);
-  if (scheduledPopulatedEmail.slidoId) {
-    filledHtml += `<p>Important: answer our survey here during the session: https://app.sli.do/event/${scheduledPopulatedEmail.slidoId}/live/questions?user_email=${scheduledPopulatedEmail.user.email}</p>`;
+  if (scheduledPopulatedEmail.surveyUrl) {
+    const url = `${scheduledPopulatedEmail.surveyUrl}?user_email=${scheduledPopulatedEmail.user.email}`; // user_email is a special Slido parameter.
+    filledHtml += `<p>Important: <strong><a href="${url}">answer our survey</a></strong> during the session.</p>`;
   }
   return { filledSubject, filledHtml };
 }

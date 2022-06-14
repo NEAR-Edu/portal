@@ -26,7 +26,7 @@ async function getScheduledEmails(dateTimeUtc: string): Promise<ScheduledPopulat
     const scheduledPopulatedEmail = scheduledEmail;
     if (scheduleRecord) {
       scheduledPopulatedEmail.sessionUrl = scheduleRecord.sessionUrl;
-      scheduledPopulatedEmail.slidoId = scheduleRecord.slidoId;
+      scheduledPopulatedEmail.surveyUrl = scheduleRecord.surveyUrl;
     }
     return scheduledPopulatedEmail;
   });
