@@ -1,7 +1,10 @@
 import { getCsrfToken, getSession } from 'next-auth/react';
 import Auth from '../components/Auth';
 import Layout from '../components/layout';
+import ProgramOption from '../components/ProgramOption';
+import { ScheduleRecordObj } from '../helpers/airtable';
 import { profilePath } from '../helpers/paths';
+import { getUpcomingSchedule } from '../helpers/registrations';
 import { pluckFlash, withSessionSsr } from '../helpers/session';
 import { Flash } from '../helpers/types';
 
@@ -21,12 +24,26 @@ export const getServerSideProps = withSessionSsr(async (context) => {
   const flash = await pluckFlash(req);
   console.log('index props', { flash });
   const csrfToken = await getCsrfToken(context);
+  const { scheduleRecords, futureScheduleIdsEnrolledAlready } = await getUpcomingSchedule();
+  console.log({ scheduleRecords, futureScheduleIdsEnrolledAlready });
   return {
-    props: { flash, csrfToken }, // will be passed to the page component as props
+    props: { flash, csrfToken, scheduleRecords, futureScheduleIdsEnrolledAlready }, // will be passed to the page component as props
   };
 });
 
-export default function IndexPage({ flash, csrfToken }: { flash: Flash; csrfToken: string }) {
+// eslint-disable-next-line max-lines-per-function
+export default function IndexPage({
+  flash,
+  csrfToken,
+  scheduleRecords,
+  futureScheduleIdsEnrolledAlready,
+}: {
+  flash: Flash;
+  csrfToken: string;
+  scheduleRecords: ScheduleRecordObj[];
+  futureScheduleIdsEnrolledAlready: string[];
+}) {
+  console.log({ scheduleRecords, futureScheduleIdsEnrolledAlready });
   return (
     <Layout flash={flash}>
       <div className="row">
@@ -41,6 +58,11 @@ export default function IndexPage({ flash, csrfToken }: { flash: Flash; csrfToke
         </div>
       </div>
       <h2 className="text-center mt-5">Upcoming Schedule</h2>
+      <div>
+        {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => {
+          return <ProgramOption scheduleRecord={scheduleRecord} key={scheduleRecord.id} checked={null} />;
+        })}
+      </div>
     </Layout>
   );
 }
