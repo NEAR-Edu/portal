@@ -72,6 +72,7 @@ export function sendEmailsNow(scheduledPopulatedEmails: ScheduledPopulatedEmail[
   const successes: string[] = [];
   const errors: KeyValueStringPairs = {};
   scheduledPopulatedEmails.forEach(async (scheduledPopulatedEmail: ScheduledPopulatedEmail) => {
+    // ONEDAY: https://docs.sendgrid.com/for-developers/sending-email/substitution-tags from https://stackoverflow.com/a/35040850/470749
     const { id, user, subject, html, scheduledSendTimeUtc } = scheduledPopulatedEmail;
     const { filledSubject, filledHtml } = populateSubjectAndBody(subject, html, scheduledPopulatedEmail);
     const to = user.email as string;

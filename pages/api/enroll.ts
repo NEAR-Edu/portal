@@ -28,6 +28,8 @@ function getEmailDetails(scheduleRecord: ScheduleRecordObj, timeZone: string) {
 }
 
 async function scheduleReminderEmail(scheduleRecord: ScheduleRecordObj, user: User) {
+  // https://docs.sendgrid.com/for-developers/sending-email/scheduling-parameters only allows scheduling up to 72 hours in advance, *and* it would need to know the final subject and body now rather than at send-time. So we use a custom table and cron job instead.
+  // https://stackoverflow.com/questions/68850989/sending-an-email-batch-with-sendgrid-v3#comment128299395_68901985
   const scheduledSendTimeUtc = getMomentBefore(scheduleRecord.start, REMINDER_EMAIL_MINS, 'minutes');
   // TODO: Fix these params. The message should probably be similar to getEmailDetails.
   const html = `Click here to enter the session at ${scheduleRecord.start} UTC: ${SESSION_URL_PLACEHOLDER}`;
