@@ -1,4 +1,5 @@
 /* eslint-disable import/prefer-default-export */
+import { EmailConfig } from 'next-auth/providers';
 import nodemailer from 'nodemailer';
 
 // https://next-auth.js.org/providers/email#customizing-emails
@@ -61,7 +62,17 @@ function text({ url, host }: Record<'url' | 'host', string>) {
   return `Sign in to ${host}\n${url}\n\n`;
 }
 
-export async function sendVerificationRequest({ identifier: email, url, provider: { server, from } }: any) {
+export async function sendVerificationRequest({
+  identifier: email,
+  url,
+  provider: { server, from },
+}: {
+  identifier: string;
+  url: string;
+  expires: Date;
+  provider: EmailConfig;
+  token: string;
+}) {
   const { host } = new URL(url);
   const transport = nodemailer.createTransport(server);
   await transport.sendMail({
