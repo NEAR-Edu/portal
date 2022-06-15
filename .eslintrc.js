@@ -31,6 +31,25 @@ module.exports = {
     'no-else-return': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/function-component-definition': 'off',
+    // ------------------------------
+    // https://stackoverflow.com/a/65230468/470749
+    'jsx-a11y/label-has-associated-control': [
+      'error',
+      {
+        required: {
+          some: ['nesting', 'id'],
+        },
+      },
+    ],
+    'jsx-a11y/label-has-for': [
+      'error',
+      {
+        required: {
+          some: ['nesting', 'id'],
+        },
+      },
+    ],
+    // ------------------------------
   },
   reportUnusedDisableDirectives: true, // https://eslint.org/docs/user-guide/configuring#report-unused-eslint-disable-comments
 };

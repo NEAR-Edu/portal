@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable jsx-a11y/label-has-associated-control */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { User } from '.prisma/client';
 import { Radio, RadioGroup, Select, TextInput } from '@mantine/core';
@@ -183,24 +182,37 @@ export default function ProfilePage({ user, flash }: { user: User; flash: Flash 
         <ProgrammingLanguages defaultValue={userState.programmingLanguages ?? ''} />
         <FrameworksAndPlatforms defaultValue={userState.frameworksAndPlatforms ?? ''} />
         <div>
-          <label className="question mt-5">Why are you joining us for this course?</label>
+          <label className="question mt-5" htmlFor="whyJoin">
+            Why are you joining us for this course?
+          </label>
           <div className="hint">Please choose as many of the following options as you like.</div>
           <WhyJoin defaultValue={userState.whyJoin ?? ''} />
         </div>
         <LeadSource defaultValue={userState.leadSource ?? ''} />
         {referralOptions.includes(userState.leadSource || '') && (
           <div>
-            <label className="question mt-5">Who referred you?</label>
-            <input type="text" name="referrer" defaultValue={userState.referrer ?? ''} className="form-control" onChange={handleChange} />
+            <label className="question mt-5" htmlFor="referrer">
+              Who referred you?
+            </label>
+            <input type="text" id="referrer" name="referrer" defaultValue={userState.referrer ?? ''} className="form-control" onChange={handleChange} />
           </div>
         )}
         {userState.leadSource === referralProgram && (
           <div>
-            <label className="question mt-5">Referral Account</label>
+            <label className="question mt-5" htmlFor="referrerMainnetAccount">
+              Referral Account
+            </label>
             <div className="hint">
               Please provide the NEAR MainNet account of the person or organization who referred you (and the account name must end in &ldquo;.near&rdquo;).
             </div>
-            <input type="text" name="referrerMainnetAccount" defaultValue={userState.referrerMainnetAccount ?? ''} className="form-control" onChange={handleChange} />
+            <input
+              type="text"
+              id="referrerMainnetAccount"
+              name="referrerMainnetAccount"
+              defaultValue={userState.referrerMainnetAccount ?? ''}
+              className="form-control"
+              onChange={handleChange}
+            />
           </div>
         )}
         <TextInput label="NEAR TestNet Account" placeholder="example.testnet" required {...getProps('testnetAccount')} ref={testnetFieldRef} />
@@ -221,7 +233,9 @@ export default function ProfilePage({ user, flash }: { user: User; flash: Flash 
           .)
         </div>
         <div>
-          <label className="question mt-5">Discord Account</label>
+          <label className="question mt-5" htmlFor="discordAccount">
+            Discord Account
+          </label>
           <div className="hint">
             Please include you full username (e.g. ben#4452) (Optional) (Don&rsquo;t have one? Register at{' '}
             <a href="https://discord.gg/k4pxafjMWA" target="_blank" rel="noreferrer">
@@ -229,7 +243,15 @@ export default function ProfilePage({ user, flash }: { user: User; flash: Flash 
             </a>
             )
           </div>
-          <input type="text" name="discordAccount" placeholder="ben#4452" defaultValue={userState.discordAccount ?? ''} className="form-control" onChange={handleChange} />
+          <input
+            type="text"
+            id="discordAccount"
+            name="discordAccount"
+            placeholder="ben#4452"
+            defaultValue={userState.discordAccount ?? ''}
+            className="form-control"
+            onChange={handleChange}
+          />
         </div>
         <button type="submit" className="btn btn-primary mt-5">
           Continue ➔

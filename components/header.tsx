@@ -10,37 +10,33 @@ import HeaderLogo from './HeaderLogo';
 export default function Header() {
   const { data: session } = useSession();
 
-  if (session) {
-    return (
-      <header className="container-lg">
-        <div className="row">
-          <div className="col-9">
-            <HeaderLogo />
-          </div>
-          <div className={`col-3 text-end ${styles.signedInStatus}`}>
-            {session?.user && (
-              <>
-                {session.user.image && <span style={{ backgroundImage: `url('${session.user.image}')` }} className={styles.avatar} />}
-                <div className={styles.signedInText}>
-                  <strong>{session.user.email ?? session.user.name}</strong>
-                </div>
-                <a
-                  href="/api/auth/signout"
-                  className={styles.button}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    signOut();
-                  }}
-                >
-                  Sign out
-                </a>
-              </>
-            )}
-          </div>
+  return (
+    <header className="container-lg">
+      <div className="row">
+        <div className="col-9">
+          <HeaderLogo />
         </div>
-      </header>
-    );
-  } else {
-    return <HeaderLogo />;
-  }
+        <div className={`col-3 text-end ${styles.signedInStatus}`}>
+          {session?.user && (
+            <>
+              {session.user.image && <span style={{ backgroundImage: `url('${session.user.image}')` }} className={styles.avatar} />}
+              <div className={styles.signedInText}>
+                <strong>{session.user.email ?? session.user.name}</strong>
+              </div>
+              <a
+                href="/api/auth/signout"
+                className={styles.button}
+                onClick={(e) => {
+                  e.preventDefault();
+                  signOut();
+                }}
+              >
+                Sign out
+              </a>
+            </>
+          )}
+        </div>
+      </div>
+    </header>
+  );
 }

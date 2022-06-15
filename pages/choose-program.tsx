@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Registration } from '.prisma/client';
 import { PrismaClient } from '@prisma/client';

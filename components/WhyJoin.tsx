@@ -8,7 +8,7 @@ export default function WhyJoin({ defaultValue }: { defaultValue: string }) {
   const [value, setValue] = useState(defaultValue ? defaultValue.split(',') : undefined);
 
   return (
-    <Chips value={value} onChange={setValue} multiple name="whyJoin">
+    <Chips value={value} onChange={setValue} multiple id="whyJoin" name="whyJoin">
       {options.map((option) => {
         return (
           <Chip value={option} key={option}>
