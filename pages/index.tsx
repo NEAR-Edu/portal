@@ -60,7 +60,7 @@ export default function IndexPage({
       <h2 className="text-center mt-5">Upcoming Schedule</h2>
       <div>
         {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => {
-          return <ProgramOption scheduleRecord={scheduleRecord} key={scheduleRecord.id} checked={null} />;
+          return <ProgramOption scheduleRecord={scheduleRecord} key={scheduleRecord.id} />;
         })}
       </div>
     </Layout>

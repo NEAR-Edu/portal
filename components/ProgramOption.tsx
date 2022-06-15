@@ -19,10 +19,15 @@ function RelativeTime({ startDateTime }: { startDateTime: string }): JSX.Element
   return result;
 }
 
+const defaultProps = {
+  checked: null,
+};
+
+type DefaultProps = Partial<typeof defaultProps>; // https://stackoverflow.com/a/63358555/470749
+
 type ProgramOptionProps = {
   scheduleRecord: ScheduleRecordObj;
-  checked: boolean | null;
-};
+} & DefaultProps;
 
 function MainPart({ scheduleRecord, checked }: ProgramOptionProps) {
   const startLocalDateTime = new Date(scheduleRecord.start);
@@ -47,8 +52,7 @@ function MainPart({ scheduleRecord, checked }: ProgramOptionProps) {
 }
 
 export default function ProgramOption({ scheduleRecord, checked = null }: ProgramOptionProps) {
-  const isInteractive = checked !== null;
-
+  const isInteractive = checked !== null; // Only if the `checked` prop exists and is not null will this component include the label and input element.
   const boldBorder = checked ? 'border-2' : '';
   return (
     <div>
@@ -70,7 +74,3 @@ export default function ProgramOption({ scheduleRecord, checked = null }: Progra
     </div>
   );
 }
-
-// ProgramOption.defaultProps = {
-//   checked: null,
-// };
