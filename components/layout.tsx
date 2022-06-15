@@ -25,7 +25,7 @@ export default function Layout({ children, flash }: Props) {
       </Head>
       <Header />
       <ToastContainer />
-      <main>{children}</main>
+      <main className="container-lg">{children}</main>
       <Footer />
     </>
   );
