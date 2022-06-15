@@ -35,7 +35,7 @@ function sendErrorReport(subject: string, html: string) {
 function fillPlaceholders(originalValue: string, placeholders: KeyValueStringPairs): string {
   let cleaned = originalValue;
   Object.keys(placeholders).forEach((key) => {
-    cleaned = cleaned.replaceAll(key, placeholders[key]);
+    cleaned = cleaned.replaceAll(key, placeholders[key]); // https://stackoverflow.com/questions/72637010/replaceall-is-not-working-in-next-js-node-js-when-deployed-to-render-com-ser
   });
   return cleaned;
 }

@@ -12,7 +12,7 @@ export function getShortLocalizedDate(dateTime: Date): string {
     timeStyle: 'short',
   })
     .format(dateTime)
-    .replaceAll(',', '');
+    .replaceAll(',', ''); // https://stackoverflow.com/questions/72637010/replaceall-is-not-working-in-next-js-node-js-when-deployed-to-render-com-ser
   const timeZoneAbbrev = new Intl.DateTimeFormat(locale, {
     day: '2-digit',
     timeZoneName: 'short',
