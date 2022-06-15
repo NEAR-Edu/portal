@@ -8,6 +8,7 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 // import AppleProvider from "next-auth/providers/apple"
 import EmailProvider from 'next-auth/providers/email';
 import * as Prisma from '@prisma/client';
+import { sendVerificationRequest } from '../../../helpers/nextAuthEmailProvider';
 
 const prisma = new Prisma.PrismaClient();
 
@@ -35,13 +36,15 @@ export default NextAuth({
   },
   pages: {
     // https://next-auth.js.org/configuration/pages
-    signIn: '/auth/signin',
+    signIn: '/',
+    verifyRequest: '/auth/verify-request',
   },
   // https://next-auth.js.org/configuration/providers/oauth
   providers: [
     EmailProvider({
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
+      sendVerificationRequest,
     }),
     /* 
     // Temporarily removing the Apple provider from the demo site as the
