@@ -1,4 +1,4 @@
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient, Registration, User } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../../helpers/airtable';
@@ -27,13 +27,21 @@ function getEmailDetails(scheduleRecord: ScheduleRecordObj, timeZone: string) {
   return { subject, body };
 }
 
-async function scheduleReminderEmail(scheduleRecord: ScheduleRecordObj, user: User) {
+async function scheduleReminderEmail(scheduleRecord: ScheduleRecordObj, user: User, registration: Registration) {
   // https://docs.sendgrid.com/for-developers/sending-email/scheduling-parameters only allows scheduling up to 72 hours in advance, *and* it would need to know the final subject and body now rather than at send-time. So we use a custom table and cron job instead.
   // https://stackoverflow.com/questions/68850989/sending-an-email-batch-with-sendgrid-v3#comment128299395_68901985
   const scheduledSendTimeUtc = getMomentBefore(scheduleRecord.start, REMINDER_EMAIL_MINS, 'minutes');
   // TODO: Fix these params. The message should probably be similar to getEmailDetails.
   const html = `Click here to enter the session at ${scheduleRecord.start} UTC: ${SESSION_URL_PLACEHOLDER}`;
-  scheduleEmail(scheduledSendTimeUtc, user.id, `Starting in ${REMINDER_EMAIL_MINS} minutes: ${scheduleRecord.programName}`, html, defaultSender, scheduleRecord.id);
+  scheduleEmail(
+    scheduledSendTimeUtc,
+    user.id,
+    `Starting in ${REMINDER_EMAIL_MINS} minutes: ${scheduleRecord.programName}`,
+    html,
+    defaultSender,
+    scheduleRecord.id,
+    registration.id,
+  );
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -60,12 +68,12 @@ const handler = withSessionRoute(async (req: NextApiRequest, res: NextApiRespons
         userId: user.id,
       };
       console.log('saving data', data);
-      const result = await prisma.registration.create({ data });
+      const registrationResult = await prisma.registration.create({ data });
       const scheduleRecord = getScheduleRecord(scheduleId, scheduleRecords);
       const { subject, body } = getEmailDetails(scheduleRecord, user.timeZone as string);
       sendEmailNow(user.email as string, subject, body);
-      scheduleReminderEmail(scheduleRecord, user);
-      console.log('saved', { result });
+      scheduleReminderEmail(scheduleRecord, user, registrationResult);
+      console.log('saved', { registrationResult });
     });
     const flashMessage = `You will receive ${scheduleIds.length} confirmation email(s) since you just enrolled in: ${JSON.stringify({ scheduleIds })}.`;
     await setFlashVariable(req, flashMessage, 'success'); // ONEDAY Add a message about which (if any) were *just* enrolled during this request. Should await all promises to complete and should pass along only the scheduleIds that were confirmed to be saved.

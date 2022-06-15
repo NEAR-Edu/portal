@@ -100,7 +100,7 @@ export function sendEmailsNow(scheduledPopulatedEmails: ScheduledPopulatedEmail[
   return null;
 }
 
-export async function scheduleEmail(scheduledSendTimeUtc: string, userId: string, subject: string, html: string, from: string, scheduleId: string) {
+export async function scheduleEmail(scheduledSendTimeUtc: string, userId: string, subject: string, html: string, from: string, scheduleId: string, registrationId: string) {
   const prisma = new PrismaClient();
   const data = {
     scheduledSendTimeUtc,
@@ -108,7 +108,8 @@ export async function scheduleEmail(scheduledSendTimeUtc: string, userId: string
     subject,
     html,
     from,
-    scheduleId,
+    scheduleId, // currently this refers to Airtable
+    registrationId,
   };
   const result = await prisma.scheduledEmail.create({ data });
   return result;
