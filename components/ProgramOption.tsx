@@ -1,3 +1,4 @@
+import React from 'react';
 import { ScheduleRecordObj } from '../helpers/airtable';
 import { getShortLocalizedDate } from '../helpers/string';
 import { timeFromNowIfSoon } from '../helpers/time';
@@ -19,20 +20,15 @@ function RelativeTime({ startDateTime }: { startDateTime: string }): JSX.Element
   return result;
 }
 
-const defaultProps = {
-  checked: null,
-};
-
-type DefaultProps = Partial<typeof defaultProps>; // https://stackoverflow.com/a/63358555/470749
-
-type ProgramOptionProps = {
+export interface ProgramOptionProps {
   scheduleRecord: ScheduleRecordObj;
-} & DefaultProps;
+  checked?: boolean;
+}
 
 function SessionDetails({ scheduleRecord, checked }: ProgramOptionProps) {
   const startLocalDateTime = new Date(scheduleRecord.start);
   const startLocal = getShortLocalizedDate(startLocalDateTime);
-  const isInteractive = checked !== null;
+  const isInteractive = checked !== undefined;
   return (
     <div className={`d-inline-block ${isInteractive ? '' : 'd-block border border-secondary rounded-3 mb-2 p-2'}`}>
       <div className={checked ? 'fw-bold' : ''}>
@@ -52,8 +48,12 @@ function SessionDetails({ scheduleRecord, checked }: ProgramOptionProps) {
   );
 }
 
-export default function ProgramOption({ scheduleRecord, checked = null }: ProgramOptionProps) {
-  const isInteractive = checked !== null; // Only if the `checked` prop exists and is not null will this component include the label and input element.
+SessionDetails.defaultProps = {
+  checked: undefined,
+};
+
+export default function ProgramOption({ scheduleRecord, checked }: ProgramOptionProps) {
+  const isInteractive = checked !== undefined; // Only if the `checked` prop exists and is not null will this component include the label and input element.
   const boldBorder = checked ? 'border-2' : '';
   return (
     <div>
@@ -75,3 +75,7 @@ export default function ProgramOption({ scheduleRecord, checked = null }: Progra
     </div>
   );
 }
+
+ProgramOption.defaultProps = {
+  checked: undefined,
+};
