@@ -29,11 +29,12 @@ type ProgramOptionProps = {
   scheduleRecord: ScheduleRecordObj;
 } & DefaultProps;
 
-function MainPart({ scheduleRecord, checked }: ProgramOptionProps) {
+function SessionDetails({ scheduleRecord, checked }: ProgramOptionProps) {
   const startLocalDateTime = new Date(scheduleRecord.start);
   const startLocal = getShortLocalizedDate(startLocalDateTime);
+  const isInteractive = checked !== null;
   return (
-    <div className="d-inline-block">
+    <div className={`d-inline-block ${isInteractive ? '' : 'd-block border border-secondary rounded-3 mb-2 p-2'}`}>
       <div className={checked ? 'fw-bold' : ''}>
         {scheduleRecord.programName}
         <span className="text-muted ms-2">({scheduleRecord.duration})</span>
@@ -67,10 +68,10 @@ export default function ProgramOption({ scheduleRecord, checked = null }: Progra
             defaultChecked={checked}
             disabled={checked}
           />
-          <MainPart scheduleRecord={scheduleRecord} checked={checked} />
+          <SessionDetails scheduleRecord={scheduleRecord} checked={checked} />
         </label>
       )}
-      {!isInteractive && <MainPart scheduleRecord={scheduleRecord} checked={checked} />}
+      {!isInteractive && <SessionDetails scheduleRecord={scheduleRecord} checked={checked} />}
     </div>
   );
 }
