@@ -46,18 +46,20 @@ export default function IndexPage({
   console.log({ scheduleRecords, futureScheduleIdsEnrolledAlready });
   return (
     <Layout flash={flash}>
-      <div className="row">
+      <div className="row loggedOutHero">
+        <div className="coloredBlurBackground" />
         <div className="col-6">
           <h1>The best place to learn NEAR</h1>
 
           <p>Use the NEAR University Student Portal to enroll in courses, collect certificates, and track your progress!</p>
-        </div>
-        <div className="col-6" style={{ backgroundColor: 'hsl(0deg 0% 95%)', padding: '2rem' }}>
-          <h3>Create your account to start learning (Free!)</h3>
+
           <Auth csrfToken={csrfToken} />
         </div>
+        <div className="col-6 text-center" style={{ padding: '2rem' }}>
+          <img src="/img/triangularSphere.svg" alt="triangular sphere" />
+        </div>
       </div>
-      <h2 className="text-center mt-5">Upcoming Schedule</h2>
+      <h2 className="text-center mt-5">Upcoming sessions</h2>
       <div>
         {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => {
           return <ProgramOption scheduleRecord={scheduleRecord} key={scheduleRecord.id} />;

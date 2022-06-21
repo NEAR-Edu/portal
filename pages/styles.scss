@@ -58,7 +58,7 @@ div.mantine-RadioGroup-label,
 }
 
 .form-control::placeholder {
-  color: hsl(210deg 11% 71%);
+  // color: hsl(210deg 11% 71%);
 }
 
 .hint {
@@ -85,4 +85,30 @@ div.mantine-RadioGroup-label,
 .mantine-Select-description {
   font-size: 0.9rem;
   margin-top: 0.5rem;
+}
+
+.coloredBlurBackground {
+  // TODO
+  position: absolute;
+  width: 1000px;
+  min-height: 1000px;
+  background: linear-gradient(185.3deg, #e6f9ff 16.29%, #ffe3f7 93.88%);
+  filter: blur(250px);
+  transform: matrix(-0.88, -0.56, 0.44, -0.85, 0, 0);
+  z-index: -1;
+  right: 0;
+  top: -10rem;
+}
+
+.loggedOutHero {
+  position: relative;
+  h1,
+  p {
+    font-family: 'Manrope', sans-serif;
+    color: black;
+  }
+}
+
+div {
+  z-index: 2;
 }
