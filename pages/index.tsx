@@ -1,4 +1,5 @@
 import { getCsrfToken, getSession } from 'next-auth/react';
+import Head from 'next/head';
 import Auth from '../components/Auth';
 import Layout from '../components/layout';
 import ProgramOption from '../components/ProgramOption';
@@ -46,6 +47,9 @@ export default function IndexPage({
   console.log({ scheduleRecords, futureScheduleIdsEnrolledAlready });
   return (
     <Layout flash={flash}>
+      <Head>
+        <title>NEAR University Student Portal</title>
+      </Head>
       <div className="row loggedOutHero">
         <div className="coloredBlurBackground" />
         <div className="col-6">
@@ -59,7 +63,7 @@ export default function IndexPage({
           <img src="/img/triangularSphere.svg" alt="triangular sphere" />
         </div>
       </div>
-      <h2 className="text-center mt-5">Upcoming sessions</h2>
+      <h2 className="text-center mt-5 mb-5">Upcoming sessions</h2>
       <div>
         {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => {
           return <ProgramOption scheduleRecord={scheduleRecord} key={scheduleRecord.id} />;

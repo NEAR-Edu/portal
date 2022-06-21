@@ -16,6 +16,7 @@ export type ScheduleRecordObj = {
   start: string;
   duration: string;
   description: string;
+  colorCode: string;
   programId: string;
   programName: string;
   link: string;
@@ -39,6 +40,7 @@ function getScheduleRecordAsObj(record: Record<FieldSet>): ScheduleRecordObj {
   obj.start = record.get('start datetime') as string;
   obj.duration = record.get('duration') as string;
   obj.description = getFirstElement(record, 'description (from program)');
+  obj.colorCode = record.get('Color code') as string;
   // obj.startLocalized = new Date(obj.start).toString();
   obj.programId = getFirstElement(record, 'program');
   obj.programName = getFirstElement(record, 'program name');

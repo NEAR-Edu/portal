@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope&display=swap');
 
 body {
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  // font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  font-family: 'Manrope', sans-serif;
   padding: 0 1rem 1rem 1rem;
   margin: 0;
   background: #fff;
@@ -26,7 +26,6 @@ main {
   span {
     color: #676767;
     margin-left: 1rem;
-    font-family: 'Manrope', sans-serif;
   }
 }
 
@@ -104,11 +103,30 @@ div.mantine-RadioGroup-label,
   position: relative;
   h1,
   p {
-    font-family: 'Manrope', sans-serif;
     color: black;
   }
 }
 
 div {
   z-index: 2;
+}
+
+.sessionRow {
+  padding: 1rem 3rem !important;
+  margin-bottom: 3rem !important;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+
+  &:first-child {
+    box-shadow: 0px 16px 24px rgba(69, 77, 99, 0.2);
+  }
+
+  .col-6:first-child {
+    border-left: 8px solid black !important;
+    padding-left: 2rem;
+  }
+
+  .sessionTitle {
+    font-size: 1.7rem;
+  }
 }
