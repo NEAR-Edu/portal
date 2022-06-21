@@ -1,6 +1,7 @@
 /* Set min-height to avoid page reflow while session loading */
 .signedInStatus {
   min-height: 4rem;
+  font-family: 'Manrope', sans-serif;
 }
 
 .loading {
@@ -13,7 +14,6 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  display: inherit;
   z-index: 1;
   line-height: 1.3rem;
 }
@@ -43,4 +43,10 @@
 
 .buttonPrimary:hover {
   box-shadow: inset 0 0 5rem rgba(0, 0, 0, 0.2);
+}
+
+.signOutButton {
+  color: #5f8afa;
+  text-decoration: none;
+  margin-left: 1rem;
 }

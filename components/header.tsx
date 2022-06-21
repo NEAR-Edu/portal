@@ -13,19 +13,19 @@ export default function Header() {
   return (
     <header className="container-lg">
       <div className="row">
-        <div className="col-9">
+        <div className="col-6">
           <HeaderLogo />
         </div>
-        <div className={`col-3 text-end ${styles.signedInStatus}`}>
+        <div className={`col-6 text-end ${styles.signedInStatus}`}>
           {session?.user && (
             <>
               {session.user.image && <span style={{ backgroundImage: `url('${session.user.image}')` }} className={styles.avatar} />}
-              <div className={styles.signedInText}>
+              <span className={styles.signedInText}>
                 <strong>{session.user.email ?? session.user.name}</strong>
-              </div>
+              </span>
               <a
                 href="/api/auth/signout"
-                className={styles.button}
+                className={styles.signOutButton}
                 onClick={(e) => {
                   e.preventDefault();
                   signOut();

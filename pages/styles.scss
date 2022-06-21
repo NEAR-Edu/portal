@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope&display=swap');
+
 body {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -20,6 +22,11 @@ main {
     img {
       margin-right: 0.5rem;
     }
+  }
+  span {
+    color: #676767;
+    margin-left: 1rem;
+    font-family: 'Manrope', sans-serif;
   }
 }
 
