@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScheduleRecordObj } from '../helpers/airtable';
 import { getFullLocalizedDate } from '../helpers/string';
-import { timeFromNowIfSoon } from '../helpers/time';
+import { getTimeRange, timeFromNowIfSoon } from '../helpers/time';
 
 const cutoffValueForHighlightingRelativeTime = 24;
 const cutoffUnitForHighlightingRelativeTime = 'hour'; // https://day.js.org/docs/en/display/difference
@@ -11,7 +11,7 @@ function RelativeTime({ startDateTime }: { startDateTime: string }): JSX.Element
   const result = relativeTime ? (
     <>
       {' '}
-      <span style={{ background: 'yellow' }}>({relativeTime})</span>
+      <span className="startsSoon">({relativeTime})</span>
     </>
   ) : (
     // eslint-disable-next-line react/jsx-no-useless-fragment
@@ -28,6 +28,7 @@ export interface ProgramOptionProps {
 function SessionDetails({ scheduleRecord, checked }: ProgramOptionProps) {
   const startLocalDateTime = new Date(scheduleRecord.start);
   const fullLocalizedDate = getFullLocalizedDate(startLocalDateTime);
+  const timeRange = getTimeRange(startLocalDateTime, scheduleRecord.duration);
   const isInteractive = checked !== undefined;
   return (
     <div className={`row sessionRow ${isInteractive ? '' : 'rounded-3 mb-2 p-2'}`}>
@@ -39,9 +40,16 @@ function SessionDetails({ scheduleRecord, checked }: ProgramOptionProps) {
         </div>
       </div>
       <div className="col-6">
-        <div data-utc={startLocalDateTime.toUTCString()} data-iso={startLocalDateTime.toISOString()}>
+        <div
+          data-utc={startLocalDateTime.toUTCString()}
+          data-iso={startLocalDateTime.toISOString()}
+          style={{ backgroundImage: 'url(/img/calendar-icon.svg)', backgroundRepeat: 'no-repeat', paddingLeft: '2rem', fontWeight: 'bold!important' }}
+        >
           {fullLocalizedDate}
           <RelativeTime startDateTime={scheduleRecord.start} />
+        </div>
+        <div className="mt-3" style={{ backgroundImage: 'url(/img/clock-icon.svg)', backgroundRepeat: 'no-repeat', paddingLeft: '2rem', fontWeight: 'bold!important' }}>
+          {timeRange}
         </div>
       </div>
     </div>

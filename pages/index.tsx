@@ -51,7 +51,6 @@ export default function IndexPage({
         <title>NEAR University Student Portal</title>
       </Head>
       <div className="row loggedOutHero">
-        <div className="coloredBlurBackground" />
         <div className="col-6">
           <h1>The best place to learn NEAR</h1>
 
@@ -61,6 +60,24 @@ export default function IndexPage({
         </div>
         <div className="col-6 text-center" style={{ padding: '2rem' }}>
           <img src="/img/triangularSphere.svg" alt="triangular sphere" />
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-3">
+          <h4>Verify your email address</h4>
+          <p className="hint">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+        </div>
+        <div className="col-3">
+          <h4>Tell us about yourself</h4>
+          <p className="hint">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+        </div>
+        <div className="col-3">
+          <h4>Enroll in programs</h4>
+          <p className="hint">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+        </div>
+        <div className="col-3">
+          <h4>Start learning!</h4>
+          <p className="hint">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
         </div>
       </div>
       <h2 className="text-center mt-5 mb-5">Upcoming sessions</h2>

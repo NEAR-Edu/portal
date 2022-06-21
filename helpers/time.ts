@@ -4,6 +4,7 @@ import utc from 'dayjs/plugin/utc'; // https://day.js.org/docs/en/plugin/utc
 import timezone from 'dayjs/plugin/timezone'; // https://day.js.org/docs/en/timezone/converting-to-zone
 import advancedFormat from 'dayjs/plugin/advancedFormat'; // https://day.js.org/docs/en/plugin/advanced-format
 import relativeTime from 'dayjs/plugin/relativeTime'; // https://day.js.org/docs/en/plugin/relative-time
+import { getShortTime, getTimeZoneAbbrev } from './string';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -39,4 +40,22 @@ export function getNowUtc(): string {
 
 export function getMomentBefore(moment: string, value: number, unit: ManipulateType): string {
   return dayjs(moment).subtract(value, unit).format();
+}
+
+function parseDuration(duration: string): { durationValue: number; durationUnit: ManipulateType } {
+  const durationValue = parseInt(duration, 10);
+  const durationUnit: ManipulateType = duration.includes('day') ? 'day' : 'hour'; // ONEDAY: Check that this is correct.
+  console.log({ durationValue, durationUnit });
+  return { durationValue, durationUnit };
+}
+
+export function getEndTime(startDateTime: Date, duration: string): Date {
+  const { durationValue, durationUnit } = parseDuration(duration);
+  return dayjs(startDateTime).add(durationValue, durationUnit).toDate();
+}
+
+export function getTimeRange(startDateTime: Date, duration: string): string {
+  const endDateTime = getEndTime(startDateTime, duration);
+  const timeZoneAbbrev = getTimeZoneAbbrev(startDateTime);
+  return `${getShortTime(startDateTime)} - ${getShortTime(endDateTime)} ${timeZoneAbbrev}`;
 }
