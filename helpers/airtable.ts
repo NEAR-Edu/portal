@@ -50,11 +50,17 @@ function getScheduleRecordAsObj(record: Record<FieldSet>): ScheduleRecordObj {
   return obj;
 }
 
-export async function getScheduleRecordsFromAllPages(filterByFormula = filterToFuture, sort = sortAscByDate): Promise<ScheduleRecordObj[]> {
+// eslint-disable-next-line max-lines-per-function
+export async function getAllPages<AirtableRecordType>(
+  table: string,
+  callback: (record: Record<FieldSet>) => AirtableRecordType,
+  filterByFormula = filterToFuture,
+  sort = sortAscByDate,
+): Promise<AirtableRecordType[]> {
   let pageNum = 1;
   let allRecords: Record<FieldSet>[] = [];
   return new Promise((resolve, reject) => {
-    base('nc-schedule')
+    base(table)
       .select({
         // https://airtable.com/appncY8IjPHkOVapz/tblAQvNRZbf8Nz4ot/viw4v5iOEpxNfsEhm?blocks=hide
         // maxRecords: 3,
@@ -83,13 +89,18 @@ export async function getScheduleRecordsFromAllPages(filterByFormula = filterToF
           }
 
           const result = allRecords.map((record) => {
-            return getScheduleRecordAsObj(record);
+            return callback(record);
           });
 
           resolve(result);
         },
       );
   });
+}
+
+export async function getScheduleRecordsFromAllPages(filterByFormula = filterToFuture, sort = sortAscByDate): Promise<ScheduleRecordObj[]> {
+  const table = 'nc-schedule';
+  return getAllPages<ScheduleRecordObj>(table, getScheduleRecordAsObj, filterByFormula, sort);
 }
 
 export async function getFutureScheduleRecords(): Promise<ScheduleRecordObj[]> {
