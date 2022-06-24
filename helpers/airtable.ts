@@ -1,3 +1,7 @@
+// API Docs: https://airtable.com/appncY8IjPHkOVapz/api/docs
+// https://github.com/Airtable/airtable.js
+// Example of fetching multiple pages: https://github.com/Airtable/airtable.js/blob/master/test/test_files/index.html
+
 import Airtable, { FieldSet, Record } from 'airtable';
 import { SortParameter } from 'airtable/lib/query_params';
 import 'dotenv/config';
@@ -24,7 +28,7 @@ export type ScheduleRecordObj = {
   surveyUrl: string;
 };
 
-function getFirstElement(record: Record<FieldSet>, key: string): string {
+export function getFirstElement(record: Record<FieldSet>, key: string): string {
   const arr = record.get(key) as ReadonlyArray<string>;
   return arr[0];
 }
@@ -48,6 +52,24 @@ function getScheduleRecordAsObj(record: Record<FieldSet>): ScheduleRecordObj {
   obj.sessionUrl = (record.get('sessionUrl') as string) ?? null; // e.g. for Zoom
   obj.surveyUrl = (record.get('surveyUrl') as string) ?? null;
   return obj;
+}
+
+export async function getFirstPage<AirtableRecordType>(table: string, callback: (record: Record<FieldSet>) => AirtableRecordType) {
+  return new Promise((resolve, reject) => {
+    base(table)
+      .select({})
+      .firstPage((err, records = []) => {
+        if (err) {
+          console.error(err);
+          reject();
+        } else {
+          const result = records.map((record) => {
+            return callback(record);
+          });
+          resolve(result);
+        }
+      });
+  });
 }
 
 // eslint-disable-next-line max-lines-per-function
