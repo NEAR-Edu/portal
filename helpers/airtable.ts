@@ -54,7 +54,7 @@ function getScheduleRecordAsObj(record: Record<FieldSet>): ScheduleRecordObj {
   return obj;
 }
 
-export async function getFirstPage<AirtableRecordType>(table: string, callback: (record: Record<FieldSet>) => AirtableRecordType) {
+export async function getFirstPage<AirtableRecordType>(table: string, callback: (record: Record<FieldSet>) => AirtableRecordType): Promise<AirtableRecordType[]> {
   return new Promise((resolve, reject) => {
     base(table)
       .select({})
