@@ -32,14 +32,14 @@ function SessionDetails({ scheduleRecord, checked }: ProgramOptionProps) {
   const isInteractive = checked !== undefined;
   return (
     <div className={`row sessionRow ${isInteractive ? '' : 'rounded-3 mb-2 p-2'}`}>
-      <div className="col-6" style={{ borderLeftColor: `${scheduleRecord.colorCode}!important` }}>
+      <div className="col-md-6" style={{ borderLeftColor: `${scheduleRecord.colorCode}!important` }}>
         <div className={`sessionTitle ${checked ? 'fw-bold' : ''}`}>{scheduleRecord.programName}</div>
 
         <div className="text-muted">
           <small>{scheduleRecord.description}</small>
         </div>
       </div>
-      <div className="col-6">
+      <div className="col-md-6">
         <div
           data-utc={startLocalDateTime.toUTCString()}
           data-iso={startLocalDateTime.toISOString()}
@@ -63,25 +63,23 @@ SessionDetails.defaultProps = {
 export default function ProgramOption({ scheduleRecord, checked }: ProgramOptionProps) {
   const isInteractive = checked !== undefined; // Only if the `checked` prop exists and is not null will this component include the label and input element.
   const boldBorder = checked ? 'border-2' : '';
-  return (
-    <>
-      {isInteractive && (
-        <label className={`${boldBorder} rounded-3 mb-2 d-flex align-items-center align-content-center`} role={checked ? '' : 'button'}>
-          <input
-            type="checkbox"
-            name="scheduleId"
-            value={scheduleRecord.id}
-            className="ms-2 me-2"
-            data-json={JSON.stringify(scheduleRecord)}
-            defaultChecked={checked}
-            disabled={checked}
-          />
-          <SessionDetails scheduleRecord={scheduleRecord} checked={checked} />
-        </label>
-      )}
-      {!isInteractive && <SessionDetails scheduleRecord={scheduleRecord} checked={checked} />}
-    </>
-  );
+  if (isInteractive) {
+    return (
+      <label className={`${boldBorder} rounded-3 mb-2 d-flex align-items-center align-content-center`} role={checked ? '' : 'button'}>
+        <input
+          type="checkbox"
+          name="scheduleId"
+          value={scheduleRecord.id}
+          className="ms-2 me-2"
+          data-json={JSON.stringify(scheduleRecord)}
+          defaultChecked={checked}
+          disabled={checked}
+        />
+        <SessionDetails scheduleRecord={scheduleRecord} checked={checked} />
+      </label>
+    );
+  }
+  return <SessionDetails scheduleRecord={scheduleRecord} checked={checked} />;
 }
 
 ProgramOption.defaultProps = {

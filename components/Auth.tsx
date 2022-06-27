@@ -85,7 +85,7 @@ export default function Auth({ csrfToken }: { csrfToken: string }) {
           }}
         />
         <button type="submit" className="btn authBtn">
-          Send me a link
+          Sign up / Log in
         </button>
         <div className="hint">No password needed</div>
       </form>
