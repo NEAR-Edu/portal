@@ -11,7 +11,7 @@ function RelativeTime({ startDateTime }: { startDateTime: string }): JSX.Element
   const result = relativeTime ? (
     <>
       {' '}
-      <span className="startsSoon">({relativeTime})</span>
+      <div className="startsSoon">Starts {relativeTime}</div>
     </>
   ) : (
     // eslint-disable-next-line react/jsx-no-useless-fragment
@@ -43,9 +43,9 @@ function SessionDetails({ scheduleRecord, checked }: ProgramOptionProps) {
         <div
           data-utc={startLocalDateTime.toUTCString()}
           data-iso={startLocalDateTime.toISOString()}
-          style={{ backgroundImage: 'url(/img/calendar-icon.svg)', backgroundRepeat: 'no-repeat', paddingLeft: '2rem', fontWeight: 'bold!important' }}
+          style={{ backgroundImage: 'url(/img/calendar-icon.svg)', backgroundRepeat: 'no-repeat', paddingLeft: '2rem' }}
         >
-          {fullLocalizedDate}
+          <strong>{fullLocalizedDate}</strong>
           <RelativeTime startDateTime={scheduleRecord.start} />
         </div>
         <div className="mt-3" style={{ backgroundImage: 'url(/img/clock-icon.svg)', backgroundRepeat: 'no-repeat', paddingLeft: '2rem', fontWeight: 'bold!important' }}>
