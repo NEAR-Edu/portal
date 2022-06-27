@@ -60,34 +60,41 @@ export default function Auth({ csrfToken }: { csrfToken: string }) {
     return <Sent emailAddress={emailAddress} setEmailAddress={setEmailAddress} setHasSubmitted={setHasSubmitted} />;
   } else {
     return (
-      <form className="authForm mt-5" onSubmit={submitEmailAddress}>
+      <form className="authForm mt-5 container" onSubmit={submitEmailAddress}>
         <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
 
-        <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="Enter your email"
-          required
-          onChange={handleChange}
-          className="form-control"
-          style={{
-            color: 'black',
-            fontSize: '0.9rem',
-            border: 0,
-            borderBottom: '1px solid black',
-            borderRadius: 0,
-            display: 'inline',
-            background: 'transparent',
-            width: 'auto',
-            minWidth: '20rem',
-            marginRight: '2rem',
-          }}
-        />
-        <button type="submit" className="btn authBtn">
-          Sign up / Log in
-        </button>
-        <div className="hint">No password needed</div>
+        <div className="row">
+          <div className="col-md-6">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Enter your email"
+              required
+              onChange={handleChange}
+              className="form-control"
+              style={{
+                color: 'black',
+                fontSize: '0.9rem',
+                border: 0,
+                borderBottom: '1px solid black',
+                borderRadius: 0,
+                display: 'inline',
+                background: 'transparent',
+                width: 'auto',
+                minWidth: '20rem',
+                marginRight: '2rem',
+              }}
+            />
+
+            <div className="hint">No password needed</div>
+          </div>
+          <div className="col-md-6 text-start">
+            <button type="submit" className="btn authBtn">
+              Sign up / Log in
+            </button>
+          </div>
+        </div>
       </form>
     );
   }

@@ -1,5 +1,5 @@
 import { getSession } from 'next-auth/react';
-import Layout from '../components/layout';
+import Layout from '../components/Layout';
 import ProgramOption from '../components/ProgramOption';
 import { ScheduleRecordObj } from '../helpers/airtable';
 import { indexPath, profilePath } from '../helpers/paths';

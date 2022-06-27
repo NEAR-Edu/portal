@@ -34,13 +34,15 @@ function RightSide() {
 
 export default function Header() {
   return (
-    <header className="container-lg pt-3">
-      <div className="row">
-        <div className="col-6">
-          <HeaderLogo />
-        </div>
-        <div className={`col-6 text-end ${styles.signedInStatus}`}>
-          <RightSide />
+    <header className="container-fluid pt-3">
+      <div className="container-lg">
+        <div className="row">
+          <div className="col-md-9">
+            <HeaderLogo />
+          </div>
+          <div className={`col-md-3 text-end ${styles.signedInStatus}`}>
+            <RightSide />
+          </div>
         </div>
       </div>
     </header>

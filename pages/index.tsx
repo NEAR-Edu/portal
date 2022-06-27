@@ -1,7 +1,7 @@
 import { getCsrfToken, getSession } from 'next-auth/react';
 import Head from 'next/head';
 import Auth from '../components/Auth';
-import Layout from '../components/layout';
+import Layout from '../components/Layout';
 import ProgramOption from '../components/ProgramOption';
 import { ScheduleRecordObj } from '../helpers/airtable';
 import { profilePath } from '../helpers/paths';
@@ -52,14 +52,14 @@ export default function IndexPage({
       </Head>
       <div className="blur">
         <div className="row loggedOutHero p-5 position-relative">
-          <div className="col-md-6">
+          <div className="col-md-8">
             <h1 className="mb-5">The best place to learn NEAR</h1>
 
             <p>Use the NEAR University Student Portal to enroll in courses, collect certificates, and track your progress!</p>
 
             <Auth csrfToken={csrfToken} />
           </div>
-          <div className="col-md-6 text-center" style={{ padding: '2rem' }}>
+          <div className="col-md-4 text-center" style={{ padding: '2rem' }}>
             <img src="/img/triangularSphere.svg" alt="triangular sphere" className="img-fluid" />
           </div>
         </div>

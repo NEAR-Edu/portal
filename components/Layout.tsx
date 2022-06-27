@@ -3,8 +3,8 @@ import Head from 'next/head';
 import { toast, ToastContainer } from 'react-toastify'; // https://fkhadra.github.io/react-toastify/
 import 'react-toastify/dist/ReactToastify.min.css';
 import { Flash } from '../helpers/types';
-import Footer from './footer';
-import Header from './header';
+import Footer from './Footer';
+import Header from './Header';
 
 type Props = {
   children: React.ReactNode;

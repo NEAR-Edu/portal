@@ -7,7 +7,7 @@ import { getSession } from 'next-auth/react';
 import { useCallback, useRef, useState } from 'react';
 import { z } from 'zod';
 import FrameworksAndPlatforms from '../components/FrameworksAndPlatforms';
-import Layout from '../components/layout';
+import Layout from '../components/Layout';
 import LeadSource, { referralOptions, referralProgram } from '../components/LeadSource';
 import ProgrammingLanguages from '../components/ProgrammingLanguages';
 import WhyJoin from '../components/WhyJoin';
