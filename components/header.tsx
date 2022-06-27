@@ -11,7 +11,7 @@ export default function Header() {
   const { data: session } = useSession();
 
   return (
-    <header className="container-lg">
+    <header className="container-lg pt-3">
       <div className="row">
         <div className="col-6">
           <HeaderLogo />

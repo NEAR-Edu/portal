@@ -50,57 +50,59 @@ export default function IndexPage({
       <Head>
         <title>NEAR University Student Portal</title>
       </Head>
-      <div className="row loggedOutHero">
-        <div className="col-6">
-          <h1>The best place to learn NEAR</h1>
+      <div className="blur">
+        <div className="row loggedOutHero p-5 position-relative">
+          <div className="col-6">
+            <h1>The best place to learn NEAR</h1>
 
-          <p>Use the NEAR University Student Portal to enroll in courses, collect certificates, and track your progress!</p>
+            <p>Use the NEAR University Student Portal to enroll in courses, collect certificates, and track your progress!</p>
 
-          <Auth csrfToken={csrfToken} />
-        </div>
-        <div className="col-6 text-center" style={{ padding: '2rem' }}>
-          <img src="/img/triangularSphere.svg" alt="triangular sphere" />
-        </div>
-      </div>
-      <div className="row steps">
-        <div className="col-3">
-          <div className="step">
-            <span className="stepNumber">01</span>
-            <img src="/img/line-arrow-right.svg" alt="right arrow" />
+            <Auth csrfToken={csrfToken} />
           </div>
-          <h4>Verify your email address</h4>
-          <p className="hint">Easy. No password needed.</p>
-        </div>
-        <div className="col-3">
-          <div className="step">
-            <span className="stepNumber">02</span>
-            <img src="/img/line-arrow-right.svg" alt="right arrow" />
+          <div className="col-6 text-center" style={{ padding: '2rem' }}>
+            <img src="/img/triangularSphere.svg" alt="triangular sphere" />
           </div>
-          <h4>Tell us about yourself</h4>
-          <p className="hint">Provide your name, interests, etc.</p>
         </div>
-        <div className="col-3">
-          <div className="step">
-            <span className="stepNumber">03</span>
-            <img src="/img/line-arrow-right.svg" alt="right arrow" />
+        <div className="row steps">
+          <div className="col-3">
+            <div className="step">
+              <span className="stepNumber">01</span>
+              <img src="/img/line-arrow-right.svg" alt="right arrow" />
+            </div>
+            <h4>Verify your email address</h4>
+            <p className="hint">Easy. No password needed.</p>
           </div>
-          <h4>Enroll in programs</h4>
-          <p className="hint">Choose what you want to learn.</p>
-        </div>
-        <div className="col-3">
-          <div className="step">
-            <span className="stepNumber">04</span>
-            <img src="/img/line-arrow-right.svg" alt="right arrow" />
+          <div className="col-3">
+            <div className="step">
+              <span className="stepNumber">02</span>
+              <img src="/img/line-arrow-right.svg" alt="right arrow" />
+            </div>
+            <h4>Tell us about yourself</h4>
+            <p className="hint">Provide your name, interests, etc.</p>
           </div>
-          <h4>Start learning!</h4>
-          <p className="hint">Grow your skills.</p>
+          <div className="col-3">
+            <div className="step">
+              <span className="stepNumber">03</span>
+              <img src="/img/line-arrow-right.svg" alt="right arrow" />
+            </div>
+            <h4>Enroll in programs</h4>
+            <p className="hint">Choose what you want to learn.</p>
+          </div>
+          <div className="col-3">
+            <div className="step">
+              <span className="stepNumber">04</span>
+              <img src="/img/line-arrow-right.svg" alt="right arrow" />
+            </div>
+            <h4>Start learning!</h4>
+            <p className="hint">Grow your skills.</p>
+          </div>
         </div>
-      </div>
-      <h2 className="text-center mt-5 mb-5">Upcoming sessions</h2>
-      <div>
-        {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => {
-          return <ProgramOption scheduleRecord={scheduleRecord} key={scheduleRecord.id} />;
-        })}
+        <h2 className="text-center mt-5 mb-5">Upcoming sessions</h2>
+        <div>
+          {scheduleRecords.map((scheduleRecord: ScheduleRecordObj) => {
+            return <ProgramOption scheduleRecord={scheduleRecord} key={scheduleRecord.id} />;
+          })}
+        </div>
       </div>
     </Layout>
   );
