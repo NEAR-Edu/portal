@@ -1,0 +1,29 @@
+@use '../abstracts/variables' as *;
+
+.success-left-border {
+  border-left-color: $brandLightGreen;
+  border-left-width: 7px;
+  border-left-style: solid;
+  padding-left: 1rem;
+  margin: 1rem;
+}
+
+.authBtn {
+  color: white;
+  background-color: black;
+  border-radius: 5rem !important;
+  padding: 1rem 1.5rem;
+}
+
+.authForm {
+  .form-control::placeholder,
+  .hint {
+    color: #c9c9c9;
+  }
+  .form-control {
+    padding-left: 0;
+  }
+  .hint {
+    font-size: 0.8rem;
+  }
+}

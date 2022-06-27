@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
-import './styles.scss';
+import '../styles/app.scss';
 
 // Use of the <SessionProvider> is mandatory to allow components that call
 // `useSession()` anywhere in your application to access the `session` object.

@@ -1,7 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap');
-
-$brandBlue: #5f8afa;
-$brandOrange: #ffab71;
+@use '../abstracts/variables' as *;
 
 body {
   // font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -69,19 +66,6 @@ div.mantine-RadioGroup-label,
   // color: hsl(0deg 0% 50%);
   color: hsl(210deg 7% 56%); // Gray. Matches Mantine `description` element.
   font-size: 0.9rem;
-}
-
-.authForm {
-  .form-control::placeholder,
-  .hint {
-    color: #c9c9c9;
-  }
-  .form-control {
-    padding-left: 0;
-  }
-  .hint {
-    font-size: 0.8rem;
-  }
 }
 
 // input[type='radio' i] {

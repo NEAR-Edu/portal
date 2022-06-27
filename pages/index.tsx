@@ -53,7 +53,7 @@ export default function IndexPage({
       <div className="blur">
         <div className="row loggedOutHero p-5 position-relative">
           <div className="col-6">
-            <h1>The best place to learn NEAR</h1>
+            <h1 className="mb-5">The best place to learn NEAR</h1>
 
             <p>Use the NEAR University Student Portal to enroll in courses, collect certificates, and track your progress!</p>
 
