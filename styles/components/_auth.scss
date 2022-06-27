@@ -5,7 +5,6 @@
   border-left-width: 7px;
   border-left-style: solid;
   padding-left: 1rem;
-  margin: 1rem;
 }
 
 .authBtn {
@@ -13,6 +12,10 @@
   background-color: black;
   border-radius: 5rem !important;
   padding: 1rem 1.5rem;
+
+  &:hover {
+    color: hsl(0, 0%, 81%);
+  }
 }
 
 .authForm {

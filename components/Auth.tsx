@@ -1,19 +1,32 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
-function Sent({ emailAddress, setEmailAddress, setHasSubmitted }: { emailAddress: string; setEmailAddress: any; setHasSubmitted: any }): JSX.Element {
+function Sent({
+  emailAddress,
+  setEmailAddress,
+  setHasSubmitted,
+}: {
+  emailAddress: string;
+  setEmailAddress: Dispatch<SetStateAction<string>>;
+  setHasSubmitted: Dispatch<SetStateAction<boolean>>;
+}): JSX.Element {
   return (
     <form
       onSubmit={() => {
         setEmailAddress('');
         setHasSubmitted(false);
       }}
+      className="container mt-5"
     >
-      <div className="success-left-border">
-        A login link has been sent to <strong>{emailAddress}</strong>. <strong>Check your inbox. 😃</strong>
+      <div className="row">
+        <div className="col-8 success-left-border">
+          A login link has been sent to <strong>{emailAddress}</strong>. <strong>Check your inbox. 😃</strong>
+        </div>
+        <div className="col-4">
+          <button type="submit" className="btn authBtn">
+            ◀ Go back
+          </button>
+        </div>
       </div>
-      <button type="submit" className="btn authBtn">
-        Go back
-      </button>
     </form>
   );
 }
@@ -23,29 +36,25 @@ export default function Auth({ csrfToken }: { csrfToken: string }) {
   const [emailAddress, setEmailAddress] = useState<string>('');
   const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
-  function submitEmailAddress(event: any) {
-    console.log({ event });
+  async function submitEmailAddress(event: React.FormEvent) {
     event.preventDefault();
+
+    await fetch('/api/auth/signin/email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: emailAddress, csrfToken }),
+    });
     setHasSubmitted(true);
-    // fetch('/api/auth/signin/email', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({csrfToken}),
-    // });
   }
 
   function handleChange(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
     // https://www.pluralsight.com/guides/handling-multiple-inputs-with-single-onchange-handler-react
     // https://stackoverflow.com/questions/72192566/how-fix-typescript-errors-in-react-function-that-handles-input-changes-of-multip
-    console.log({ event });
     const { value } = event.target;
-    console.log(value);
     setEmailAddress(value);
   }
-
-  const inputId = 'email';
 
   if (hasSubmitted) {
     return <Sent emailAddress={emailAddress} setEmailAddress={setEmailAddress} setHasSubmitted={setHasSubmitted} />;
@@ -56,7 +65,7 @@ export default function Auth({ csrfToken }: { csrfToken: string }) {
 
         <input
           type="email"
-          id={inputId}
+          id="email"
           name="email"
           placeholder="Enter your email"
           required
