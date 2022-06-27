@@ -1,7 +1,8 @@
+// eslint-disable-next-line max-lines-per-function
 export default function Auth({ csrfToken }: { csrfToken: string }) {
   const inputId = 'email';
   return (
-    <form method="post" action="/api/auth/signin/email" className="mt-5">
+    <form method="post" action="/api/auth/signin/email" className="authForm mt-5">
       <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
 
       <input
@@ -26,6 +27,7 @@ export default function Auth({ csrfToken }: { csrfToken: string }) {
       <button type="submit" className="btn rounded-3" style={{ color: 'white', backgroundColor: 'black', borderRadius: '2rem!important', padding: '0.7rem 1.2rem' }}>
         Send me a link
       </button>
+      <div className="hint">No password needed</div>
     </form>
   );
 }
