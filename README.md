@@ -13,11 +13,15 @@ The aim has been for this portal to replace this Airtable form: https://airtable
 
 ## What further work is required
 
-- finishing v1 development of the 3 main pages (logged-out index page, profile creation page, program enrollment page), making them responsive, and improving the emails
-- migrating old data from Airtable to our database (including any cleanups / interpretations)
+- finish v1 development of the 3 main pages (logged-out index page, profile creation page, program enrollment page), making them responsive, and improving the emails
+- set up cron jobs for scheduled emails (see pages/api/send-scheduled-emails.ts and https://www.easycron.com/user or https://render.com/docs/cronjobs)
+- search this repo for all mentions of TODO and ONEDAY
+- migrate old data from Airtable to our database (including any cleanups / interpretations)
+- set up an Airtable-like interface to our DB, such as nocodb https://docs.google.com/spreadsheets/d/1sYDx-ifbQ3_YMAoA8Vx3fjRmTS3iXrkDuF1CAjU5ZMA/edit#gid=0
+- create a way (via granular permissions) for certain partners (such as Chad O) to add/edit data (such as when reviewing submissions)
 - finish tasks/issues at https://github.com/NEAR-Edu/portal/issues
 - write automated tests
-- replacing the existing Airtable form with a redirect to this new form
+- replace the existing Airtable form with a redirect to this new form
 
 ## Deployment
 

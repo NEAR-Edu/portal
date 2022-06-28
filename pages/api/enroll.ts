@@ -4,7 +4,7 @@ import { getSession } from 'next-auth/react';
 import { filterToFuture, getScheduleRecordsFromAllPages, ScheduleRecordObj, sortAscByDate } from '../../helpers/airtable';
 import { defaultSender, scheduleEmail, sendEmailNow, SESSION_URL_PLACEHOLDER } from '../../helpers/email';
 import { chooseProgramPath } from '../../helpers/paths';
-import { setFlashVariable, withSessionRoute } from '../../helpers/session';
+import { withSessionRoute } from '../../helpers/session';
 import { STATUS_CODE_ERROR, STATUS_CODE_TEMP_REDIRECT, STATUS_CODE_UNAUTH } from '../../helpers/statusCodes';
 import { getFormattedDateTime, getMomentBefore } from '../../helpers/time';
 import { getLoggedInUser } from '../../helpers/user';
@@ -75,8 +75,8 @@ const handler = withSessionRoute(async (req: NextApiRequest, res: NextApiRespons
       scheduleReminderEmail(scheduleRecord, user, registrationResult);
       console.log('saved', { registrationResult });
     });
-    const flashMessage = `You will receive ${scheduleIds.length} confirmation email(s) since you just enrolled in: ${JSON.stringify({ scheduleIds })}.`;
-    await setFlashVariable(req, flashMessage, 'success'); // ONEDAY Add a message about which (if any) were *just* enrolled during this request. Should await all promises to complete and should pass along only the scheduleIds that were confirmed to be saved.
+    // const flashMessage = `You will receive ${scheduleIds.length} confirmation email(s) since you just enrolled in: ${JSON.stringify({ scheduleIds })}.`;
+    // await setFlashVariable(req, flashMessage, 'success'); // ONEDAY Add a message about which (if any) were *just* enrolled during this request. Should await all promises to complete and should pass along only the scheduleIds that were confirmed to be saved.
     res.redirect(STATUS_CODE_TEMP_REDIRECT, chooseProgramPath);
   } catch (error) {
     console.error('Enrollment did not save. Error: ', error);
