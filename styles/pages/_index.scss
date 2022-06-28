@@ -15,14 +15,15 @@
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.12);
   border-radius: 8px;
 
-  // &:first-child {
-  //   box-shadow: 0px 16px 24px rgba(69, 77, 99, 0.2);
-  // }
+  &:hover {
+    box-shadow: 0px 16px 24px rgba(69, 77, 99, 0.2);
+  }
 
-  // .col-6:first-child {
-  //   border-left: 8px solid black !important;
-  //   padding-left: 2rem;
-  // }
+  .col-md-6:first-child {
+    border-left: 8px solid black !important;
+    padding-left: 2rem;
+    margin-left: -1rem;
+  }
 
   .sessionTitle {
     font-size: 1.7rem;
